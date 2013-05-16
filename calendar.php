@@ -69,7 +69,7 @@ function date_installations($date)
     while ($stmt->fetch())
         {
         echo "<tr>";
-        echo "<td><a href='proposal.php?id=$data[proposal]'>" . stripslashes($data[title]) . "</a>";
+        echo "<td><a href='proposal.php?id=$data[proposal]'>" . stripslashes($data['title']) . "</a>";
         echo "<td><a href='venue.php?id=$data[venue]'>" . stripslashes($data['shortname']) . "</a>";
         echo "</tr>\n";
         }

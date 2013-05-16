@@ -8,7 +8,7 @@ bifPageheader('log');
 ?>
 <table>
 <?php
-$stmt = dbPrepare("select time,userid,ip,proposal,is_sql,message,email,title from log left join user on userid=user.id left join proposal on log.proposal=proposal.id order by time desc limit 500");
+$stmt = dbPrepare("select time,userid,ip,proposal,is_sql,message,email,title from log left join user on userid=user.id left join proposal on log.proposal=proposal.id order by log.id desc limit 500");
 $stmt->execute();
 $stmt->bind_result($time,$userid,$ip,$proposal,$is_sql,$message,$username,$title);
 $lines = array();

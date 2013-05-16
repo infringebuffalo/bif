@@ -65,4 +65,29 @@ function dbQueryByID($query,$id)
     return $data;
     }
 
+function dbQueryByString($query,$str)
+    {
+    $stmt = dbPrepare($query);
+    $stmt->bind_param('s',$str);
+    if (!$stmt->execute())
+        die($stmt->error);
+    $data = array();
+    $params = array();
+    $meta = $stmt->result_metadata();
+    while ($field = $meta->fetch_field())
+        $params[] = &$data[$field->name];
+    call_user_func_array(array($stmt,'bind_result'),$params);
+    if (!$stmt->fetch())
+        $data = NULL;
+    $stmt->close();
+    return $data;
+    }
+
+function loggedMail($addr, $subject, $body, $header)
+    {
+    if (mail($addr, $subject, $body, $header))
+        log_message("sent mail to $addr");
+    else
+        log_message("ERROR: mail to $addr failed");
+    }
 ?>

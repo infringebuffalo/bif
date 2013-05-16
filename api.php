@@ -28,7 +28,8 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('newBatch',1,0),
             new apiFunction('newGroupshow',1,0),
             new apiFunction('scheduleEvent',1,0),
-            new apiFunction('scheduleGroupPerformer',1,0)
+            new apiFunction('scheduleGroupPerformer',1,0),
+            new apiFunction('updateContact',0,0)
             );
 
 $command = POSTvalue('command');
@@ -152,6 +153,21 @@ function scheduleGroupPerformer()
     $note = POSTvalue('note');
     $stmt = dbPrepare('insert into groupPerformer (id, groupevent, performer, showorder, time, note) values (?,?,?,?,?,?)');
     $stmt->bind_param('iiiiis',$id,$groupevent,$performer,$order,$time,$note);
+    $stmt->execute();
+    $stmt->close();
+    }
+
+function updateContact()
+    {
+    $id=POSTvalue('id');
+    if (($id != $_SESSION['userid']) && (!hasPrivilege('scheduler')))
+        {
+        log_message("tried to change contact info for userid $id");
+        header('Location: .');
+        die();
+        }
+    $stmt = dbPrepare("update user set name=?, phone=?, snailmail=? where id=?");
+    $stmt->bind_param('sssi', $_POST['name'], $_POST['phone'], $_POST['snailmail'], $id);
     $stmt->execute();
     $stmt->close();
     }
