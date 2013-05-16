@@ -29,7 +29,8 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('newGroupshow',1,0),
             new apiFunction('scheduleEvent',1,0),
             new apiFunction('scheduleGroupPerformer',1,0),
-            new apiFunction('updateContact',0,0)
+            new apiFunction('updateContact',0,0),
+            new apiFunction('updatePassword',0,0)
             );
 
 $command = POSTvalue('command');
@@ -172,4 +173,33 @@ function updateContact()
     $stmt->close();
     }
 
+function updatePassword()
+    {
+    $newpassword1 = POSTvalue('newpassword1');
+    $newpassword2 = POSTvalue('newpassword2');
+    $encNewpassword = md5($newpassword1);
+    $encOldpassword = md5(POSTvalue('oldpassword'));
+    $id = $_SESSION['userid'];
+    $username = $_SESSION['username'];
+    if ($newpassword1 != $newpassword2)
+        {
+        log_message("change password failed - new password mismatch");
+        $_SESSION['changepasswordError'] = 'Failed to change password: new password and confirmation did not match.';
+        header('Location: changePassword.php');
+        die();
+        }
+    $row = dbQueryByString('select password from user where email=?', $username);
+    if ((!$row) || ($row['password'] != $encOldpassword))
+        {
+        log_message("change password failed - wrong old password");
+        $_SESSION['changepasswordError'] = 'Failed to change password: old password was incorrect.';
+        header('Location: changePassword.php');
+        die();
+        }
+    $stmt = dbPrepare('update user set password=?,newpassword=? where id=?');
+    $stmt->bind_param('ssi',$endNewpassword,$encNewpassword,$id);
+    $stmt->execute();
+    $stmt->close();
+    log_message("changed password");
+    }
 ?>

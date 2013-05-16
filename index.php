@@ -35,6 +35,7 @@ else
 echo <<<ENDSTRING
 <br>
 <li><a href="editMyContact.php">Edit contact info</a></li>
+<li><a href="changePassword.php">Change password</a></li>
 <li><a href="logout.php">Logout</a></li>
 </ul>
 ENDSTRING;
