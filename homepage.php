@@ -9,6 +9,7 @@ if (hasPrivilege('scheduler'))
 <li><a href="listBatches.php">Batches</a></li>
 <li><a href="listProposals.php">All proposals</a></li>
 <li><a href="listVenues.php">Venues</a></li>
+<li><a href="calendar.php">Calendar</a></li>
 <br>
 <li><a href="newGroupshow.php">New group show</a></li>
 <li><a href="newBatch.php">New batch</a></li>

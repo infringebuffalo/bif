@@ -141,7 +141,6 @@ else
         }
     echo "</table>\n";
     }
-?>
 
-</body>
-</html>
+bifPagefooter();
+?>
