@@ -25,20 +25,25 @@ if (hasPrivilege('scheduler'))
 <li><a href="newBatch.php">New batch</a></li>
 <li><a href="newVenue.php">New venue</a></li>
 <li><a href="newCard.php">New card (public contact)</a></li>
+<br>
 ENDSTRING;
     }
-else
-    {
-    echo "<li>My proposals [TBD]</li>\n";
-    }
 
-echo <<<ENDSTRING
+$stmt = dbPrepare('select id,title from proposal where proposerid=? and deleted=0 order by title');
+$stmt->bind_param('i',$_SESSION['userid']);
+$stmt->execute();
+$stmt->bind_result($proposalid,$title);
+while ($stmt->fetch())
+    echo "<li><a href='proposal.php?id=$proposalid'>$title</a></li>\n";
+$stmt->close();
+?>
+
 <br>
 <li><a href="editMyContact.php">Edit contact info</a></li>
 <li><a href="changePassword.php">Change password</a></li>
 <li><a href="logout.php">Logout</a></li>
 </ul>
-ENDSTRING;
 
+<?php
 bifPagefooter();
 ?>
