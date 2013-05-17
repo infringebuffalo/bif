@@ -10,10 +10,10 @@ if (!isset($_GET['id']))
 else
     $id = $_GET['id'];
 
-$info = dbQueryByID('select name,description from `batch` where id=?',$id);
-bifPageheader('batch: ' . $info['name']);
+$row = dbQueryByID('select name,description from `batch` where id=?',$id);
+bifPageheader('batch: ' . $row['name']);
 
-echo "<p>$info[description]</p>\n";
+echo "<p>$row[description]</p>\n";
 
 $stmt = dbPrepare('select proposal.id, proposerid, name, title, orgfields from proposal join user on proposerid=user.id join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=?');
 $stmt->bind_param('i',$id);

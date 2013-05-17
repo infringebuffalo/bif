@@ -10,14 +10,14 @@ if (!isset($_GET['id']))
 else
     $id = $_GET['id'];
 
-$info = dbQueryByID('select name,shortname,info from venue where id=?',$id);
-bifPageheader('venue: ' . $info['name']);
+$row = dbQueryByID('select name,shortname,info from venue where id=?',$id);
+bifPageheader('venue: ' . $row['name']);
 
-$data = unserialize($info['info']);
+$data = unserialize($row['info']);
 
 echo "<table>\n";
-echo "<tr><th>Name</th><td>$info[name]</td></tr>\n";
-echo "<tr><th>Short name</th><td>$info[shortname]</td></tr>\n";
+echo "<tr><th>Name</th><td>$row[name]</td></tr>\n";
+echo "<tr><th>Short name</th><td>$row[shortname]</td></tr>\n";
 foreach ($data as $k => $v)
     echo "<tr><th>$k</th><td>$v</td></tr>\n";
 echo "</table>\n";

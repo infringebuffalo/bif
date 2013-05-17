@@ -103,8 +103,10 @@ echo '<table rules="all" cellpadding="3">';
 echo "<tr><th>Title</th><td>$title</td></tr>\n";
 echo "<tr><th>Proposer</th><td><a href='user.php?id=$proposer_id'>$proposer_name</a></td></tr>\n";
 echo "<tr><th>Festival contact</th><td><a href='card.php?id=$orgcontactinfo[id]'>$orgcontactinfo[name]</a></td></tr>\n";
-foreach ($info as $k => $v)
-    echo "<tr><th>$k</th><td>" . multiline($v) . "</td></tr>\n";
+foreach ($info as $v)
+    {
+    echo "<tr><th>$v[0]</th><td>" . multiline($v[1]) . "</td></tr>\n";
+    }
 echo "<tr><th>Availability</th><td>" . availTable($availability) . "</td></tr>\n";
 echo '</table>';
 
