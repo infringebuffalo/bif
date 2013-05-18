@@ -30,7 +30,9 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('scheduleEvent',1,0),
             new apiFunction('scheduleGroupPerformer',1,0),
             new apiFunction('updateContact',0,0),
-            new apiFunction('updatePassword',0,0)
+            new apiFunction('updatePassword',0,0),
+            new apiFunction('changeBatchDescription',1,0),
+            new apiFunction('changeBatchMembers',1,0)
             );
 
 $command = POSTvalue('command');
@@ -201,5 +203,33 @@ function updatePassword()
     $stmt->execute();
     $stmt->close();
     log_message("changed password");
+    }
+
+function changeBatchDescription()
+    {
+    $description = POSTvalue('description');
+    $id = POSTvalue('id');
+    $stmt = dbPrepare('update batch set description=? where id=?');
+    $stmt->bind_param('si',$description,$id);
+    $stmt->execute();
+    $stmt->close();
+    log_message("changed description of batch $id");
+    }
+
+function changeBatchMembers()
+    {
+    $batchid = POSTvalue('id');
+    $stmt = dbPrepare('delete from proposalBatch where batch_id=?');
+    $stmt->bind_param('i',$batchid);
+    $stmt->execute();
+    $stmt->close();
+    foreach ($_POST['proposal'] as $proposalid)
+        {
+        $stmt = dbPrepare('insert into proposalBatch (proposal_id,batch_id) values (?,?)');
+        $stmt->bind_param('ii',$proposalid,$batchid);
+        $stmt->execute();
+        $stmt->close();
+        }
+    log_message("changed membership of batch $batchid");
     }
 ?>
