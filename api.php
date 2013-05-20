@@ -9,6 +9,8 @@ class apiFunction
     function __construct($name,$schedulerPriv,$adminPriv)
         {
         $this->name = $name;
+        $this->reflector = new ReflectionFunction($name);
+        $this->params = $this->reflector->getParameters();
         $this->schedulerPriv = $schedulerPriv;  
         $this->adminPriv = $adminPriv;
         }
@@ -19,7 +21,10 @@ class apiFunction
         if ($this->schedulerPriv)
             requirePrivilege('scheduler');
         log_message('api calling ' . $this->name);
-        call_user_func($this->name);
+        $args = array();
+        foreach ($this->params as $param)
+            $args[] = POSTvalue($param->name);
+        call_user_func_array($this->name,$args);
         }
     }
 
@@ -34,7 +39,9 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('changeBatchDescription',1,0),
             new apiFunction('changeBatchMembers',1,0),
             new apiFunction('addToBatch',1,0),
-            new apiFunction('removeFromBatch',1,0)
+            new apiFunction('removeFromBatch',1,0),
+            new apiFunction('changeProposalInfo',0,0),
+            new apiFunction('changeProposalAvail',0,0)
             );
 
 $command = POSTvalue('command');
@@ -63,58 +70,46 @@ else
     header('location:' . $returnurl);
 
 
-function newVenue()
+function newVenue($venue,$name,$shortname)
     {
-    $venueid = newEntityID('venue');
     $stmt = dbPrepare('insert into `venue` (`id`, `name`, `shortname`, `festival`, `info`) values (?,?,?,?,?)');
-    $name = POSTvalue('name');
-    $shortname = POSTvalue('shortname');
     $festival = getFestivalID();
     $info = serialize(array());
-    $stmt->bind_param('issis',$venueid,$name,$shortname,$festival,$info);
+    $stmt->bind_param('issis',$venue,$name,$shortname,$festival,$info);
     $stmt->execute();
     $stmt->close();
-    log_message('newVenue ' . $venueid . ' : ' . $name);
+    log_message('newVenue ' . $venue . ' : ' . $name);
     }
 
-function newCard()
+function newCard($userid,$role,$email,$phone,$snailmail)
     {
     $cardid = newEntityID('card');
     $stmt = dbPrepare('insert into `card` (`id`, `userid`, `role`, `email`, `phone`, `snailmail`) values (?,?,?,?,?,?)');
-    $userid = POSTvalue('userid');
-    $role = POSTvalue('role');
-    $email = POSTvalue('email');
-    $phone = POSTvalue('phone');
-    $snailmail = POSTvalue('snailmail');
     $stmt->bind_param('iissss',$cardid,$userid,$role,$email,$phone,$snailmail);
     $stmt->execute();
     $stmt->close();
     log_message('newCard ' . $cardid . ' : ' . $role . ' / ' . $email);
     }
 
-function newBatch()
+function newBatch($name,$description)
     {
     $batchid = newEntityID('batch');
     $stmt = dbPrepare('insert into `batch` (`id`, `name`, `festival`, `description`) values (?,?,?,?)');
-    $name = POSTvalue('name');
     $festival = getFestivalID();
-    $description = POSTvalue('description');
     $stmt->bind_param('isis',$batchid,$name,$festival,$description);
     $stmt->execute();
     $stmt->close();
     log_message('newBatch ' . $batchid . ' : ' . $name);
     }
 
-function newGroupshow()
+function newGroupshow($title,$description,$batch)
     {
     $showid = newEntityID('proposal');
     $stmt = dbPrepare('insert into `proposal` (`id`, `proposerid`, `festival`, `title`, `info`, `isgroupshow`) values (?,?,?,?,?,1)');
     $festival = getFestivalID();
     $proposerid = $_SESSION['userid'];
-    $title = POSTvalue('title');
-    $info = array('Description'=>POSTvalue('description'), 'batch'=>POSTvalue('batch'));
+    $info = array('Description'=>$description, 'batch'=>$batch);
     $info_ser = serialize($info);
-    $description = POSTvalue('description');
     $stmt->bind_param('iiiss',$showid,$proposerid,$festival,$title,$info_ser);
     $stmt->execute();
     $stmt->close();
@@ -148,6 +143,7 @@ function scheduleEvent()
             }
         }
     }
+
 function scheduleGroupPerformer()
     {
     $id = newEntityID('groupPerformer');
@@ -207,10 +203,8 @@ function updatePassword()
     log_message("changed password");
     }
 
-function changeBatchDescription()
+function changeBatchDescription($id,$description)
     {
-    $description = POSTvalue('description');
-    $id = POSTvalue('id');
     $stmt = dbPrepare('update batch set description=? where id=?');
     $stmt->bind_param('si',$description,$id);
     $stmt->execute();
@@ -235,12 +229,10 @@ function changeBatchMembers()
     log_message("changed membership of batch $batchid");
     }
 
-function addToBatch()
+function addToBatch($proposal,$batch)
     {
-    $proposalid = POSTvalue('proposal');
-    $batchid = POSTvalue('batch');
     $stmt = dbPrepare('select count(*) from proposalBatch where proposal_id=? and batch_id=?');
-    $stmt->bind_param('ii',$proposalid,$batchid);
+    $stmt->bind_param('ii',$proposal,$batch);
     $stmt->execute();
     $count = 0;
     $stmt->bind_result($count);
@@ -249,17 +241,43 @@ function addToBatch()
     if ($count > 0)
         return;
     $stmt = dbPrepare('insert into proposalBatch (proposal_id,batch_id) values (?,?)');
-    $stmt->bind_param('ii',$proposalid,$batchid);
+    $stmt->bind_param('ii',$proposal,$batch);
     $stmt->execute();
     $stmt->close();
     }
 
-function removeFromBatch()
+function removeFromBatch($proposal,$batch)
     {
-    $proposalid = POSTvalue('proposal');
-    $batchid = POSTvalue('batch');
     $stmt = dbPrepare('delete from proposalBatch where proposal_id=? and batch_id=?');
-    $stmt->bind_param('ii',$proposalid,$batchid);
+    $stmt->bind_param('ii',$proposal,$batch);
+    $stmt->execute();
+    $stmt->close();
+    }
+
+function changeProposalInfo($proposal,$fieldnum,$newinfo)
+    {
+    $info_ser = dbQueryByID('select info from proposal where id=?',$proposal);
+    if ($info_ser == NULL)
+        return;
+    $info = unserialize($info_ser['info']);
+    $info[$fieldnum] = array($info[$fieldnum][0], filter_var($newinfo, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH));
+    $info_ser = serialize($info);
+    $stmt = dbPrepare('update proposal set info=? where id=?');
+    $stmt->bind_param('si',$info_ser,$proposal);
+    $stmt->execute();
+    $stmt->close();
+    }
+
+function changeProposalAvail($proposal,$daynum,$newinfo)
+    {
+    $info_ser = dbQueryByID('select availability from proposal where id=?',$proposal);
+    if ($info_ser == NULL)
+        return;
+    $info = unserialize($info_ser['availability']);
+    $info[$daynum] = filter_var($newinfo, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
+    $info_ser = serialize($info);
+    $stmt = dbPrepare('update proposal set availability=? where id=?');
+    $stmt->bind_param('si',$info_ser,$proposal);
     $stmt->execute();
     $stmt->close();
     }

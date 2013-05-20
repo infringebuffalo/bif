@@ -1,12 +1,11 @@
-delete proposals
+deletable proposals
 
-batch navigation
-
-add to / remove from batch
-
-editable proposal fields
 editable venue fields
+
+deletable / cancelable listings
 
 admin tools - add/remove privileges
 mailing list tool
+
+fix init-basic setting of festival data
 

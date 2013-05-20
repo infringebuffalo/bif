@@ -10,6 +10,16 @@ getDatabase();
 $header = <<<ENDSTRING
 <script src="jquery-1.9.1.min.js" type="text/javascript"></script>
 <script type="text/javascript">
+function showEditor(name)
+    {
+    $('#show_' + name).hide();
+    $('#edit_' + name).show();
+    }
+function hideEditor(name)
+    {
+    $('#show_' + name).show();
+    $('#edit_' + name).hide();
+    }
 function showScheduler(name)
     {
     $('.scheduleForm').hide()
@@ -22,6 +32,7 @@ function toggleEdit(rowname)
     }
 
 $(document).ready(function() {
+    $('.edit_info').hide();
  });
 </script>
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -53,6 +64,7 @@ while ($stmt->fetch())
     $batches .= "<td>&nbsp;<a href='batchMove.php?id=$batch_id&cur=$proposal_id&dir=-1'>&lt;-</a><a href='batch.php?id=$batch_id'>$batch_name</a><a href='batchMove.php?id=$batch_id&cur=$proposal_id&dir=1'>-&gt;</a>&nbsp;</td>\n";
     }
 $stmt->close();
+$batches .= "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
 $batches .= "<td><form method='POST' action='api.php'><input type='hidden' name='command' value='addToBatch' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='submit' name='submit' value='add to'/> " . batchMenu('batch',false) . "</form></td>\n";
 $batches .= "<td><form method='POST' action='api.php'><input type='hidden' name='command' value='removeFromBatch' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='submit' name='submit' value='remove from'/> " . batchMenu('batch',false) . "</form></td>\n";
 $batches .= "</tr>\n</table>\n";
@@ -118,11 +130,12 @@ echo '<table rules="all" cellpadding="3">';
 echo "<tr><th>Title</th><td>$title</td></tr>\n";
 echo "<tr><th>Proposer</th><td><a href='user.php?id=$proposer_id'>$proposer_name</a></td></tr>\n";
 echo "<tr><th>Festival contact</th><td><a href='card.php?id=$orgcontactinfo[id]'>$orgcontactinfo[name]</a></td></tr>\n";
-foreach ($info as $v)
+foreach ($info as $fieldnum=>$v)
     {
-    echo "<tr><th>$v[0]</th><td>" . multiline($v[1]) . "</td></tr>\n";
+    echo "<tr id='edit_field$fieldnum' class='edit_info'><th>$v[0]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalInfo' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='hidden' name='fieldnum' value='$fieldnum' /><textarea name='newinfo' cols='80'>$v[1]</textarea><input type='submit' name='submit' value='update'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>cancel</button></td></form></tr>\n";
+    echo "<tr id='show_field$fieldnum' class='show_info' onclick='showEditor(\"field$fieldnum\");'><th>$v[0]</th><td>" . multiline($v[1]) . "</td></tr>\n";
     }
-echo "<tr><th>Availability</th><td>" . availTable($availability) . "</td></tr>\n";
+echo "<tr><th>Availability</th><td>" . availTable($proposal_id,$availability) . "</td></tr>\n";
 echo '</table>';
 
 bifPagefooter();
@@ -131,13 +144,20 @@ bifPagefooter();
 
 
 
-function availTable($av)
+function availTable($proposal_id,$av)
     {
     $s = "<table>\n";
-    for ($i=0; $i < 11; $i++)
+    if (is_array($av))
         {
-        if (is_array($av) && array_key_exists($i,$av))
-            $s .= "<tr><td>" . dayToDateday($i) . "</td><td>" . $av[$i] . "</td></tr>\n";
+        for ($i=0; $i < 11; $i++)
+            {
+            if (array_key_exists($i,$av))
+                {
+                $s .= "<tr id='edit_avail$i' class='edit_info'><th>" . dayToDateday($i) . "</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalAvail' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='hidden' name='daynum' value='$i' /><textarea name='newinfo' cols='40'>" . $av[$i] . "</textarea><input type='submit' name='submit' value='update'><button onclick='hideEditor(\"avail$i\"); return false;'>cancel</button></td></form></tr>\n";
+                $s .= "<tr id='show_avail$i' class='show_info' onclick='showEditor(\"avail$i\");'><th>" . dayToDateday($i) . "</th><td>" . $av[$i] . "</td></tr>\n";
+//                $s .= "<tr><td>" . dayToDateday($i) . "</td><td>" . $av[$i] . "</td></tr>\n";
+                }
+            }
         }
     $s .= "</table>\n";
     return $s;
