@@ -43,8 +43,23 @@ $forminfo = unserialize($forminfo_ser);
 
 $orgcontactinfo = dbQueryByID('select `name`,`card`.`id` from `user` join `card` on `user`.`id`=`card`.`userid` where `user`.`id`=?',$orgcontact);
 
+$batches = "<table rules='all'>\n<tr>\n";
+$stmt = dbPrepare('select batch_id,name from proposalBatch join batch on batch_id=batch.id where proposal_id=?');
+$stmt->bind_param('i',$proposal_id);
+$stmt->execute();
+$stmt->bind_result($batch_id,$batch_name);
+while ($stmt->fetch())
+    {
+    $batches .= "<td>&nbsp;<a href='batchMove.php?id=$batch_id&cur=$proposal_id&dir=-1'>&lt;-</a><a href='batch.php?id=$batch_id'>$batch_name</a><a href='batchMove.php?id=$batch_id&cur=$proposal_id&dir=1'>-&gt;</a>&nbsp;</td>\n";
+    }
+$stmt->close();
+$batches .= "<td><form method='POST' action='api.php'><input type='hidden' name='command' value='addToBatch' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='submit' name='submit' value='add to'/> " . batchMenu('batch',false) . "</form></td>\n";
+$batches .= "<td><form method='POST' action='api.php'><input type='hidden' name='command' value='removeFromBatch' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='submit' name='submit' value='remove from'/> " . batchMenu('batch',false) . "</form></td>\n";
+$batches .= "</tr>\n</table>\n";
+
 bifPageheader('proposal: ' . $title,$header);
 
+echo $batches;
 echo "<table>\n";
 $proposal = $proposalList[$proposal_id];
 foreach ($proposal->listings as $listing)

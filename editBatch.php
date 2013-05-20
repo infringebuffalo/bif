@@ -1,7 +1,7 @@
 <?php
 require_once 'init.php';
 connectDB();
-requireLogin();
+requirePrivilege('scheduler');
 require_once 'util.php';
 require '../bif.php';
 

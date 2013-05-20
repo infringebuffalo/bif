@@ -1,7 +1,7 @@
 <?php
 require_once 'init.php';
 connectDB();
-requireLogin();
+requirePrivilege(array('scheduler','organizer'));
 require_once 'util.php';
 require '../bif.php';
 
@@ -16,7 +16,7 @@ bifPageheader('batch: ' . $row['name']);
 echo "<p>$row[description]</p>\n";
 echo "<p><a href='editBatch.php?id=$id'>[edit batch]</a></p>";
 
-$stmt = dbPrepare('select proposal.id, proposerid, name, title, orgfields from proposal join user on proposerid=user.id join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=?');
+$stmt = dbPrepare('select proposal.id, proposerid, name, title, orgfields from proposal join user on proposerid=user.id join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=? order by title');
 $stmt->bind_param('i',$id);
 $stmt->execute();
 $stmt->bind_result($id,$proposer_id,$proposer_name,$title,$orgfields_ser);

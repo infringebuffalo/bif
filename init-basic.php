@@ -17,6 +17,17 @@ function POSTvalue($field,$default='')
         return $default;
     }
 
+function GETvalue($field,$default='')
+    {
+    if (isset($_GET[$field]))
+        {
+        if (get_magic_quotes_gpc()) return stripslashes($_GET[$field]);
+        else return $_GET[$field];
+        }
+    else
+        return $default;
+    }
+
 function connectDB()
     {
     require 'config/config.php';

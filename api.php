@@ -32,7 +32,9 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('updateContact',0,0),
             new apiFunction('updatePassword',0,0),
             new apiFunction('changeBatchDescription',1,0),
-            new apiFunction('changeBatchMembers',1,0)
+            new apiFunction('changeBatchMembers',1,0),
+            new apiFunction('addToBatch',1,0),
+            new apiFunction('removeFromBatch',1,0)
             );
 
 $command = POSTvalue('command');
@@ -232,4 +234,34 @@ function changeBatchMembers()
         }
     log_message("changed membership of batch $batchid");
     }
+
+function addToBatch()
+    {
+    $proposalid = POSTvalue('proposal');
+    $batchid = POSTvalue('batch');
+    $stmt = dbPrepare('select count(*) from proposalBatch where proposal_id=? and batch_id=?');
+    $stmt->bind_param('ii',$proposalid,$batchid);
+    $stmt->execute();
+    $count = 0;
+    $stmt->bind_result($count);
+    $stmt->fetch();
+    $stmt->close();
+    if ($count > 0)
+        return;
+    $stmt = dbPrepare('insert into proposalBatch (proposal_id,batch_id) values (?,?)');
+    $stmt->bind_param('ii',$proposalid,$batchid);
+    $stmt->execute();
+    $stmt->close();
+    }
+
+function removeFromBatch()
+    {
+    $proposalid = POSTvalue('proposal');
+    $batchid = POSTvalue('batch');
+    $stmt = dbPrepare('delete from proposalBatch where proposal_id=? and batch_id=?');
+    $stmt->bind_param('ii',$proposalid,$batchid);
+    $stmt->execute();
+    $stmt->close();
+    }
+
 ?>

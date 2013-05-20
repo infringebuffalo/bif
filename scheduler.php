@@ -270,9 +270,11 @@ function venueMenu($name,$selected='')
     return $retstr;
     }
 
-function batchMenu($name)
+function batchMenu($name,$includeAllShows=true)
     {
-    $retstr = "<select name='" . $name . "'>\n<option value='0'>[all shows]</option>\n";
+    $retstr = "<select name='$name'>\n";
+    if ($includeAllShows)
+        $retstr .= "<option value='0'>[all shows]</option>\n";
     $stmt = dbPrepare('select id,name from batch where festival=? order by name');
     $festival = getFestivalID();
     $stmt->bind_param('i',$festival);
