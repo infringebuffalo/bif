@@ -47,7 +47,7 @@ echo "<tr><th>Name</th><td>$row[name]</td></tr>\n";
 echo "<tr><th>Short name</th><td>$row[shortname]</td></tr>\n";
 foreach ($info as $fieldnum=>$v)
     {
-    echo "<tr id='edit_field$fieldnum' class='edit_info'><th>$v[0]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeVenueInfo' /><input type='hidden' name='proposal' value='$id' /><input type='hidden' name='fieldnum' value='$fieldnum' /><textarea name='newinfo' cols='80'>$v[1]</textarea><input type='submit' name='submit' value='update'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>cancel</button></td></form></tr>\n";
+    echo "<tr id='edit_field$fieldnum' class='edit_info'><th>$v[0]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeVenueInfo' /><input type='hidden' name='venue' value='$id' /><input type='hidden' name='fieldnum' value='$fieldnum' /><textarea name='newinfo' cols='80'>$v[1]</textarea><input type='submit' name='submit' value='update'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>cancel</button></td></form></tr>\n";
     echo "<tr id='show_field$fieldnum' class='show_info' onclick='showEditor(\"field$fieldnum\");'><th>$v[0]</th><td>" . multiline($v[1]) . "</td></tr>\n";
     }
 echo "</table>\n";

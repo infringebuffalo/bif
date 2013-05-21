@@ -46,6 +46,7 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('undeleteProposal',1,0),
             new apiFunction('deleteVenue',1,0),
             new apiFunction('undeleteVenue',1,0),
+            new apiFunction('changeVenueInfo',0,0),
             );
 
 $command = POSTvalue('command');
@@ -322,6 +323,22 @@ function undeleteVenue($id)
     $stmt->execute();
     $stmt->close();
     log_message("undeleted venue $id");
+    }
+
+function changeVenueInfo($venue,$fieldnum,$newinfo)
+    {
+    $info_ser = dbQueryByID('select info from venue where id=?',$venue);
+    if ($info_ser == NULL)
+        return;
+    $info = unserialize($info_ser['info']);
+    $oldinfo = $info[$fieldnum][1];
+    $info[$fieldnum] = array($info[$fieldnum][0], filter_var($newinfo, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH));
+    $info_ser = serialize($info);
+    $stmt = dbPrepare('update venue set info=? where id=?');
+    $stmt->bind_param('si',$info_ser,$venue);
+    $stmt->execute();
+    $stmt->close();
+    log_message("changed venue $venue field $fieldnum from '$oldinfo' to '$newinfo'");
     }
 
 ?>
