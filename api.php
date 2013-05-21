@@ -41,7 +41,9 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('addToBatch',1,0),
             new apiFunction('removeFromBatch',1,0),
             new apiFunction('changeProposalInfo',0,0),
-            new apiFunction('changeProposalAvail',0,0)
+            new apiFunction('changeProposalAvail',0,0),
+            new apiFunction('deleteProposal',1,0),
+            new apiFunction('undeleteProposal',1,0),
             );
 
 $command = POSTvalue('command');
@@ -260,12 +262,14 @@ function changeProposalInfo($proposal,$fieldnum,$newinfo)
     if ($info_ser == NULL)
         return;
     $info = unserialize($info_ser['info']);
+    $oldinfo = $info[$fieldnum][1];
     $info[$fieldnum] = array($info[$fieldnum][0], filter_var($newinfo, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH));
     $info_ser = serialize($info);
     $stmt = dbPrepare('update proposal set info=? where id=?');
     $stmt->bind_param('si',$info_ser,$proposal);
     $stmt->execute();
     $stmt->close();
+    log_message("changed proposal $proposal field $fieldnum from '$oldinfo' to '$newinfo'");
     }
 
 function changeProposalAvail($proposal,$daynum,$newinfo)
@@ -280,6 +284,24 @@ function changeProposalAvail($proposal,$daynum,$newinfo)
     $stmt->bind_param('si',$info_ser,$proposal);
     $stmt->execute();
     $stmt->close();
+    }
+
+function deleteProposal($id)
+    {
+    $stmt = dbPrepare('update proposal set deleted=1 where id=?');
+    $stmt->bind_param('i',$id);
+    $stmt->execute();
+    $stmt->close();
+    log_message("deleted proposal $id");
+    }
+
+function undeleteProposal($id)
+    {
+    $stmt = dbPrepare('update proposal set deleted=0 where id=?');
+    $stmt->bind_param('i',$id);
+    $stmt->execute();
+    $stmt->close();
+    log_message("undeleted proposal $id");
     }
 
 ?>
