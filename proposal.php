@@ -1,7 +1,7 @@
 <?php
 require_once 'init.php';
 connectDB();
-requirePrivilege('scheduler');
+requireLogin();
 require_once 'util.php';
 require_once 'scheduler.php';
 require '../bif.php';
@@ -42,6 +42,7 @@ if (!isset($_GET['id']))
     die('no proposal selected');
 else
     $proposal_id = $_GET['id'];
+
 $stmt = dbPrepare('select `proposerid`, `festival`, `title`, `info`, `availability`, `forminfo`, `orgcontact`, `deleted`, `submitted`, `user`.`name` from `proposal` join `user` on `proposerid`=`user`.`id` where `proposal`.`id`=?');
 $stmt->bind_param('i',$proposal_id);
 $stmt->execute();
@@ -51,6 +52,15 @@ $stmt->close();
 $info = unserialize($info_ser);
 $availability = unserialize($availability_ser);
 $forminfo = unserialize($forminfo_ser);
+
+if (!hasPrivilege('scheduler'))
+    {
+    if ($proposer_id != $_SESSION['userid'])
+        {
+        header('Location: .');
+        die();
+        }
+    }
 
 $orgcontactinfo = dbQueryByID('select `name`,`card`.`id` from `user` join `card` on `user`.`id`=`card`.`userid` where `user`.`id`=?',$orgcontact);
 
@@ -126,6 +136,7 @@ if ($proposal->isgroupshow)
 if (hasPrivilege('scheduler'))
     echo HTML_schedulingTools($proposal_id);
 
+echo '<span>[click on a field to edit it; first three fields are not editable]</span>';
 echo '<table rules="all" cellpadding="3">';
 echo "<tr><th>Title</th><td>$title</td></tr>\n";
 echo "<tr><th>Proposer</th><td><a href='user.php?id=$proposer_id'>$proposer_name</a></td></tr>\n";

@@ -1,8 +1,12 @@
+summary info (used on list batch page)
+
 deletable proposals
 
 editable venue fields
 
 deletable / cancelable listings
+
+force batch names to be unique; allow editing batch name
 
 admin tools - add/remove privileges
 mailing list tool
