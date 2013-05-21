@@ -44,6 +44,8 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('changeProposalAvail',0,0),
             new apiFunction('deleteProposal',1,0),
             new apiFunction('undeleteProposal',1,0),
+            new apiFunction('deleteVenue',1,0),
+            new apiFunction('undeleteVenue',1,0),
             );
 
 $command = POSTvalue('command');
@@ -302,6 +304,24 @@ function undeleteProposal($id)
     $stmt->execute();
     $stmt->close();
     log_message("undeleted proposal $id");
+    }
+
+function deleteVenue($id)
+    {
+    $stmt = dbPrepare('update venue set deleted=1 where id=?');
+    $stmt->bind_param('i',$id);
+    $stmt->execute();
+    $stmt->close();
+    log_message("deleted venue $id");
+    }
+
+function undeleteVenue($id)
+    {
+    $stmt = dbPrepare('update venue set deleted=0 where id=?');
+    $stmt->bind_param('i',$id);
+    $stmt->execute();
+    $stmt->close();
+    log_message("undeleted venue $id");
     }
 
 ?>
