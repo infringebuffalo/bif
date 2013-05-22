@@ -40,6 +40,7 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('changeBatchMembers',1,0),
             new apiFunction('addToBatch',1,0),
             new apiFunction('removeFromBatch',1,0),
+            new apiFunction('changeProposalTitle',0,0),
             new apiFunction('changeProposalInfo',0,0),
             new apiFunction('changeProposalAvail',0,0),
             new apiFunction('deleteProposal',1,0),
@@ -257,6 +258,15 @@ function removeFromBatch($proposal,$batch)
     $stmt->bind_param('ii',$proposal,$batch);
     $stmt->execute();
     $stmt->close();
+    }
+
+function changeProposalTitle($proposal,$newtitle)
+    {
+    $stmt = dbPrepare('update proposal set title=? where id=?');
+    $stmt->bind_param('si',$newtitle,$proposal);
+    $stmt->execute();
+    $stmt->close();
+    log_message("changed proposal $proposal title to '$newtitle'");
     }
 
 function changeProposalInfo($proposal,$fieldnum,$newinfo)

@@ -144,9 +144,12 @@ if ($proposal->isgroupshow)
 if (hasPrivilege('scheduler'))
     echo HTML_schedulingTools($proposal_id);
 
-echo '<span>[click on a field to edit it; first three fields are not editable]</span>';
+echo '<span>[click on a field to edit it; "proposer" and "festival contact" are not editable]</span>';
 echo '<table rules="all" cellpadding="3">';
-echo "<tr><th>Title</th><td>$title</td></tr>\n";
+
+echo "<tr id='edit_fieldTitle' class='edit_info'><th>Title</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalTitle' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='text' name='newtitle' value=\"". htmlspecialchars($title) . "\" /><input type='submit' name='submit' value='update'><button onclick='hideEditor(\"fieldTitle\"); return false;'>cancel</button></td></form></tr>\n";
+echo "<tr id='show_fieldTitle' class='show_info' onclick='showEditor(\"fieldTitle\");'><th>Title</th><td>" . htmlspecialchars($title) . "</td></tr>\n";
+
 echo "<tr><th>Proposer</th><td><a href='user.php?id=$proposer_id'>$proposer_name</a></td></tr>\n";
 echo "<tr><th>Festival contact</th><td><a href='card.php?id=$orgcontactinfo[id]'>$orgcontactinfo[name]</a></td></tr>\n";
 foreach ($info as $fieldnum=>$v)

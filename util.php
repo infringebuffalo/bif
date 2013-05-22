@@ -2,7 +2,7 @@
 
 function multiline($s)
     {
-    return str_replace("\n", "<br/>\n", htmlspecialchars(stripslashes($s)));
+    return str_replace("\n", "<br>\n", htmlspecialchars(stripslashes($s)));
     }
 
 // Turn a possibly incomplete URL into a valid one for an <a href=...
@@ -10,7 +10,7 @@ function multiline($s)
 // not generally correct
 function completeURL($s)
     {
-    if (substr($s,0,7) == 'http://')
+    if ((substr($s,0,7) == 'http://') || (substr($s,0,8) == 'https://'))
         return $s;
     else
         return 'http://' . $s;
