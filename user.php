@@ -1,7 +1,7 @@
 <?php
 require_once 'init.php';
 connectDB();
-requirePrivilege('scheduler');
+requirePrivilege(array('scheduler','organizer'));
 require_once 'util.php';
 require '../bif.php';
 
@@ -37,6 +37,27 @@ if ($row)
         echo "<tr><th>Address</th><td>" . multiline($row['snailmail']) . "</td></tr>\n";
     echo "</table>\n";
     }
+
+$stmt = dbPrepare('select id, title from proposal where proposerid=? order by title');
+$stmt->bind_param('i',$user_id);
+$stmt->execute();
+$stmt->bind_result($proposal_id, $title);
+$first = true;
+while ($stmt->fetch())
+    {
+    if ($first)
+        {
+        echo "<h2>Proposals</h2>\n";
+        echo "<ul>\n";
+        $first = false;
+        }
+    if ($title == '')
+        $title = '!!NEEDS A TITLE!!';
+    echo "<li><a href=\"proposal.php?id=$proposal_id\">$title</a></li>\n";
+    }
+if (!$first)
+    echo "</ul>\n";
+$stmt->close();
 
 bifPagefooter();
 ?>
