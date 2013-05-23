@@ -291,12 +291,14 @@ function changeProposalAvail($proposal,$daynum,$newinfo)
     if ($info_ser == NULL)
         return;
     $info = unserialize($info_ser['availability']);
+    $oldinfo = $info[$daynum];
     $info[$daynum] = filter_var($newinfo, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
     $info_ser = serialize($info);
     $stmt = dbPrepare('update proposal set availability=? where id=?');
     $stmt->bind_param('si',$info_ser,$proposal);
     $stmt->execute();
     $stmt->close();
+    log_message("changed proposal $proposal availability $daynum from '$oldinfo' to '$newinfo'");
     }
 
 function deleteProposal($id)
