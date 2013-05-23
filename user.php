@@ -38,7 +38,7 @@ if ($row)
     echo "</table>\n";
     }
 
-$stmt = dbPrepare('select id, title from proposal where proposerid=? order by title');
+$stmt = dbPrepare('select id, title from proposal where proposerid=? and deleted=0 order by title');
 $stmt->bind_param('i',$user_id);
 $stmt->execute();
 $stmt->bind_result($proposal_id, $title);
