@@ -17,7 +17,7 @@ if (hasPrivilege('scheduler'))
     {
     echo <<<ENDSTRING
 <li><a href="listBatches.php">Batches</a></li>
-<li><a href="listProposals.php">All proposals</a></li>
+<li><a href="batch.php?id=0">All proposals</a></li>
 <li><a href="listVenues.php">Venues</a></li>
 <li><a href="calendar.php">Calendar</a></li>
 <br>

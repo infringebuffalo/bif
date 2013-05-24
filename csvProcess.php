@@ -1,5 +1,8 @@
 <?php
 die('disabled');
+/****** DO NOT USE THIS AS-IS - the 'info' field has changed structure, this script
+  will produce incorrect data ('info' must now be an ordered list of arrays,
+  each sub-array containing field name and field value) **************/
 
 require_once 'init.php';
 connectDB();

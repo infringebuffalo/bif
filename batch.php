@@ -6,19 +6,38 @@ require_once 'util.php';
 require '../bif.php';
 
 if (!isset($_GET['id']))
-    die('no batch id given');
+    $id = 0;
 else
     $id = $_GET['id'];
 
-$row = dbQueryByID('select name,description from `batch` where id=?',$id);
-bifPageheader('batch: ' . $row['name']);
+$header = <<<ENDSTRING
+<script src="jquery-1.9.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+ });
+</script>
+<link rel="stylesheet" href="style.css" type="text/css" />
+ENDSTRING;
 
-echo "<p>$row[description]</p>\n";
-echo "<p><a href='editBatch.php?id=$id'>[edit batch]</a>";
-echo "&nbsp;&nbsp;&nbsp;&nbsp;<a href='batchEmail.php?id=$id'>[email addresses]</a></p>";
+if ($id != 0)
+    {
+    $row = dbQueryByID('select name,description from `batch` where id=?',$id);
+    bifPageheader('batch: ' . $row['name'],$header);
+    echo "<p>$row[description]</p>\n";
+    echo "<p><a href='editBatch.php?id=$id'>[edit batch]</a>";
+    echo "&nbsp;&nbsp;&nbsp;&nbsp;<a href='batchEmail.php?id=$id'>[email addresses]</a></p>";
+    }
+else
+    bifPageheader('all proposals', $header);
+    
+if ($id != 0)
+    {
+    $stmt = dbPrepare('select proposal.id, proposerid, name, title, orgfields from proposal join user on proposerid=user.id join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=? and deleted=0 order by title');
+    $stmt->bind_param('i',$id);
+    }
+else
+    $stmt = dbPrepare('select `proposal`.`id`, `proposerid`, `name`, `title`, `orgfields` from `proposal` join `user` on `proposerid`=`user`.`id` where `deleted` = 0 order by `title`');
 
-$stmt = dbPrepare('select proposal.id, proposerid, name, title, orgfields from proposal join user on proposerid=user.id join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=? and deleted=0 order by title');
-$stmt->bind_param('i',$id);
 $stmt->execute();
 $stmt->bind_result($id,$proposer_id,$proposer_name,$title,$orgfields_ser);
 echo "<table>\n";
