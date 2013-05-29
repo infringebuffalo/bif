@@ -42,6 +42,7 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('removeFromBatch',1,0),
             new apiFunction('changeProposalTitle',0,0),
             new apiFunction('changeProposalInfo',0,0),
+            new apiFunction('changeProposalOrgfield',0,0),
             new apiFunction('changeProposalAvail',0,0),
             new apiFunction('deleteProposal',1,0),
             new apiFunction('undeleteProposal',1,0),
@@ -283,6 +284,22 @@ function changeProposalInfo($proposal,$fieldnum,$newinfo)
     $stmt->execute();
     $stmt->close();
     log_message("changed proposal $proposal field $fieldnum from '$oldinfo' to '$newinfo'");
+    }
+
+function changeProposalOrgfield($proposal,$fieldlabel,$newinfo)
+    {
+    $orgfields_ser = dbQueryByID('select orgfields from proposal where id=?',$proposal);
+    if ($orgfields_ser == NULL)
+        return;
+    $orgfields = unserialize($orgfields_ser['orgfields']);
+    $oldinfo = $orgfields[$fieldlabel];
+    $orgfields[$fieldlabel] = filter_var($newinfo, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
+    $orgfields_ser = serialize($orgfields);
+    $stmt = dbPrepare('update proposal set orgfields=? where id=?');
+    $stmt->bind_param('si',$orgfields_ser,$proposal);
+    $stmt->execute();
+    $stmt->close();
+    log_message("changed proposal $proposal field $fieldlabel from '$oldinfo' to '$newinfo'");
     }
 
 function changeProposalAvail($proposal,$daynum,$newinfo)

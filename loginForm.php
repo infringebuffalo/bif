@@ -13,12 +13,6 @@ function toggleElement(name)
     }
 
 $(document).ready(function() {
-    $('#forgotPasswordForm').hide();
-ENDSTRING;
-
-if ((!array_key_exists('createaccountError',$_SESSION)) || ($_SESSION['createaccountError'] == ''))
-    $header .= "    $('#newLoginForm').hide();\n";
-$header .= <<<ENDSTRING
  });
 </script>
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -72,7 +66,7 @@ Forgot password &gt;&gt;&gt;
 </form>
 </div>
 
-<p></p>
+<p><br></p>
 <?php
 if ((array_key_exists('createaccountError',$_SESSION)) && ($_SESSION['createaccountError'] != ''))
     {

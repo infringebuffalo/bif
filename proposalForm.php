@@ -46,9 +46,11 @@ echo "<tr><th>Title</th><td>" . htmlspecialchars($title) . "</td></tr>\n";
 
 echo "<tr><th>Proposer</th><td><a href='user.php?id=$proposer_id'>$proposer_name</a></td></tr>\n";
 
+$i = 1;
 foreach ($forminfo as $k=>$v)
     {
-    echo "<tr><th>$k</th><td>" . multiline($v) . "</td></tr>\n";
+    echo "<tr><th>$i. $k</th><td>" . multiline($v) . "</td></tr>\n";
+    $i = $i + 1;
     }
 echo '</table>';
 

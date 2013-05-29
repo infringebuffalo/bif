@@ -8,10 +8,15 @@ deletable / cancelable listings
 
 list of deleted proposals
 
+search log
+search proposals
+
 force batch names to be unique; allow editing batch name
 
 admin tools - add/remove privileges
 mailing list tool
 
 fix init-basic setting of festival data
+
+? share proposal-ownership command?
 

@@ -144,8 +144,7 @@ if ($proposal->isgroupshow)
 if (hasPrivilege('scheduler'))
     echo HTML_schedulingTools($proposal_id);
 
-if (hasPrivilege('scheduler'))
-    echo "<div style=\"float:right\"><a href=\"proposalForm.php?id=$proposal_id\">[original form]</a></div>\n";
+echo "<div style=\"float:right\"><a href=\"proposalForm.php?id=$proposal_id\">[original form]</a></div>\n";
 echo '<span>[click on a field to edit it; "proposer" and "festival contact" are not editable]</span>';
 echo '<table rules="all" cellpadding="3">';
 
