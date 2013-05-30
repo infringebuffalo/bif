@@ -10,15 +10,33 @@ getDatabase();
 $header = <<<ENDSTRING
 <script src="jquery-1.9.1.min.js" type="text/javascript"></script>
 <script type="text/javascript">
+var editable = true;
 function showEditor(name)
     {
-    $('#show_' + name).hide();
-    $('#edit_' + name).show();
+    if (editable)
+        {
+        $('#show_' + name).hide();
+        $('#edit_' + name).show();
+        }
     }
 function hideEditor(name)
     {
     $('#show_' + name).show();
     $('#edit_' + name).hide();
+    }
+function disableEditing()
+    {
+    $('.edit_info').hide();
+    $('.show_info').show();
+    $('#editing_enabler').show();
+    $('#editing_disabler').hide();
+    editable = false;
+    }
+function enableEditing()
+    {
+    $('#editing_enabler').hide();
+    $('#editing_disabler').show();
+    editable = true;
     }
 function showScheduler(name)
     {
@@ -33,6 +51,7 @@ function toggleEdit(rowname)
 
 $(document).ready(function() {
     $('.edit_info').hide();
+    $('#editing_enabler').hide();
  });
 </script>
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -81,9 +100,9 @@ if (hasPrivilege('scheduler'))
     $batches .= "<td><form method='POST' action='api.php'><input type='hidden' name='command' value='addToBatch' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='submit' name='submit' value='add to'/> " . batchMenu('batch',false) . "</form></td>\n";
     $batches .= "<td><form method='POST' action='api.php'><input type='hidden' name='command' value='removeFromBatch' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='submit' name='submit' value='remove from'/> " . batchMenu('batch',false) . "</form></td>\n";
     if ($deleted)
-        $batches .= "<td><form method='POST' action='api.php'><input type='hidden' name='command' value='undeleteProposal' /><input type='hidden' name='id' value='$proposal_id' /><input type='submit' value='undelete show' /></form></td>";
+        $batches .= "<td><form method='POST' action='api.php'><input type='hidden' name='command' value='undeleteProposal' /><input type='hidden' name='id' value='$proposal_id' /><input type='submit' value='undelete project' /></form></td>";
     else
-        $batches .= "<td><form method='POST' action='api.php'><input type='hidden' name='command' value='deleteProposal' /><input type='hidden' name='id' value='$proposal_id' /><input type='submit' value='delete show' /></form></td>";
+        $batches .= "<td><form method='POST' action='api.php'><input type='hidden' name='command' value='deleteProposal' /><input type='hidden' name='id' value='$proposal_id' /><input type='submit' value='delete project' /></form></td>";
     $batches .= "</tr>\n</table>\n";
     }
 
@@ -145,17 +164,17 @@ if (hasPrivilege('scheduler'))
     echo HTML_schedulingTools($proposal_id);
 
 echo "<div style=\"float:right\"><a href=\"proposalForm.php?id=$proposal_id\">[original form]</a></div>\n";
-echo '<span>[click on a field to edit it; "proposer" and "festival contact" are not editable]</span>';
+echo '<span><button id="editing_enabler" onclick="enableEditing();">enable editing</button><span id="editing_disabler"><button onclick="disableEditing();">disable editing</button> (click on a field to edit it; "proposer" and "festival contact" are not editable)</span></span>';
 echo '<table rules="all" cellpadding="3">';
 
-echo "<tr id='edit_fieldTitle' class='edit_info'><th>Title</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalTitle' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='text' name='newtitle' value=\"". htmlspecialchars($title) . "\" /><input type='submit' name='submit' value='update'><button onclick='hideEditor(\"fieldTitle\"); return false;'>cancel</button></td></form></tr>\n";
+echo "<tr id='edit_fieldTitle' class='edit_info'><th>Title</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalTitle' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='text' name='newtitle' value=\"". htmlspecialchars($title) . "\" /><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldTitle\"); return false;'>don't edit</button></td></form></tr>\n";
 echo "<tr id='show_fieldTitle' class='show_info' onclick='showEditor(\"fieldTitle\");'><th>Title</th><td>" . htmlspecialchars($title) . "</td></tr>\n";
 
 echo "<tr><th>Proposer</th><td><a href='user.php?id=$proposer_id'>$proposer_name</a></td></tr>\n";
 echo "<tr><th>Festival contact</th><td><a href='card.php?id=$orgcontactinfo[id]'>$orgcontactinfo[name]</a></td></tr>\n";
 foreach ($info as $fieldnum=>$v)
     {
-    echo "<tr id='edit_field$fieldnum' class='edit_info'><th>$v[0]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalInfo' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='hidden' name='fieldnum' value='$fieldnum' /><textarea name='newinfo' cols='80'>$v[1]</textarea><input type='submit' name='submit' value='update'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>cancel</button></td></form></tr>\n";
+    echo "<tr id='edit_field$fieldnum' class='edit_info'><th>$v[0]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalInfo' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='hidden' name='fieldnum' value='$fieldnum' /><textarea name='newinfo' cols='80'>$v[1]</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>don't edit</button></td></form></tr>\n";
     echo "<tr id='show_field$fieldnum' class='show_info' onclick='showEditor(\"field$fieldnum\");'><th>$v[0]</th><td>" . multiline($v[1]) . "</td></tr>\n";
     }
 echo "<tr><th>Availability</th><td>" . availTable($proposal_id,$availability) . "</td></tr>\n";
@@ -176,7 +195,7 @@ function availTable($proposal_id,$av)
             {
             if (array_key_exists($i,$av))
                 {
-                $s .= "<tr id='edit_avail$i' class='edit_info'><th>" . dayToDateday($i) . "</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalAvail' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='hidden' name='daynum' value='$i' /><textarea name='newinfo' cols='40'>" . $av[$i] . "</textarea><input type='submit' name='submit' value='update'><button onclick='hideEditor(\"avail$i\"); return false;'>cancel</button></td></form></tr>\n";
+                $s .= "<tr id='edit_avail$i' class='edit_info'><th>" . dayToDateday($i) . "</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalAvail' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='hidden' name='daynum' value='$i' /><textarea name='newinfo' cols='40'>" . $av[$i] . "</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"avail$i\"); return false;'>don't edit</button></td></form></tr>\n";
                 $s .= "<tr id='show_avail$i' class='show_info' onclick='showEditor(\"avail$i\");'><th>" . dayToDateday($i) . "</th><td>" . $av[$i] . "</td></tr>\n";
 //                $s .= "<tr><td>" . dayToDateday($i) . "</td><td>" . $av[$i] . "</td></tr>\n";
                 }

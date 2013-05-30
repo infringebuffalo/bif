@@ -11,7 +11,7 @@ This will create a new, blank proposal entry of the selected type.
 It will be owned by the user whose e-mail is given below.  If no account
 exists for that e-mail, one will be created.
 Once the proposal is made, tell the person to log in and fill in all
-the necessary information (for each field on the form, click on it, edit the text, hit "update").
+the necessary information (for each field on the form, click on it, edit the text, hit "save").
 By default, this tool sets the availability to "yes" for all days of the festival.
 </p>
 
