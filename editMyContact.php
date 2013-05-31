@@ -27,7 +27,7 @@ $data = dbQueryByID('select name,phone,snailmail from user where id=?',$_SESSION
 <td><textarea name="snailmail" rows="3" cols="40"><?php echo $data['snailmail'] ?></textarea></td>
 </tr>
 </table>
-<input type="submit" name="submit" value="Update" />
+<input type="submit" name="submit" value="Save" />
 </form>
 </div>
 

@@ -28,7 +28,8 @@ if ((array_key_exists('changepasswordError',$_SESSION)) && ($_SESSION['changepas
 <td><input type="password" name="newpassword2" /></td>
 </tr>
 </table>
-<input type="submit" name="submit" value="Submit" />
+<input type="submit" name="submit" value="Change password" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=".">Cancel</a>
 </form>
 </div>
 
