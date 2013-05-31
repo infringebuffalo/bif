@@ -109,12 +109,13 @@ if (hasPrivilege('scheduler'))
 bifPageheader('proposal: ' . $title,$header);
 
 echo $batches;
+echo "<br>";
 echo "<table>\n";
 $proposal = $proposalList[$proposal_id];
 foreach ($proposal->listings as $listing)
     {
     if ($listing->proposalid == $proposal_id)
-        echo listingRow($listing->id,1,1,1,0,0);
+        echo editableListingRow($listing->id,1,1,1,0,0);
     else
         echo listingRow($listing->id,1,1,1,1,1);
     }
@@ -230,7 +231,7 @@ function HTML_schedulingTools($id)
     {
     global $proposalList;
     $proposal = $proposalList[$id];
-    $out = '<div class="schedulebox">[scheduling]<br/>';
+    $out = '<br><div class="schedulebox">[scheduling]<br/>';
     $out .= '<a href="" id="scheduleEventAnchor" onclick="showScheduler(\'#scheduleEventForm\'); return false">performance</a>&nbsp;<a href="" id="scheduleInstallationAnchor" onclick="showScheduler(\'#scheduleInstallationForm\'); return false">installation</a>&nbsp;&nbsp;';
     if ($proposal->isgroupshow)
         {
@@ -316,7 +317,7 @@ function HTML_schedulingTools($id)
     $out .= '</form>';
     $out .= '</div>';
 */
-    $out .= '</div>';
+    $out .= '</div><br>';
     return $out;
     }
 

@@ -50,6 +50,10 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('changeVenueInfo',1,0),
             new apiFunction('changeVenueName',1,0),
             new apiFunction('changeVenueShortname',1,0),
+            new apiFunction('changeListing',1,0),
+            new apiFunction('cancelListing',1,0),
+            new apiFunction('uncancelListing',1,0),
+            new apiFunction('deleteListing',1,0),
             );
 
 $command = POSTvalue('command');
@@ -152,7 +156,7 @@ function scheduleEvent()
             $stmt = dbPrepare("insert into listing (id,date,proposal,venue,venuenote,starttime,endtime,installation,note) values (?,?,?,?,?,?,?,?,?)");
             $stmt->bind_param('isiisiiis',$listingid,$date,$proposal,$venue,$venuenote,$starttime,$endtime,$installation,$note);
             if (!$stmt->execute())
-                die($stmt->error);
+                log_message($stmt->error);
             $stmt->close();
             }
         }
@@ -393,6 +397,48 @@ function changeVenueShortname($venue,$newinfo)
     $stmt->execute();
     $stmt->close();
     log_message("changed venue $venue shortname to '$newinfo'");
+    }
+
+function changeListing($listingid,$venue,$venuenote,$date,$starttime,$endtime,$note)
+    {
+    $installation = POSTvalue('installation',0);
+    $stmt = dbPrepare('update listing set venue=?,venuenote=?,date=?,starttime=?,endtime=?,installation=?,note=? where id=?');
+    $stmt->bind_param('issssisi',$venue,$venuenote,$date,$starttime,$endtime,$installation,$note,$listingid);
+    if (!$stmt->execute())
+        log_message($stmt->error);
+    $stmt->close();
+    log_message("change listing $listingid to venue $venue ($venuenote) / date $date / start $starttime / end $endtime / install $installation / note $note");
+    }
+
+function cancelListing($listingid)
+    {
+    $stmt = dbPrepare('update listing set cancelled=1 where id=?');
+    $stmt->bind_param('i',$listingid);
+    $stmt->execute();
+    $stmt->close();
+    log_message("cancel listing $listingid");
+    }
+
+function uncancelListing($listingid)
+    {
+    $stmt = dbPrepare('update listing set cancelled=0 where id=?');
+    $stmt->bind_param('i',$listingid);
+    $stmt->execute();
+    $stmt->close();
+    log_message("uncancel listing $listingid");
+    }
+
+function deleteListing($listingid)
+    {
+    $stmt = dbPrepare('delete from listing where id=?');
+    $stmt->bind_param('i',$listingid);
+    $stmt->execute();
+    $stmt->close();
+    $stmt = dbPrepare('delete from entity where id=?');
+    $stmt->bind_param('i',$listingid);
+    $stmt->execute();
+    $stmt->close();
+    log_message("delete listing $listingid");
     }
 
 ?>
