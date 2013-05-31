@@ -54,6 +54,7 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('cancelListing',1,0),
             new apiFunction('uncancelListing',1,0),
             new apiFunction('deleteListing',1,0),
+            new apiFunction('subscribe',1,0),
             );
 
 $command = POSTvalue('command');
@@ -439,6 +440,23 @@ function deleteListing($listingid)
     $stmt->execute();
     $stmt->close();
     log_message("delete listing $listingid");
+    }
+
+function subscribe($address,$mailinglist)
+    {
+    $email = $mailinglist . '-subscribe-' . str_replace('@','=',$address) . '@infringebuffalo.org';
+    $subject = '';
+    $body = '';
+    $header = 'From: dave@infringebuffalo.org';
+    log_message("subscribing $email to $mailinglist");
+    if (loggedMail($email, $subject, $body, $header))
+        {
+        $_SESSION['adminmessage'] .= '<p>request to add ' . $address . ' to ' . $mailinglist . '@infringebuffalo.org mailing list has been sent</p>';
+        }
+    else
+        {
+        $_SESSION['adminmessage'] .= '<p>e-mail failed on request to add ' . $address . ' to ' . $mailinglist . '@infringebuffalo.org</p>';
+        }
     }
 
 ?>

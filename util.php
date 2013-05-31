@@ -86,8 +86,14 @@ function dbQueryByString($query,$str)
 function loggedMail($addr, $subject, $body, $header)
     {
     if (mail($addr, $subject, $body, $header))
+        {
         log_message("sent mail to $addr");
+        return true;
+        }
     else
+        {
         log_message("ERROR: mail to $addr failed");
+        return false;
+        }
     }
 ?>

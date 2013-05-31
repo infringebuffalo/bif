@@ -12,6 +12,12 @@ if (!loggedIn())
 
 bifPageheader('proposals database');
 
+if ((array_key_exists('adminmessage',$_SESSION)) && ($_SESSION['adminmessage'] != ''))
+    {
+    echo '<div style="background:#ffff80; padding:0.5em; width:790px;">' . $_SESSION['adminmessage'] . '</div>';
+    unset($_SESSION['adminmessage']);
+    }
+
 echo "<ul>\n";
 if (hasPrivilege('scheduler'))
     {
@@ -27,6 +33,7 @@ if (hasPrivilege('scheduler'))
 <li><a href="newBatch.php">New batch</a></li>
 <li><a href="newVenue.php">New venue</a></li>
 <li><a href="newCard.php">New card (public contact)</a></li>
+<li><a href="subscribe.php">Add person to mailing list</a></li>
 <br>
 ENDSTRING;
     }
