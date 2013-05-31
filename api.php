@@ -48,7 +48,9 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('undeleteProposal',1,0),
             new apiFunction('deleteVenue',1,0),
             new apiFunction('undeleteVenue',1,0),
-            new apiFunction('changeVenueInfo',0,0),
+            new apiFunction('changeVenueInfo',1,0),
+            new apiFunction('changeVenueName',1,0),
+            new apiFunction('changeVenueShortname',1,0),
             );
 
 $command = POSTvalue('command');
@@ -57,35 +59,41 @@ if ($command == '')
     header('Location: .');
     die();
     }
-$called = 0;
+
+$returnurl = POSTvalue('returnurl');
+
+$called = false;
 foreach ($api as $a)
     {
     if ($a->name == $command)
         {
         $a->call();
-        $called = 1;
+        $called = true;
         break;
         }
     }
 if (!$called)
     log_message('unknown api command "' . $command . '"');
 
-$returnurl = POSTvalue('returnurl');
 if ($returnurl == '')
     header('location:' . $_SERVER['HTTP_REFERER']);
 else
     header('location:' . $returnurl);
 
 
-function newVenue($venue,$name,$shortname)
+function newVenue($name,$shortname)
     {
+    $defaultInfo = array(array('owner',''), array('address',''), array('phone',''), array('website',''), array('contact',''), array('contact phone',''), array('contact e-mail',''), array('venue type',''), array('allowed performances',''), array('best performances',''), array('performance space',''), array('wall space',''));
+    $venueid = newEntityID('venue');
     $stmt = dbPrepare('insert into `venue` (`id`, `name`, `shortname`, `festival`, `info`) values (?,?,?,?,?)');
     $festival = getFestivalID();
-    $info = serialize(array());
-    $stmt->bind_param('issis',$venue,$name,$shortname,$festival,$info);
+    $info = serialize($defaultInfo);
+    $stmt->bind_param('issis',$venueid,$name,$shortname,$festival,$info);
     $stmt->execute();
     $stmt->close();
-    log_message('newVenue ' . $venue . ' : ' . $name);
+    log_message('newVenue ' . $venueid . ' : ' . $name);
+    global $returnurl;
+    $returnurl = 'venue.php?id=' . $venueid;
     }
 
 function newCard($userid,$role,$email,$phone,$snailmail)
@@ -368,6 +376,24 @@ function changeVenueInfo($venue,$fieldnum,$newinfo)
     $stmt->execute();
     $stmt->close();
     log_message("changed venue $venue field $fieldnum from '$oldinfo' to '$newinfo'");
+    }
+
+function changeVenueName($venue,$newinfo)
+    {
+    $stmt = dbPrepare('update venue set name=? where id=?');
+    $stmt->bind_param('si',$newinfo,$venue);
+    $stmt->execute();
+    $stmt->close();
+    log_message("changed venue $venue name to '$newinfo'");
+    }
+
+function changeVenueShortname($venue,$newinfo)
+    {
+    $stmt = dbPrepare('update venue set shortname=? where id=?');
+    $stmt->bind_param('si',$newinfo,$venue);
+    $stmt->execute();
+    $stmt->close();
+    log_message("changed venue $venue shortname to '$newinfo'");
     }
 
 ?>

@@ -94,18 +94,12 @@ class propRow
         }
     }
 
-function array_contains($v,$a)
-    {
-    foreach ($a as $i)
-        if ($v == $i)
-            return true;
-    return false;
-    }
-
 function addSummaryLabels(&$labels,$orgfields)
     {
+    if (!is_array($orgfields))
+        return;
     foreach ($orgfields as $k=>$v)
-        if (!array_contains($k,$labels))
+        if (!in_array($k,$labels))
             $labels[] = $k;
     }
 

@@ -43,11 +43,16 @@ else
 $info = unserialize($row['info']);
 
 echo "<table>\n";
-echo "<tr><th>Name</th><td>$row[name]</td></tr>\n";
-echo "<tr><th>Short name</th><td>$row[shortname]</td></tr>\n";
+
+echo "<tr id='edit_fieldName' class='edit_info'><th>Name</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeVenueName' /><input type='hidden' name='venue' value='$id' /><textarea name='newinfo' cols='80'>$row[name]</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldName\"); return false;'>don't edit</button></td></form></tr>\n";
+echo "<tr id='show_fieldName' class='show_info' onclick='showEditor(\"fieldName\");'><th>Name</th><td>$row[name]</td></tr>\n";
+
+echo "<tr id='edit_fieldShortname' class='edit_info'><th>Short name</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeVenueShortname' /><input type='hidden' name='venue' value='$id' /><textarea name='newinfo' cols='80'>$row[shortname]</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldShortname\"); return false;'>don't edit</button></td></form></tr>\n";
+echo "<tr id='show_fieldShortname' class='show_info' onclick='showEditor(\"fieldShortname\");'><th>Short name</th><td>$row[shortname]</td></tr>\n";
+
 foreach ($info as $fieldnum=>$v)
     {
-    echo "<tr id='edit_field$fieldnum' class='edit_info'><th>$v[0]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeVenueInfo' /><input type='hidden' name='venue' value='$id' /><input type='hidden' name='fieldnum' value='$fieldnum' /><textarea name='newinfo' cols='80'>$v[1]</textarea><input type='submit' name='submit' value='update'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>cancel</button></td></form></tr>\n";
+    echo "<tr id='edit_field$fieldnum' class='edit_info'><th>$v[0]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeVenueInfo' /><input type='hidden' name='venue' value='$id' /><input type='hidden' name='fieldnum' value='$fieldnum' /><textarea name='newinfo' cols='80'>$v[1]</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>don't edit</button></td></form></tr>\n";
     echo "<tr id='show_field$fieldnum' class='show_info' onclick='showEditor(\"field$fieldnum\");'><th>$v[0]</th><td>" . multiline($v[1]) . "</td></tr>\n";
     }
 echo "</table>\n";
