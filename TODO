@@ -2,7 +2,6 @@ need to do proper htmlspecialchars etc on ALL variables being output
 
 deletable / cancelable listings
 
-search log
 search proposals
 
 force batch names to be unique; allow editing batch name
@@ -11,6 +10,9 @@ admin tools - add/remove privileges
 mailing list tool
 
 fix init-basic setting of festival data
+
+maybe change venues to have a status value, rather than deleted flag
+    - confirmed, maybe, not-this-year (but then this should somehow be tied to festival id)
 
 ? share proposal-ownership command?
 

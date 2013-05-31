@@ -20,7 +20,6 @@ class apiFunction
             requirePrivilege('admin');
         if ($this->schedulerPriv)
             requirePrivilege('scheduler');
-        log_message('api calling ' . $this->name);
         $args = array();
         foreach ($this->params as $param)
             $args[] = POSTvalue($param->name);
