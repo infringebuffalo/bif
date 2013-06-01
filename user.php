@@ -19,7 +19,7 @@ if (hasPrivilege('admin'))
     $stmt->bind_param('i',$user_id);
     if (!$stmt->execute())
         die($stmt->error);
-    $stmt->bind_result($userPrivs);
+    $stmt->bind_result($thisUserPrivs);
     $stmt->fetch();
     $stmt->close();
     echo <<< ENDSTRING
@@ -28,7 +28,7 @@ if (hasPrivilege('admin'))
 <input type="hidden" name="privilege" value="scheduler" />
 <input type="hidden" name="userid" value="$user_id" />
 ENDSTRING;
-    if (stripos($userPrivs,'/scheduler/') !== false)
+    if (stripos($thisUserPrivs,'/scheduler/') !== false)
         {
         echo <<< ENDSTRING
 <input type="hidden" name="command" value="removePrivilege" />
@@ -48,7 +48,7 @@ ENDSTRING;
 <input type="hidden" name="privilege" value="organizer" />
 <input type="hidden" name="userid" value="$user_id" />
 ENDSTRING;
-    if (stripos($userPrivs,'/organizer/') !== false)
+    if (stripos($thisUserPrivs,'/organizer/') !== false)
         {
         echo <<< ENDSTRING
 <input type="hidden" name="command" value="removePrivilege" />
@@ -75,6 +75,7 @@ if (hasPrivilege('scheduler'))
     echo "<tr><th>Address</th><td>" . multiline($row['snailmail']) . "</td></tr>\n";
     echo "</table>\n";
     }
+else echo "YOU'RE NOT A SCHEDULER";
 
 $row = dbQueryByID('select user.name,card.role,card.email,card.phone,card.snailmail from card join user on card.userid=user.id where user.id=?',$user_id);
 if ($row)
