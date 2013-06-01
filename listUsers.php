@@ -18,14 +18,17 @@ bifPageheader('all users',$header);
 <table>
 <tr><th>name</th><th>e-mail</th></tr>
 <?php
-$stmt = dbPrepare('select `id`, `name`, `email` from `user` order by `name`');
+$amAdmin = hasPrivilege('admin');
+$stmt = dbPrepare('select `id`, `name`, `email`, `privs` from `user` order by `name`');
 $stmt->execute();
-$stmt->bind_result($id,$name,$email);
+$stmt->bind_result($id,$name,$email,$privs);
 while ($stmt->fetch()) 
     {
     if ($name == '')
         $name = '!!NEEDS A NAME!!';
-    echo "<tr><td><a href='user.php?id=$id'>$name</a></td><td>$email</td></tr>\n";
+    echo "<tr><td><a href='user.php?id=$id'>$name</a></td><td>$email</td>";
+    if ($amAdmin)
+        echo "<td>" . str_replace('/',' ',$privs) . "</td></tr>\n";
     }
 $stmt->close();
 ?>
