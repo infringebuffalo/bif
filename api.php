@@ -55,6 +55,8 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('uncancelListing',1,0),
             new apiFunction('deleteListing',1,0),
             new apiFunction('subscribe',1,0),
+            new apiFunction('addPrivilege',0,1),
+            new apiFunction('removePrivilege',0,1),
             );
 
 $command = POSTvalue('command');
@@ -456,6 +458,37 @@ function subscribe($address,$mailinglist)
     else
         {
         $_SESSION['adminmessage'] .= '<p>e-mail failed on request to add ' . $address . ' to ' . $mailinglist . '@infringebuffalo.org</p>';
+        }
+    }
+
+function addPrivilege($userid,$privilege)
+    {
+    $privilege = '/' . $privilege . '/';
+    $row = dbQueryByID('select privs from user where id=?',$userid);
+    if (($row) && (stripos($row['privs'],$privilege) === false))
+        {
+        $privlist = $row['privs'] . $privilege;
+        $stmt = dbPrepare('update user set privs=? where id=?');
+        $stmt->bind_param('si',$privlist,$userid);
+        $stmt->execute();
+        $stmt->close();
+        log_message("added privilege $privilege for user $userid");
+        }
+    }
+
+function removePrivilege($userid,$privilege)
+    {
+    $privilege = '/' . $privilege . '/';
+    $row = dbQueryByID('select privs from user where id=?',$userid);
+    if (($row) && (stripos($row['privs'],$privilege) !== false))
+        {
+        $privlist = $row['privs'];
+        $privlist = str_replace($privilege,'',$privlist);
+        $stmt = dbPrepare('update user set privs=? where id=?');
+        $stmt->bind_param('si',$privlist,$userid);
+        $stmt->execute();
+        $stmt->close();
+        log_message("removed privilege $privilege from user $userid");
         }
     }
 

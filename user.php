@@ -13,6 +13,59 @@ else
 $row = dbQueryByID('select name,email,phone,snailmail from user where id=?',$user_id);
 bifPageheader('user: ' . $row['name']);
 
+if (hasPrivilege('admin'))
+    {
+    $stmt = dbPrepare('select privs from user where id=?');
+    $stmt->bind_param('i',$user_id);
+    if (!$stmt->execute())
+        die($stmt->error);
+    $stmt->bind_result($userPrivs);
+    $stmt->fetch();
+    $stmt->close();
+    echo <<< ENDSTRING
+<div style="float:right">
+<form method="POST" action="api.php">
+<input type="hidden" name="privilege" value="scheduler" />
+<input type="hidden" name="userid" value="$user_id" />
+ENDSTRING;
+    if (stripos($userPrivs,'/scheduler/') !== false)
+        {
+        echo <<< ENDSTRING
+<input type="hidden" name="command" value="removePrivilege" />
+<input type="submit" name="submit" value="Remove scheduler privilege" />
+ENDSTRING;
+        }
+    else
+        {
+        echo <<< ENDSTRING
+<input type="hidden" name="command" value="addPrivilege" />
+<input type="submit" name="submit" value="Grant scheduler privilege" />
+ENDSTRING;
+        }
+    echo "</form>\n";
+    echo <<< ENDSTRING
+<form method="POST" action="api.php">
+<input type="hidden" name="privilege" value="organizer" />
+<input type="hidden" name="userid" value="$user_id" />
+ENDSTRING;
+    if (stripos($userPrivs,'/organizer/') !== false)
+        {
+        echo <<< ENDSTRING
+<input type="hidden" name="command" value="removePrivilege" />
+<input type="submit" name="submit" value="Remove organizer privilege" />
+ENDSTRING;
+        }
+    else
+        {
+        echo <<< ENDSTRING
+<input type="hidden" name="command" value="addPrivilege" />
+<input type="submit" name="submit" value="Grant organizer privilege" />
+ENDSTRING;
+        }
+    echo "</form>\n";
+    echo "</div>\n";
+    }
+
 if (hasPrivilege('scheduler'))
     {
     echo "<table>\n";
