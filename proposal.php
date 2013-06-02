@@ -171,7 +171,10 @@ echo '<table rules="all" cellpadding="3">';
 echo "<tr id='edit_fieldTitle' class='edit_info'><th>Title</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalTitle' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='text' name='newtitle' value=\"". htmlspecialchars($title) . "\" /><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldTitle\"); return false;'>don't edit</button></td></form></tr>\n";
 echo "<tr id='show_fieldTitle' class='show_info' onclick='showEditor(\"fieldTitle\");'><th>Title</th><td>" . htmlspecialchars($title) . "</td></tr>\n";
 
-echo "<tr><th>Proposer</th><td><a href='user.php?id=$proposer_id'>$proposer_name</a></td></tr>\n";
+echo "<tr><th>Proposer</th><td><a href='user.php?id=$proposer_id'>$proposer_name</a>";
+if (hasPrivilege('scheduler'))
+    echo "&nbsp&nbsp&nbsp;(<a href=\"changeOwner.php?id=$proposal_id\">change owner</a>)";
+echo "</td></tr>\n";
 echo "<tr><th>Festival contact</th><td><a href='card.php?id=$orgcontactinfo[id]'>$orgcontactinfo[name]</a></td></tr>\n";
 foreach ($info as $fieldnum=>$v)
     {

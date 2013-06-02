@@ -27,6 +27,7 @@ if (hasPrivilege('scheduler'))
 <li><a href="listDeleted.php">Deleted projects</a></li>
 <li><a href="listVenues.php">Venues</a></li>
 <li><a href="calendar.php">Calendar</a></li>
+<li><a href="listUsers.php">Users</a></li>
 <br>
 <li><a href="newProposal.php">New proposal</a></li>
 <li><a href="newGroupshow.php">New group show</a></li>
