@@ -173,7 +173,7 @@ echo "<tr id='show_fieldTitle' class='show_info' onclick='showEditor(\"fieldTitl
 
 echo "<tr><th>Proposer</th><td><a href='user.php?id=$proposer_id'>$proposer_name</a>";
 if (hasPrivilege('scheduler'))
-    echo "&nbsp&nbsp&nbsp;(<a href=\"changeOwner.php?id=$proposal_id\">change owner</a>)";
+    echo "&nbsp&nbsp&nbsp;(<a href=\"changeOwner.php?id=$proposal_id\">change proposer</a>)";
 echo "</td></tr>\n";
 echo "<tr><th>Festival contact</th><td><a href='card.php?id=$orgcontactinfo[id]'>$orgcontactinfo[name]</a></td></tr>\n";
 foreach ($info as $fieldnum=>$v)
