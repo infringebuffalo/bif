@@ -2,6 +2,8 @@ need to do proper htmlspecialchars etc on ALL variables being output
 
 search proposals
 
+add 'change festival contact'
+
 force batch names to be unique; allow editing batch name
 
 fix init-basic setting of festival data
@@ -12,4 +14,6 @@ maybe change venues to have a status value, rather than deleted flag
 user privileges should be per festival - ie need to make a table with userid / festivalid / privileges
 
 ? share proposal-ownership command?
+
+newGroupshow command should redirect you to the group show's page on success
 

@@ -6,7 +6,14 @@ connectDB();
 bifPageheader('new summary field');
 ?>
 <form method="POST" action="makeOrgField.php">
-Proposal type: <input type="text" name="type" size="20">
+Proposal type: <select name="type">
+<option value="music">music</option>
+<option value="dance">dance</option>
+<option value="theatre">theatre</option>
+<option value="film">film</option>
+<option value="visualart">visualart</option>
+<option value="literary">literary</option>
+</select>
 <br>
 Field number: <input type="text" name="field" size="20">
 <br>

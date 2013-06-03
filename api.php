@@ -126,15 +126,18 @@ function newBatch($name,$description)
 function newGroupshow($title,$description,$batch)
     {
     $showid = newEntityID('proposal');
-    $stmt = dbPrepare('insert into `proposal` (`id`, `proposerid`, `festival`, `title`, `info`, `isgroupshow`) values (?,?,?,?,?,1)');
+    $stmt = dbPrepare('insert into `proposal` (`id`, `proposerid`, `festival`, `title`, `info`, `orgcontact`, `isgroupshow`) values (?,?,?,?,?,?,1)');
     $festival = getFestivalID();
     $proposerid = $_SESSION['userid'];
-    $info = array('Description'=>$description, 'batch'=>$batch);
+    $info = array(array('Description',$description),array('batch',$batch));
     $info_ser = serialize($info);
-    $stmt->bind_param('iiiss',$showid,$proposerid,$festival,$title,$info_ser);
+    $orgcontact = $proposerid;
+    $stmt->bind_param('iiissi',$showid,$proposerid,$festival,$title,$info_ser,$orgcontact);
     $stmt->execute();
     $stmt->close();
     log_message('newGroupshow ' . $showid . ' : ' . $title);
+    $groupbatchid = getBatch('group',getFestivalID(),true,'All group shows');
+    addToBatch($showid,$groupbatchid);
     }
 
 

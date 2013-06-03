@@ -86,7 +86,12 @@ class propRow
         foreach ($labels as $l)
             {
             $idnum = $this->id . '_' . $i;
-            $value = $this->orgfields[$l];
+            if (is_array($this->orgfields) && array_key_exists($l,$this->orgfields))
+                $value = $this->orgfields[$l];
+            else
+                $value = '';
+            if ($value == '')
+                $value = '_';
             $s .= '<td><span id="edit_' . $idnum . '" class="edit_info"><form method="POST" action="api.php"><input type="hidden" name="command" value="changeProposalOrgfield" /><input type="hidden" name="proposal" value="' . $this->id . '" /><input type="hidden" name="fieldlabel" value="' . $l . '" /><input type="text" name="newinfo" size="5" value="' . $value . '" /></form></span><span id="show_' . $idnum . '" class="show_info" onclick="showEditor(\'' . $idnum . '\');">' . $value . '</span></td>';
             $i = $i + 1;
             }

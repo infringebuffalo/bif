@@ -15,7 +15,7 @@ $orgcontacts = array('music'=>2,
 bifPageheader('new proposal');
 $formtype = POSTvalue('formtype');
 $festival = getFestivalID();
-$batchid = getBatch($formtype,$festival,"All $formtype acts");
+$batchid = getBatch($formtype,$festival);
 $orgcontact = $orgcontacts[$formtype];
 $title = POSTvalue('title');
 $proposer = POSTvalue('proposer');
@@ -35,33 +35,6 @@ else if ($formtype == 'visualart')
 else if ($formtype == 'literary')
     createLiteraryProposal($title,$proposer,$proposerName,$festival,$batchid,$orgcontact);
 
-
-function getBatch($name,$festival,$desc)
-    {
-    $stmt = dbPrepare('select id from batch where name=?');
-    $stmt->bind_param('s',$name);
-    $stmt->execute();
-    $stmt->bind_result($id);
-    if ($stmt->fetch())
-        {
-        $stmt->close();
-        return $id;
-        }
-    else
-        {
-        $stmt->close();
-        return createBatch($name,$festival,$desc);
-        }
-    }
-
-function createBatch($name,$festival,$desc)
-    {
-    $id = newEntityID('batch');
-    $stmt = dbPrepare('insert into batch (id,name,festival,description) values (?,?,?,?)');
-    $stmt->bind_param('isis',$id,$name,$festival,$desc);
-    $stmt->execute();
-    return $id;
-    }
 
 function createMusicProposal($title,$proposer,$proposerName,$festival,$batchid,$orgcontact)
     {

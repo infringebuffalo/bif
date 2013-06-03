@@ -1,4 +1,9 @@
 <?php
+if (!isset($_REQUEST['type']))
+    {
+    header('Location:newOrgField.php');
+    die();
+    }
 require_once 'init.php';
 connectDB();
 requirePrivilege(array('scheduler','organizer'));
@@ -24,6 +29,8 @@ echo "<tr><th>proposal</th><th>value</th><th>existing value</th></tr>\n";
 while ($stmt->fetch())
     {
     $info = unserialize($info_ser);
+    if (!isset($info[1][1]))
+        continue;
     if ($info[1][1] != $type)
         continue;
     if ($title == '')

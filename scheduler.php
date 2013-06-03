@@ -596,10 +596,10 @@ function getProposalInfo($id,$field)
     {
     $row = dbQueryByID('select info from proposal where id=?',$id);
     $info = unserialize($row['info']);
-    if (is_array($info) && array_key_exists($field,$info))
-        return $info[$field];
-    else
-        return '';
+    foreach ($info as $i)
+        if (is_array($i) && array_key_exists(0,$i) && ($i[0] == $field))
+            return $i[1];
+    return '';
     }
 
 ?>

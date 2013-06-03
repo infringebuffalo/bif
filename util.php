@@ -96,4 +96,35 @@ function loggedMail($addr, $subject, $body, $header)
         return false;
         }
     }
+
+function getBatch($name,$festival,$create=false,$desc='')
+    {
+    $stmt = dbPrepare('select id from batch where name=?');
+    $stmt->bind_param('s',$name);
+    $stmt->execute();
+    $stmt->bind_result($id);
+    if ($stmt->fetch())
+        {
+        $stmt->close();
+        return $id;
+        }
+    else
+        {
+        $stmt->close();
+        if ($create)
+            return createBatch($name,$festival,$desc);
+        else
+            return 0;
+        }
+    }
+
+function createBatch($name,$festival,$desc)
+    {
+    $id = newEntityID('batch');
+    $stmt = dbPrepare('insert into batch (id,name,festival,description) values (?,?,?,?)');
+    $stmt->bind_param('isis',$id,$name,$festival,$desc);
+    $stmt->execute();
+    return $id;
+    }
+
 ?>

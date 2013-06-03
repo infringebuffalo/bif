@@ -17,7 +17,7 @@ bifPageheader('all batches',$header);
 ?>
 <table>
 <?php
-$stmt = dbPrepare('select `id`, `name` from `batch` where `festival` = ?');
+$stmt = dbPrepare('select `id`, `name` from `batch` where `festival` = ? order by name');
 $stmt->bind_param('i',getFestivalID());
 $stmt->execute();
 $stmt->bind_result($id,$name);
