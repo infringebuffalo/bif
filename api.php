@@ -228,10 +228,10 @@ function updatePassword()
     log_message("changed password");
     }
 
-function changeBatchDescription($id,$description)
+function changeBatchDescription($id,$name,$description)
     {
-    $stmt = dbPrepare('update batch set description=? where id=?');
-    $stmt->bind_param('si',$description,$id);
+    $stmt = dbPrepare('update batch set name=?,description=? where id=?');
+    $stmt->bind_param('ssi',$name,$description,$id);
     $stmt->execute();
     $stmt->close();
     log_message("changed description of batch $id");

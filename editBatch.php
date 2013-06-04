@@ -76,10 +76,12 @@ bifPageheader('batch: ' . $batchName,$header);
 <input type="hidden" name="command" value="changeBatchDescription" />
 <input type="hidden" name="returnurl" value="batch.php?id=<?php echo $id; ?>" />
 <input type="hidden" name="id" value="<?php echo $id; ?>" />
-<textarea name="description">
+Name: <input type="text" name="name" value="<?php echo $batchName; ?>" />
+<br>
+Description: <textarea name="description">
 <?php echo $batchDescription; ?>
 </textarea>
-<input type="submit" name="submit" value="Update description" />
+<input type="submit" name="submit" value="Save" />
 </form>
 </div>
 
