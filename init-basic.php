@@ -32,6 +32,8 @@ function connectDB()
     {
     require 'config/config.php';
     global $db;
+    if ($db !== false)
+        return;
     $db = new mysqli($dbhost, $dbusername, $dbpassword, $dbdatabase);
     if ($db->connect_errno)
         die('Database error: ' . $db->connect_error);

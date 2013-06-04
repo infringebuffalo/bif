@@ -253,7 +253,7 @@ function timeMenu($startHour, $endHour, $name, $default='1900')
 function venueMenu($name,$selected='')
     {
     $retstr = "<select name='" . $name . "'>\n";
-    $stmt = dbPrepare('select id,name,shortname from venue order by shortname');
+    $stmt = dbPrepare('select id,name,shortname from venue where deleted=0 order by shortname');
     $stmt->execute();
     $stmt->bind_result($id,$name,$shortname);
     while ($stmt->fetch())
@@ -275,8 +275,8 @@ function batchMenu($name,$includeAllShows=true)
     $retstr = "<select name='$name'>\n";
     if ($includeAllShows)
         $retstr .= "<option value='0'>[all shows]</option>\n";
-    $stmt = dbPrepare('select id,name from batch where festival=? order by name');
     $festival = getFestivalID();
+    $stmt = dbPrepare('select id,name from batch where festival=? order by name');
     $stmt->bind_param('i',$festival);
     $stmt->execute();
     $stmt->bind_result($id,$name);
@@ -600,6 +600,24 @@ function getProposalInfo($id,$field)
         if (is_array($i) && array_key_exists(0,$i) && ($i[0] == $field))
             return $i[1];
     return '';
+    }
+
+function addToBatch($proposal,$batch)
+    {
+    $stmt = dbPrepare('select count(*) from proposalBatch where proposal_id=? and batch_id=?');
+    $stmt->bind_param('ii',$proposal,$batch);
+    $stmt->execute();
+    $count = 0;
+    $stmt->bind_result($count);
+    $stmt->fetch();
+    $stmt->close();
+    if ($count > 0)
+        return;
+    $stmt = dbPrepare('insert into proposalBatch (proposal_id,batch_id) values (?,?)');
+    $stmt->bind_param('ii',$proposal,$batch);
+    $stmt->execute();
+    $stmt->close();
+    log_message("Added proposal $proposal to batch $batch");
     }
 
 ?>

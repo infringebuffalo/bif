@@ -91,8 +91,8 @@ function newVenue($name,$shortname)
     {
     $defaultInfo = array(array('owner',''), array('address',''), array('phone',''), array('website',''), array('contact',''), array('contact phone',''), array('contact e-mail',''), array('venue type',''), array('allowed performances',''), array('best performances',''), array('performance space',''), array('wall space',''));
     $venueid = newEntityID('venue');
-    $stmt = dbPrepare('insert into `venue` (`id`, `name`, `shortname`, `festival`, `info`) values (?,?,?,?,?)');
     $festival = getFestivalID();
+    $stmt = dbPrepare('insert into `venue` (`id`, `name`, `shortname`, `festival`, `info`) values (?,?,?,?,?)');
     $info = serialize($defaultInfo);
     $stmt->bind_param('issis',$venueid,$name,$shortname,$festival,$info);
     $stmt->execute();
@@ -115,8 +115,8 @@ function newCard($userid,$role,$email,$phone,$snailmail)
 function newBatch($name,$description)
     {
     $batchid = newEntityID('batch');
-    $stmt = dbPrepare('insert into `batch` (`id`, `name`, `festival`, `description`) values (?,?,?,?)');
     $festival = getFestivalID();
+    $stmt = dbPrepare('insert into `batch` (`id`, `name`, `festival`, `description`) values (?,?,?,?)');
     $stmt->bind_param('isis',$batchid,$name,$festival,$description);
     $stmt->execute();
     $stmt->close();
@@ -126,8 +126,8 @@ function newBatch($name,$description)
 function newGroupshow($title,$description,$batch)
     {
     $showid = newEntityID('proposal');
-    $stmt = dbPrepare('insert into `proposal` (`id`, `proposerid`, `festival`, `title`, `info`, `orgcontact`, `isgroupshow`) values (?,?,?,?,?,?,1)');
     $festival = getFestivalID();
+    $stmt = dbPrepare('insert into `proposal` (`id`, `proposerid`, `festival`, `title`, `info`, `orgcontact`, `isgroupshow`) values (?,?,?,?,?,?,1)');
     $proposerid = $_SESSION['userid'];
     $info = array(array('Description',$description),array('batch',$batch));
     $info_ser = serialize($info);
@@ -251,23 +251,6 @@ function changeBatchMembers()
         $stmt->close();
         }
     log_message("changed membership of batch $batchid");
-    }
-
-function addToBatch($proposal,$batch)
-    {
-    $stmt = dbPrepare('select count(*) from proposalBatch where proposal_id=? and batch_id=?');
-    $stmt->bind_param('ii',$proposal,$batch);
-    $stmt->execute();
-    $count = 0;
-    $stmt->bind_result($count);
-    $stmt->fetch();
-    $stmt->close();
-    if ($count > 0)
-        return;
-    $stmt = dbPrepare('insert into proposalBatch (proposal_id,batch_id) values (?,?)');
-    $stmt->bind_param('ii',$proposal,$batch);
-    $stmt->execute();
-    $stmt->close();
     }
 
 function removeFromBatch($proposal,$batch)

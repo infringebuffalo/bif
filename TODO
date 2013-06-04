@@ -1,3 +1,5 @@
+newOrgfield: form should include default value
+
 need to do proper htmlspecialchars etc on ALL variables being output
 
 search proposals

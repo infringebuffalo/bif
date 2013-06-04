@@ -18,8 +18,9 @@ bifPageheader('all venues',$header);
 
 <table>
 <?php
+$festival = getFestivalID();
 $stmt = dbPrepare('select `id`, `name` from `venue` where `festival`=? and deleted=0 order by name');
-$stmt->bind_param('i',getFestivalID());
+$stmt->bind_param('i',$festival);
 $stmt->execute();
 $stmt->bind_result($id,$name);
 while ($stmt->fetch()) 

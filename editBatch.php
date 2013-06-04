@@ -46,8 +46,8 @@ while ($stmt->fetch())
 $stmt->close();
 
 $batch = array(array('allproposals','&lt;all&gt;'));
-$stmt = dbPrepare('select id,name from batch where festival=?');
 $festival = getFestivalID();
+$stmt = dbPrepare('select id,name from batch where festival=?');
 $stmt->bind_param('i',$festival);
 $stmt->execute();
 $stmt->bind_result($batchid,$batchname);
