@@ -56,7 +56,7 @@ function date_performances($date)
 
 function date_installations($date)
     {
-    $stmt = dbPrepare('select listing.*,proposal.title,venue.name as shortname from listing join proposal on listing.proposal=proposal.id join venue on listing.venue=venue.id where listing.date=? and deleted=0 and installation=1 order by starttime');
+    $stmt = dbPrepare('select listing.*,proposal.title,venue.name as shortname from listing join proposal on listing.proposal=proposal.id join venue on listing.venue=venue.id where listing.date=? and proposal.deleted=0 and installation=1 order by starttime');
     $stmt->bind_param('s',$date);
     $stmt->execute();
     $data = array();
@@ -99,7 +99,7 @@ else
     echo "<table cellpadding=3>\n";
     $instlist = array();
 
-    $stmt = dbPrepare('select listing.*,proposal.title,venue.name as shortname from listing join proposal on listing.proposal=proposal.id join venue on listing.venue=venue.id where deleted=0 and installation=1 order by title');
+    $stmt = dbPrepare('select listing.*,proposal.title,venue.name as shortname from listing join proposal on listing.proposal=proposal.id join venue on listing.venue=venue.id where proposal.deleted=0 and installation=1 order by title');
     $stmt->execute();
     $instinfo = array();
     $params = array();
