@@ -57,6 +57,7 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('subscribe',1,0),
             new apiFunction('addPrivilege',0,1),
             new apiFunction('removePrivilege',0,1),
+            new apiFunction('batchChangeContact',1,0),
             );
 
 $command = POSTvalue('command');
@@ -476,6 +477,27 @@ function removePrivilege($userid,$privilege)
         $stmt->close();
         log_message("removed privilege $privilege from user $userid");
         }
+    }
+
+function batchChangeContact($batchid,$newcontact)
+    {
+    $proposals = array();
+    $stmt = dbPrepare('select proposal.id from proposal join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=?');
+    $stmt->bind_param('i',$batchid);
+    $stmt->execute();
+    $stmt->bind_result($proposal_id);
+    while ($stmt->fetch())
+        $proposals[] = $proposal_id;
+    $stmt->close();
+    foreach ($proposals as $pid)
+        {
+        $stmt = dbPrepare('update proposal set orgcontact=? where id=?');
+        $stmt->bind_param('ii',$newcontact,$pid);
+        $stmt->execute();
+        $stmt->close();
+        }
+    log_message("changed contact for batch $batchid to $newcontact");
+    $_SESSION['adminmessage'] .= '<p>changed contact for <a href="batch.php?id=' . $batchid . '">batch</a></p>';
     }
 
 ?>

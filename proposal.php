@@ -110,16 +110,20 @@ bifPageheader('proposal: ' . $title,$header);
 
 echo $batches;
 echo "<br>";
-echo "<table>\n";
+$canSeeSchedule = hasPrivilege(array('scheduler','organizer'));
 $proposal = $proposalList[$proposal_id];
-foreach ($proposal->listings as $listing)
+if ($canSeeSchedule)
     {
-    if ($listing->proposalid == $proposal_id)
-        echo editableListingRow($listing->id,1,1,1,0,0);
-    else
-        echo listingRow($listing->id,1,1,1,1,1);
+    echo "<table>\n";
+    foreach ($proposal->listings as $listing)
+        {
+        if ($listing->proposalid == $proposal_id)
+            echo editableListingRow($listing->id,1,1,1,0,0);
+        else
+            echo listingRow($listing->id,1,1,1,1,1);
+        }
+    echo "</table>\n";
     }
-echo "</table>\n";
 if ($proposal->isgroupshow)
     {
     $out = "<p>Performers:</p><table rules='all'>\n";
