@@ -3,6 +3,7 @@ require_once 'init.php';
 connectDB();
 requirePrivilege(array('scheduler','organizer'));
 require_once 'util.php';
+require_once 'scheduler.php';
 require '../bif.php';
 
 if (!isset($_GET['id']))
@@ -32,23 +33,65 @@ $(document).ready(function() {
 ENDSTRING;
 
 
-$row = dbQueryByID('select name,shortname,info,deleted from venue where id=?',$id);
-bifPageheader('venue: ' . $row['name'],$header);
+$venueinfo = dbQueryByID('select name,shortname,info,deleted from venue where id=?',$id);
+bifPageheader('venue: ' . $venueinfo['name'],$header);
 
-if ($row['deleted'])
+$dayshows = array();
+$dayinst = array();
+for ($i=0; $i < $festivalNumberOfDays; $i++)
+    {
+    $dayshows[dayToDate($i)] = array();
+    $dayinst[dayToDate($i)] = array();
+    }
+getDatabase();
+foreach ($venueList[$id]->listings as $l)
+    {
+    if ($l->installation)
+        $dayinst[$l->date][] = sortingKey($l->proposal->title) . listingRow($l->id,false,false,false,true,true,'','<td>'.stripslashes($l->venuenote).'</td>');
+    else
+        $dayshows[$l->date][] = sortingKey($l->starttime) . listingRow($l->id,false,true,false,true,true,'','<td>'.stripslashes($l->venuenote).'</td>');
+    }
+echo "<div class=\"schedulebox\">\nSchedule:\n<table>\n";
+echo "<thead><tr><th>day</th><th>performances</th><th>installations</th></tr></thead>\n";
+echo "<tbody>\n";
+for ($i=0; $i < $festivalNumberOfDays; $i++)
+    {
+    $date = dayToDate($i);
+    echo '<tr><td>' . dateToString($date,true) . '</td>';
+    sort ($dayshows[$date]);
+    echo '<td><table>';
+    foreach ($dayshows[$date] as $row)
+        echo $row;
+    echo '</table></td>';
+    sort ($dayinst[$date]);
+    echo '<td><table>';
+    $odd = true;
+    foreach ($dayinst[$date] as $row)
+        {
+        if ($odd) echo '<tr class="oddrow">';
+        else echo '<tr>';
+        $odd = ! $odd;
+        echo $row . '</tr>';
+        }
+    echo '</table></td>';
+    echo '</tr>';
+    }
+echo "</tbody>\n</table>\n</div>\n";
+
+if ($venueinfo['deleted'])
     echo "<span><form method='POST' action='api.php'><input type='hidden' name='command' value='undeleteVenue' /><input type='hidden' name='id' value='$id' /><input type='submit' value='undelete venue' /></form></span>";
 else
     echo "<span><form method='POST' action='api.php'><input type='hidden' name='command' value='deleteVenue' /><input type='hidden' name='id' value='$id' /><input type='submit' value='delete venue' /></form></span>";
 
-$info = unserialize($row['info']);
+$info = unserialize($venueinfo['info']);
 
 echo "<table>\n";
 
-echo "<tr id='edit_fieldName' class='edit_info'><th>Name</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeVenueName' /><input type='hidden' name='venue' value='$id' /><textarea name='newinfo' cols='80'>$row[name]</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldName\"); return false;'>don't edit</button></td></form></tr>\n";
-echo "<tr id='show_fieldName' class='show_info' onclick='showEditor(\"fieldName\");'><th>Name</th><td>$row[name]</td></tr>\n";
+echo "<tr id='edit_fieldName' class='edit_info'><th>Name</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeVenueName' /><input type='hidden' name='venue' value='$id' /><textarea name='newinfo' cols='80'>$venueinfo[name]</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldName\"); return false;'>don't edit</button></td></form></tr>\n";
+echo "<tr id='show_fieldName' class='show_info' onclick='showEditor(\"fieldName\");'><th>Name</th><td>$venueinfo[name]</td></tr>\n";
 
-echo "<tr id='edit_fieldShortname' class='edit_info'><th>Short name</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeVenueShortname' /><input type='hidden' name='venue' value='$id' /><textarea name='newinfo' cols='80'>$row[shortname]</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldShortname\"); return false;'>don't edit</button></td></form></tr>\n";
-echo "<tr id='show_fieldShortname' class='show_info' onclick='showEditor(\"fieldShortname\");'><th>Short name</th><td>$row[shortname]</td></tr>\n";
+echo "<tr id='edit_fieldShortname' class='edit_info'><th>Short name</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeVenueShortname' /><input type='hidden' name='venue' value='$id' /><textarea name='newinfo' cols='80'>$venueinfo[shortname]</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldShortname\"); return false;'>don't edit</button></td></form></tr>\n";
+echo "<tr id='show_fieldShortname' class='show_info' onclick='showEditor(\"fieldShortname\");'><th>Short name</th><td>$venueinfo[shortname]</td></tr>\n";
 
 foreach ($info as $fieldnum=>$v)
     {
