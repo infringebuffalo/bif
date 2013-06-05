@@ -169,7 +169,7 @@ if (hasPrivilege('scheduler'))
     echo HTML_schedulingTools($proposal_id);
 
 echo "<div style=\"float:right\"><a href=\"proposalForm.php?id=$proposal_id\">[original form]</a></div>\n";
-echo '<span><button id="editing_enabler" onclick="enableEditing();">enable editing</button><span id="editing_disabler"><button onclick="disableEditing();">disable editing</button> (click on a field to edit it; "proposer" and "festival contact" are not editable)</span></span>';
+echo '<span><button id="editing_enabler" onclick="enableEditing();">enable editing</button><span id="editing_disabler"><button onclick="disableEditing();">disable editing</button> (click on a field to edit it; <b>NOTE: you must save any changed field before going to edit another field</b>)</span></span>';
 echo '<table rules="all" cellpadding="3">';
 
 echo "<tr id='edit_fieldTitle' class='edit_info'><th>Title</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalTitle' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='text' name='newtitle' value=\"". htmlspecialchars($title) . "\" /><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldTitle\"); return false;'>don't edit</button></td></form></tr>\n";
