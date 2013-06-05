@@ -63,8 +63,16 @@ $header = <<<ENDSTRING
 var editable = true;
 var availability = {
 ENDSTRING;
+function jsSafe($s)
+    {
+    $s = addslashes($s);
+    $s = str_replace("\n","",$s);
+    $s = str_replace("\r","",$s);
+    return $s;
+    }
+
 for ($i=0; $i < $festivalNumberOfDays; $i++)
-    $header .= " $i : '" . dayToDateday($i) . ': ' . str_replace("'","\\'",$availability[$i]) . "',";
+    $header .= " $i : '" . dayToDateday($i) . ': ' . jsSafe($availability[$i]) . "',";
 $header .= <<<ENDSTRING
 };
 function showEditor(name)
