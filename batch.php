@@ -26,11 +26,6 @@ else
 
 $header = <<<ENDSTRING
 <script src="jquery-1.9.1.min.js" type="text/javascript"></script>
-<style type="text/css" title="currentStyle">
-    @import "dataTables/media/css/demo_page.css";
-    @import "dataTables/media/css/demo_table.css";
-</style>
-<script type="text/javascript" language="javascript" src="dataTables/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
 function showEditor(name)
     {
@@ -47,10 +42,6 @@ function hideEditor(name)
 
 $(document).ready(function() {
     $('.edit_info').hide();
-        $('#maintable').dataTable( {
-            "bPaginate": false,
-            "aaSorting": [[ 0, "asc" ], [1, "asc"]],
-            })
  });
 </script>
 <link rel="stylesheet" href="style.css" type="text/css" />
