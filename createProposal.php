@@ -38,6 +38,7 @@ else if ($formtype == 'literary')
 
 function createMusicProposal($title,$proposer,$proposerName,$festival,$batchid,$orgcontact)
     {
+    global $festivalNumberOfDays;
     $proposerid = getUserID($proposer);
     if ($proposerid == 0)
         $proposerid = createUser($proposer,$proposerName,'','');
@@ -81,13 +82,14 @@ function createMusicProposal($title,$proposer,$proposerName,$festival,$batchid,$
     addInfo($info,'Description for web','');
     addInfo($info,'Description for brochure','');
     $availability = array();
-    for ($d = 0; $d < 11; $d++)
+    for ($d = 0; $d < $festivalNumberOfDays; $d++)
         $availability[$d] = 'yes';
     insertProposal($info,$availability,$proposerid,$festival,$title,$orgcontact,$batchid);
     }
 
 function createDanceProposal($title,$proposer,$proposerName,$festival,$batchid,$orgcontact)
     {
+    global $festivalNumberOfDays;
     $proposerid = getUserID($proposer);
     if ($proposerid == 0)
         $proposerid = createUser($proposer,$proposerName,'','');
@@ -116,13 +118,14 @@ function createDanceProposal($title,$proposer,$proposerName,$festival,$batchid,$
     addInfo($info,'Description for web','');
     addInfo($info,'Description for brochure','');
     $availability = array();
-    for ($d = 0; $d < 11; $d++)
+    for ($d = 0; $d < $festivalNumberOfDays; $d++)
         $availability[$d] = "yes";
     insertProposal($info,$availability,$proposerid,$festival,$title,$orgcontact,$batchid);
     }
 
 function createTheatreProposal($title,$proposer,$proposerName,$festival,$batchid,$orgcontact)
     {
+    global $festivalNumberOfDays;
     $proposerid = getUserID($proposer);
     if ($proposerid == 0)
         $proposerid = createUser($proposer,$proposerName,'','');
@@ -152,13 +155,14 @@ function createTheatreProposal($title,$proposer,$proposerName,$festival,$batchid
     addInfo($info,'Description for web', '');
     addInfo($info,'Description for brochure', '');
     $availability = array();
-    for ($d = 0; $d < 11; $d++)
+    for ($d = 0; $d < $festivalNumberOfDays; $d++)
         $availability[$d] = "yes";
     insertProposal($info,$availability,$proposerid,$festival,$title,$orgcontact,$batchid);
     }
 
 function createFilmProposal($title,$proposer,$proposerName,$festival,$batchid,$orgcontact)
     {
+    global $festivalNumberOfDays;
     $proposerid = getUserID($proposer);
     if ($proposerid == 0)
         $proposerid = createUser($proposer,$proposerName,'','');
@@ -180,13 +184,14 @@ function createFilmProposal($title,$proposer,$proposerName,$festival,$batchid,$o
     addInfo($info,'Description for web','');
     addInfo($info,'Description for brochure','');
     $availability = array();
-    for ($d = 0; $d < 11; $d++)
+    for ($d = 0; $d < $festivalNumberOfDays; $d++)
         $availability[$d] = "yes";
     insertProposal($info,$availability,$proposerid,$festival,$title,$orgcontact,$batchid);
     }
 
 function createVisualartProposal($title,$proposer,$proposerName,$festival,$batchid,$orgcontact)
     {
+    global $festivalNumberOfDays;
     $proposerid = getUserID($proposer);
     if ($proposerid == 0)
         $proposerid = createUser($proposer,$proposerName,'','');
@@ -217,6 +222,7 @@ function createVisualartProposal($title,$proposer,$proposerName,$festival,$batch
 
 function createLiteraryProposal($title,$proposer,$proposerName,$festival,$batchid,$orgcontact)
     {
+    global $festivalNumberOfDays;
     $proposerid = getUserID($proposer);
     if ($proposerid == 0)
         $proposerid = createUser($proposer,$proposerName,'','');
@@ -243,7 +249,7 @@ function createLiteraryProposal($title,$proposer,$proposerName,$festival,$batchi
     addInfo($info,'Description for web', '');
     addInfo($info,'Description for brochure', '');
     $availability = array();
-    for ($d = 0; $d < 11; $d++)
+    for ($d = 0; $d < $festivalNumberOfDays; $d++)
         $availability[$d] = "yes";
     insertProposal($info,$availability,$proposerid,$festival,$title,$orgcontact,$batchid);
     }

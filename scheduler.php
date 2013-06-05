@@ -171,9 +171,10 @@ function generateSmallCalendar($dayfunc)
         {
         if (date('w',dayToTimestamp($d)) == 0)
             $retstr .= '</tr><tr>';
-        $retstr .= '<td>' . $dayfunc('day'.$d) . dayToDateDay($d) . "</td>\n";
+        $retstr .= '<td class="calEntry" data-bifday="' . $d . '">' . $dayfunc('day'.$d) . dayToDateDay($d) . "</td>\n";
         }
     $retstr .= '<td colspan=' . (7-date('w',dayToTimestamp($d))) . '></td></table>';
+    $retstr .= '<span class="availabilityInfo">avail:</span>';
     return $retstr;
     }
 

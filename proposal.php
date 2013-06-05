@@ -7,56 +7,6 @@ require_once 'scheduler.php';
 require '../bif.php';
 getDatabase();
 
-$header = <<<ENDSTRING
-<script src="jquery-1.9.1.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-var editable = true;
-function showEditor(name)
-    {
-    if (editable)
-        {
-        $('#show_' + name).hide();
-        $('#edit_' + name).show();
-        }
-    }
-function hideEditor(name)
-    {
-    $('#show_' + name).show();
-    $('#edit_' + name).hide();
-    }
-function disableEditing()
-    {
-    $('.edit_info').hide();
-    $('.show_info').show();
-    $('#editing_enabler').show();
-    $('#editing_disabler').hide();
-    editable = false;
-    }
-function enableEditing()
-    {
-    $('#editing_enabler').hide();
-    $('#editing_disabler').show();
-    editable = true;
-    }
-function showScheduler(name)
-    {
-    $('.scheduleForm').hide()
-    $(name).show()
-    }
-function toggleEdit(rowname)
-    {
-    $('#' + rowname).toggle()
-    $('#' + rowname + 'edit').toggle()
-    }
-
-$(document).ready(function() {
-    $('.edit_info').hide();
-    $('#editing_enabler').hide();
- });
-</script>
-<link rel="stylesheet" href="style.css" type="text/css" />
-ENDSTRING;
-
 if (!isset($_GET['id']))
     die('no proposal selected');
 else
@@ -105,6 +55,72 @@ if (hasPrivilege('scheduler'))
         $batches .= "<td><form method='POST' action='api.php'><input type='hidden' name='command' value='deleteProposal' /><input type='hidden' name='id' value='$proposal_id' /><input type='submit' value='delete project' /></form></td>";
     $batches .= "</tr>\n</table>\n";
     }
+
+
+$header = <<<ENDSTRING
+<script src="jquery-1.9.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+var editable = true;
+var availability = {
+ENDSTRING;
+for ($i=0; $i < $festivalNumberOfDays; $i++)
+    $header .= " $i : '" . dayToDateday($i) . ': ' . str_replace("'","\\'",$availability[$i]) . "',";
+$header .= <<<ENDSTRING
+};
+function showEditor(name)
+    {
+    if (editable)
+        {
+        $('#show_' + name).hide();
+        $('#edit_' + name).show();
+        }
+    }
+function hideEditor(name)
+    {
+    $('#show_' + name).show();
+    $('#edit_' + name).hide();
+    }
+function disableEditing()
+    {
+    $('.edit_info').hide();
+    $('.show_info').show();
+    $('#editing_enabler').show();
+    $('#editing_disabler').hide();
+    editable = false;
+    }
+function enableEditing()
+    {
+    $('#editing_enabler').hide();
+    $('#editing_disabler').show();
+    editable = true;
+    }
+function showScheduler(name)
+    {
+    $('.scheduleForm').hide()
+    $(name).show()
+    }
+function toggleEdit(rowname)
+    {
+    $('#' + rowname).toggle()
+    $('#' + rowname + 'edit').toggle()
+    }
+function hoverFunc()
+    {
+    $('.availabilityInfo').html(availability[$(this).data("bifday")]);
+    }
+function unhoverFunc()
+    {
+    $('.availabilityInfo').html('&nbsp;');
+    }
+ 
+$(document).ready(function() {
+    $('.edit_info').hide();
+    $('#editing_enabler').hide();
+    $('.calEntry').hover(hoverFunc,unhoverFunc);
+ });
+</script>
+<link rel="stylesheet" href="style.css" type="text/css" />
+ENDSTRING;
 
 bifPageheader('proposal: ' . $title,$header);
 
@@ -196,10 +212,11 @@ bifPagefooter();
 
 function availTable($proposal_id,$av)
     {
+    global $festivalNumberOfDays;
     $s = "<table>\n";
     if (is_array($av))
         {
-        for ($i=0; $i < 11; $i++)
+        for ($i=0; $i < $festivalNumberOfDays; $i++)
             {
             if (array_key_exists($i,$av))
                 {
@@ -218,20 +235,12 @@ function availTable($proposal_id,$av)
 
 function calEntry($day)
     {
-/*
-    global $info;
-    if ($info['can_'.$day])
-*/
-        return '<input type="checkbox" name="' . dayToDate($day) . '" value="1"/>';
+    return '<input type="checkbox" name="' . dayToDate($day) . '" value="1" />';
     }
 
 function calEntry2($day)
     {
-/*
-    global $info;
-    if ($info['can_'.$day])
-*/
-        return '<input type="checkbox" name="' . dayToDate($day) . '" value="1" checked/>';
+    return '<input type="checkbox" name="' . dayToDate($day) . '" value="1" checked/>';
     }
 
 function HTML_schedulingTools($id)
