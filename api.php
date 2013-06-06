@@ -58,6 +58,7 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('addPrivilege',0,1),
             new apiFunction('removePrivilege',0,1),
             new apiFunction('batchChangeContact',1,0),
+            new apiFunction('addProposalInfoField',1,0),
             );
 
 $command = POSTvalue('command');
@@ -130,7 +131,7 @@ function newGroupshow($title,$description,$batch)
     $festival = getFestivalID();
     $stmt = dbPrepare('insert into `proposal` (`id`, `proposerid`, `festival`, `title`, `info`, `orgcontact`, `isgroupshow`) values (?,?,?,?,?,?,1)');
     $proposerid = $_SESSION['userid'];
-    $info = array(array('Description',$description),array('batch',$batch));
+    $info = array(array('Description',$description),array('Description for brochure',''), array('batch',$batch));
     $info_ser = serialize($info);
     $orgcontact = $proposerid;
     $stmt->bind_param('iiissi',$showid,$proposerid,$festival,$title,$info_ser,$orgcontact);
@@ -498,6 +499,21 @@ function batchChangeContact($batchid,$newcontact)
         }
     log_message("changed contact for batch $batchid to $newcontact");
     $_SESSION['adminmessage'] .= '<p>changed contact for <a href="batch.php?id=' . $batchid . '">batch</a></p>';
+    }
+
+function addProposalInfoField($proposal,$fieldname)
+    {
+    $info_ser = dbQueryByID('select info from proposal where id=?',$proposal);
+    if ($info_ser == NULL)
+        return;
+    $info = unserialize($info_ser['info']);
+    $info[] = array($fieldname,'');
+    $info_ser = serialize($info);
+    $stmt = dbPrepare('update proposal set info=? where id=?');
+    $stmt->bind_param('si',$info_ser,$proposal);
+    $stmt->execute();
+    $stmt->close();
+    log_message("added field '$fieldname' to proposal $proposal");
     }
 
 ?>

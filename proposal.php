@@ -72,7 +72,8 @@ function jsSafe($s)
     }
 
 for ($i=0; $i < $festivalNumberOfDays; $i++)
-    $header .= " $i : '" . dayToDateday($i) . ': ' . jsSafe($availability[$i]) . "',";
+    if (is_array($availability) && array_key_exists($i,$availability))
+        $header .= " $i : '" . dayToDateday($i) . ': ' . jsSafe($availability[$i]) . "',";
 $header .= <<<ENDSTRING
 };
 function showEditor(name)
@@ -208,6 +209,11 @@ foreach ($info as $fieldnum=>$v)
     {
     echo "<tr id='edit_field$fieldnum' class='edit_info'><th>$v[0]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalInfo' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='hidden' name='fieldnum' value='$fieldnum' /><textarea name='newinfo' cols='80'>$v[1]</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>don't edit</button></td></form></tr>\n";
     echo "<tr id='show_field$fieldnum' class='show_info' onclick='showEditor(\"field$fieldnum\");'><th>$v[0]</th><td>" . multiline($v[1]) . "</td></tr>\n";
+    }
+if (hasPrivilege('scheduler'))
+    {
+    echo "<tr id='edit_fieldNew' class='edit_info'><th>[add field]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='addProposalInfoField' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='text' name='fieldname'><input type='submit' name='submit' value='add'><button onclick='hideEditor(\"fieldNew\"); return false;'>don't add</button></td></form></tr>\n";
+    echo "<tr id='show_fieldNew' class='show_info' onclick='showEditor(\"fieldNew\");'><th style='background:#ff8'>[add field]</th><td>&nbsp;</td></tr>\n";
     }
 echo "<tr><th>Availability</th><td>" . availTable($proposal_id,$availability) . "</td></tr>\n";
 echo '</table>';

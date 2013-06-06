@@ -6,6 +6,7 @@ $batchList = array();
 $listingList = array();
 $venueList = array();
 $groupPerformerList = array();
+$programinfoList = array();
 
 class proposalInfo
     {
@@ -20,6 +21,8 @@ class proposalInfo
             $this->performers = array();
         $this->listings = array();
         $this->groupshows = array();
+        global $programinfoList;
+//        $this->programinfo = $programinfoList[$id];
         }
     }
 
@@ -90,12 +93,38 @@ class groupPerformerInfo
         }
     }
 
+class programInfo
+    {
+    function __construct($id,$title,$type,$brochure_description)
+        {
+        $this->id = $id;
+        $this->title = stripslashes($title);
+        $this->type = $type;
+        $this->brochure_description = stripslashes($brochure_description);
+        }
+    }
+
+
 function getDatabase()
     {
     global $proposalList;
+    global $programinfoList;
     global $venueList;
     global $listingList;
     global $groupPerformerList;
+
+/*
+    $programinfoList = array();
+    $stmt = dbPrepare("select id,title,info from proposal");
+    $stmt->execute();
+    $stmt->bind_result($id,$title,$info_ser)
+    while ($stmt->fetch())
+        {
+        $info = unserialize($info_ser);
+        $programinfoList[$id] = new programInfo($id,$title,$info['Type'],$organization,$website,$brochure_genre,$brochure_description,$admission,$age,$brochure_type);
+        }
+    $stmt->close();
+*/
 
     $proposalList = array();
     $stmt = dbPrepare("select proposal.id,title,isgroupshow,deleted from proposal order by title");
