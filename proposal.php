@@ -227,10 +227,15 @@ echo "<tr><th>Festival contact</th><td><a href='card.php?id=$orgcontactinfo[id]'
 foreach ($info as $fieldnum=>$v)
     {
     if ($v[0] == 'Description for brochure')
+        {
         echo "<tr id='edit_field$fieldnum' class='edit_info'><th>$v[0]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalInfo' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='hidden' name='fieldnum' value='$fieldnum' /><textarea id='input_field$fieldnum' name='newinfo' cols='80' rows='5' class='brochure_description'>$v[1]</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>don't edit</button><div class='brochure_description_warning'>(max 240 characters)</div></td></form></tr>\n";
+        echo "<tr id='show_field$fieldnum' class='show_info' onclick='showEditor(\"field$fieldnum\");'><th>$v[0]</th><td><pre>$v[1]</pre></td></tr>\n";
+        }
     else
+        {
         echo "<tr id='edit_field$fieldnum' class='edit_info'><th>$v[0]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalInfo' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='hidden' name='fieldnum' value='$fieldnum' /><textarea id='input_field$fieldnum' name='newinfo' cols='80'>$v[1]</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>don't edit</button></td></form></tr>\n";
-    echo "<tr id='show_field$fieldnum' class='show_info' onclick='showEditor(\"field$fieldnum\");'><th>$v[0]</th><td>" . multiline($v[1]) . "</td></tr>\n";
+        echo "<tr id='show_field$fieldnum' class='show_info' onclick='showEditor(\"field$fieldnum\");'><th>$v[0]</th><td>" . multiline($v[1]) . "</td></tr>\n";
+        }
     }
 if (hasPrivilege('scheduler'))
     {
