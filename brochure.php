@@ -62,12 +62,8 @@ foreach ($programinfoList as $p)
     {
     $s = sortingKey($p->title);
     $s .= '<b>' . $p->title . '</b><br/>';
-    if ($p->organization != '') $s .= '<em>Presented by ' . $p->organization . '</em><br/>';
-    if ($p->website != '') $s .= '<em>' . $p->website . '</em><br/>';
-    if ($p->brochure_genre != '') $s .= 'Genre: ' . $p->brochure_genre . '<br/>';
-    if ($p->brochure_description != '') $s .= $p->brochure_description . '<br/>';
-//    else if ($p->type != 'group') $s .= 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad mi<br/>';
-    if ($proposalList[$p->id]->type == 'group')
+    $s .= '<pre>' . strip_tags($p->brochure_description) . '</pre>';
+    if ($proposalList[$p->id]->isgroupshow)
         {
         $sp = '';
         $comma = '';
@@ -79,8 +75,6 @@ foreach ($programinfoList as $p)
         if ($sp != '')
             $s .= '(' . $sp . ')<br/>';
         }
-    if ($p->admission != '') $s .= 'Admission: ' . $p->admission . '<br/>';
-//    if (($p->age != '') && (($p->type == 'theatre') || ($p->type=='group'))) $s .= 'Ages: ' . $p->age . '<br/>';
     $a = array();
     foreach ($proposalList[$p->id]->listings as $l)
         if (!$l->installation)
@@ -117,7 +111,7 @@ foreach ($programinfoList as $p)
             }
     foreach ($a as $line)
         $s .= $line->output() . '<br/>';
-    $list[$p->brochure_type][] = $s;
+    $list[$p->type][] = $s;
     }
   }
 

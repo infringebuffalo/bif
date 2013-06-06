@@ -22,7 +22,7 @@ class proposalInfo
         $this->listings = array();
         $this->groupshows = array();
         global $programinfoList;
-//        $this->programinfo = $programinfoList[$id];
+        $this->programinfo = $programinfoList[$id];
         }
     }
 
@@ -113,18 +113,26 @@ function getDatabase()
     global $listingList;
     global $groupPerformerList;
 
-/*
     $programinfoList = array();
     $stmt = dbPrepare("select id,title,info from proposal");
     $stmt->execute();
-    $stmt->bind_result($id,$title,$info_ser)
+    $stmt->bind_result($id,$title,$info_ser);
     while ($stmt->fetch())
         {
+        $description = '';
+        $type = '';
         $info = unserialize($info_ser);
-        $programinfoList[$id] = new programInfo($id,$title,$info['Type'],$organization,$website,$brochure_genre,$brochure_description,$admission,$age,$brochure_type);
+        foreach ($info as $i)
+            if (is_array($i) && array_key_exists(0,$i))
+                {
+                if ($i[0] == 'Description for brochure')
+                    $description = $i[1];
+                else if ($i[0] == 'Type')
+                    $type = $i[1];
+                }
+        $programinfoList[$id] = new programInfo($id,$title,$type,$description);
         }
     $stmt->close();
-*/
 
     $proposalList = array();
     $stmt = dbPrepare("select proposal.id,title,isgroupshow,deleted from proposal order by title");
