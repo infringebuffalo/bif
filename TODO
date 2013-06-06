@@ -6,6 +6,10 @@ search proposals
 
 add 'change festival contact' to proposal page
 
+when people edit proposal fields, they expect to be able to edit several then hit "save"
+    - editing fields needs to be ajax based
+    - or, one "save" submits all fields; in this case, any time someone hits "don't edit", you must reset that form back to its original text, or hidden changes will be submitted
+
 force batch names to be unique
 
 fix init-basic setting of festival data
@@ -18,4 +22,6 @@ user privileges should be per festival - ie need to make a table with userid / f
 ? share proposal-ownership command?
 
 newGroupshow command should redirect you to the group show's page on success
+
+maybe: a table of 'rules' for special proposal fields.  eg if a field is named "batch" (as in a group show), it would be nice to convert the number into the batch name, and to add a special edit box for changing it.  "Description for brochure" field could have a modified editor that limited the text length
 

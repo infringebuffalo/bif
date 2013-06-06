@@ -121,11 +121,25 @@ function unhoverFunc()
     {
     $('.availabilityInfo').html('&nbsp;');
     }
+function limitChars(node, limit)
+    {
+    var text = node.val();
+    if (text.length > limit)
+        {
+        node.val(text.substr(0,limit));
+        return false;
+        }
+     else
+        {
+        return true;
+        }
+     }
  
 $(document).ready(function() {
     $('.edit_info').hide();
     $('#editing_enabler').hide();
     $('.calEntry').hover(hoverFunc,unhoverFunc);
+    $('.brochure_description').keyup(function(){ limitChars($(this), 240) });
  });
 </script>
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -207,7 +221,10 @@ echo "</td></tr>\n";
 echo "<tr><th>Festival contact</th><td><a href='card.php?id=$orgcontactinfo[id]'>$orgcontactinfo[name]</a></td></tr>\n";
 foreach ($info as $fieldnum=>$v)
     {
-    echo "<tr id='edit_field$fieldnum' class='edit_info'><th>$v[0]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalInfo' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='hidden' name='fieldnum' value='$fieldnum' /><textarea name='newinfo' cols='80'>$v[1]</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>don't edit</button></td></form></tr>\n";
+    if ($v[0] == 'Description for brochure')
+        echo "<tr id='edit_field$fieldnum' class='edit_info'><th>$v[0]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalInfo' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='hidden' name='fieldnum' value='$fieldnum' /><textarea name='newinfo' cols='80' rows='5' class='brochure_description'>$v[1]</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>don't edit</button><div class='brochure_description_warning'>(max 240 characters)</div></td></form></tr>\n";
+    else
+        echo "<tr id='edit_field$fieldnum' class='edit_info'><th>$v[0]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalInfo' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='hidden' name='fieldnum' value='$fieldnum' /><textarea name='newinfo' cols='80'>$v[1]</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>don't edit</button></td></form></tr>\n";
     echo "<tr id='show_field$fieldnum' class='show_info' onclick='showEditor(\"field$fieldnum\");'><th>$v[0]</th><td>" . multiline($v[1]) . "</td></tr>\n";
     }
 if (hasPrivilege('scheduler'))
