@@ -131,7 +131,7 @@ function newGroupshow($title,$description,$batch)
     $festival = getFestivalID();
     $stmt = dbPrepare('insert into `proposal` (`id`, `proposerid`, `festival`, `title`, `info`, `orgcontact`, `isgroupshow`) values (?,?,?,?,?,?,1)');
     $proposerid = $_SESSION['userid'];
-    $info = array(array('Description for web',''),array('Description for brochure',''), array('batch',$batch));
+    $info = array(array('Type','group'),array('Description for web',''),array('Description for brochure',''), array('batch',$batch));
     $info_ser = serialize($info);
     $orgcontact = $proposerid;
     $stmt->bind_param('iiissi',$showid,$proposerid,$festival,$title,$info_ser,$orgcontact);
