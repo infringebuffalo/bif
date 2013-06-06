@@ -59,6 +59,7 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('removePrivilege',0,1),
             new apiFunction('batchChangeContact',1,0),
             new apiFunction('addProposalInfoField',1,0),
+            new apiFunction('prefsSummaryFields',0,0),
             );
 
 $command = POSTvalue('command');
@@ -514,6 +515,20 @@ function addProposalInfoField($proposal,$fieldname)
     $stmt->execute();
     $stmt->close();
     log_message("added field '$fieldname' to proposal $proposal");
+    }
+
+function prefsSummaryFields()
+    {
+    $labels = array();
+    if (!isset($_POST['summaryLabel']))
+        return;
+    foreach ($_POST['summaryLabel'] as $s)
+        $labels[] = $s;
+    if (!isset($_SESSION['preferences']))
+        $_SESSION['preferences'] = array();
+    $_SESSION['preferences']['summaryFields'] = $labels;
+    savePreferences();
+    log_message('changed summaryFields in preferences');
     }
 
 ?>

@@ -127,4 +127,19 @@ function createBatch($name,$festival,$desc)
     return $id;
     }
 
+function savePreferences()
+    {
+    if (isset($_SESSION['preferences']))
+        $prefs = $_SESSION['preferences'];
+    else
+        $prefs = array();
+    $prefs_ser = serialize($prefs);
+    $stmt = dbPrepare('update user set preferences=? where id=?');
+    $stmt->bind_param('si',$prefs_ser,$_SESSION['userid']);
+    if (!$stmt->execute())
+        die($stmt->error);
+    $stmt->close();
+    log_message('saved preferences');
+    }
+
 ?>

@@ -25,7 +25,9 @@ else
     }
 
 $header = <<<ENDSTRING
+<link rel="stylesheet" href="themes/blue/style.css" type="text/css" media="print, projection, screen" />
 <script src="jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="jquery.tablesorter.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 function showEditor(name)
     {
@@ -42,6 +44,7 @@ function hideEditor(name)
 
 $(document).ready(function() {
     $('.edit_info').hide();
+    $('#batchtable').tablesorter({widgets: ['zebra']});
  });
 </script>
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -115,17 +118,28 @@ while ($stmt->fetch())
     addSummaryLabels($labels,$orgfields);
     }
 $stmt->close();
+if (isset($_SESSION['preferences']['summaryFields']))
+    {
+    $mylabels = array();
+    foreach ($_SESSION['preferences']['summaryFields'] as $s)
+        if (in_array($s,$labels))
+            $mylabels[] = $s;
+    $labels = $mylabels;
+    }
+sort($labels);
 
 bifPageheader($pageTitle, $header);
 echo $pageDescription;
 
-echo "<table class=\"maintable\">\n";
-echo "<tr><th>title</th><th>proposer</th>";
+echo "<table id=\"batchtable\" class=\"tablesorter\">\n";
+echo "<thead><tr><th>title</th><th>proposer</th>";
 foreach ($labels as $l)
     echo "<th>$l</th>";
-echo "</tr>\n";
+echo "</tr></thead>\n";
+echo "<tbody>\n";
 foreach ($rows as $r)
     echo '<tr><td>' . $r->title() . '</td><td>' . $r->proposer() . '</td>' . $r->summary($labels) . "</tr>\n";
+echo "</tbody>\n";
 echo "</table>\n";
 
 bifPagefooter();

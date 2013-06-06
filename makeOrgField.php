@@ -1,18 +1,19 @@
 <?php
-if (!isset($_REQUEST['type']))
-    {
-    header('Location:newOrgField.php');
-    die();
-    }
 require_once 'init.php';
 connectDB();
 requirePrivilege(array('scheduler','organizer'));
 require_once 'util.php';
 require '../bif.php';
 
-$type = $_REQUEST['type'];
-$field = $_REQUEST['field'];
-$label = $_REQUEST['label'];
+$type = POSTvalue('type');
+if ($type=='')
+    {
+    header('Location:newOrgField.php');
+    die();
+    }
+$field = POSTvalue('field',0);
+$label = POSTvalue('label');
+$default = POSTvalue('default');
 
 $header = <<<ENDSTRING
 <link rel="stylesheet" href="style.css" type="text/css" />
@@ -25,7 +26,7 @@ $stmt = dbPrepare('select id, title, info, forminfo, orgfields from proposal whe
 $stmt->execute();
 $stmt->bind_result($id,$title,$info_ser,$forminfo_ser,$orgfields_ser);
 echo "<table>\n";
-echo "<tr><th>proposal</th><th>value</th><th>existing value</th></tr>\n";
+echo "<tr><th>proposal</th><th>existing value</th><th>new value</th></tr>\n";
 while ($stmt->fetch())
     {
     $info = unserialize($info_ser);
@@ -37,12 +38,15 @@ while ($stmt->fetch())
         $title = '!!NEEDS A TITLE!!';
     $orgfields = unserialize($orgfields_ser);
     $forminfo = unserialize($forminfo_ser);
-    $new = field($forminfo,$field);
+    if ($field == 0)
+        $new = $default;
+    else
+        $new = field($forminfo,$field);
     if (is_array($orgfields) && array_key_exists($label,$orgfields))
         $old = $orgfields[$label];
     else
         $old = '';
-    echo "<tr><td>$title</td><td>$new</td><td>$old</td></tr>\n";
+    echo "<tr><td>$title</td><td>$old</td><td>$new</td></tr>\n";
     $orgfields[$label] = $new;
     $neworgfields[$id] = $orgfields;
     }
@@ -58,6 +62,13 @@ foreach ($neworgfields as $id=>$orgfields)
     $stmt->close();
     }
 
+
+log_message("added new summary field '$label'");
+if (isset($_SESSION['preferences']['summaryFields']))
+    {
+    $_SESSION['preferences']['summaryFields'][] = $label;
+    savePreferences();
+    }
 
 bifPagefooter();
 

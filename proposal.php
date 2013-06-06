@@ -74,6 +74,7 @@ function jsSafe($s)
 for ($i=0; $i < $festivalNumberOfDays; $i++)
     if (is_array($availability) && array_key_exists($i,$availability))
         $header .= " $i : '" . dayToDateday($i) . ': ' . jsSafe($availability[$i]) . "',";
+
 $header .= <<<ENDSTRING
 };
 function showEditor(name)
@@ -144,7 +145,12 @@ $(document).ready(function() {
     $('.edit_info').hide();
     $('#editing_enabler').hide();
     $('.calEntry').hover(hoverFunc,unhoverFunc);
-    $('.brochure_description').keyup(function(){ limitChars($(this), 240) });
+ENDSTRING;
+
+if (!hasPrivilege('scheduler'))
+    $header .= "$('.brochure_description').keyup(function(){ limitChars($(this), 240) });\n";
+
+$header .= <<<ENDSTRING
  });
 </script>
 <link rel="stylesheet" href="style.css" type="text/css" />

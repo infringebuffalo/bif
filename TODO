@@ -8,7 +8,7 @@ add 'change festival contact' to proposal page
 
 when people edit proposal fields, they expect to be able to edit several then hit "save"
     - editing fields needs to be ajax based
-    - or, one "save" submits all fields; in this case, any time someone hits "don't edit", you must reset that form back to its original text, or hidden changes will be submitted
+    - or, one "save" submits all fields
 
 force batch names to be unique
 
