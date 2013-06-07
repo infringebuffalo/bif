@@ -50,6 +50,7 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('changeVenueInfo',1,0),
             new apiFunction('changeVenueName',1,0),
             new apiFunction('changeVenueShortname',1,0),
+            new apiFunction('addVenueInfoField',1,0),
             new apiFunction('changeListing',1,0),
             new apiFunction('cancelListing',1,0),
             new apiFunction('uncancelListing',1,0),
@@ -60,6 +61,10 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('batchChangeContact',1,0),
             new apiFunction('addProposalInfoField',1,0),
             new apiFunction('prefsSummaryFields',0,0),
+            new apiFunction('changeGroupPerformer',1,0),
+            new apiFunction('uncancelGroupPerformer',1,0),
+            new apiFunction('cancelGroupPerformer',1,0),
+            new apiFunction('deleteGroupPerformer',1,0),
             );
 
 $command = POSTvalue('command');
@@ -92,7 +97,7 @@ else
 
 function newVenue($name,$shortname)
     {
-    $defaultInfo = array(array('owner',''), array('address',''), array('phone',''), array('website',''), array('contact',''), array('contact phone',''), array('contact e-mail',''), array('venue type',''), array('allowed performances',''), array('best performances',''), array('performance space',''), array('wall space',''));
+    $defaultInfo = array(array('owner',''), array('address',''), array('phone',''), array('website',''), array('contact',''), array('contact phone',''), array('contact e-mail',''), array('venue type',''), array('allowed performances',''), array('best performances',''), array('performance space',''), array('wall space',''), array('description',''));
     $venueid = newEntityID('venue');
     $festival = getFestivalID();
     $stmt = dbPrepare('insert into `venue` (`id`, `name`, `shortname`, `festival`, `info`) values (?,?,?,?,?)');
@@ -391,6 +396,21 @@ function changeVenueShortname($venue,$newinfo)
     log_message("changed venue $venue shortname to '$newinfo'");
     }
 
+function addVenueInfoField($venue,$fieldname)
+    {
+    $info_ser = dbQueryByID('select info from venue where id=?',$venue);
+    if ($info_ser == NULL)
+        return;
+    $info = unserialize($info_ser['info']);
+    $info[] = array($fieldname,'');
+    $info_ser = serialize($info);
+    $stmt = dbPrepare('update venue set info=? where id=?');
+    $stmt->bind_param('si',$info_ser,$venue);
+    $stmt->execute();
+    $stmt->close();
+    log_message("added field '$fieldname' to venue $venue");
+    }
+
 function changeListing($listingid,$venue,$venuenote,$date,$starttime,$endtime,$note)
     {
     $installation = POSTvalue('installation',0);
@@ -529,6 +549,42 @@ function prefsSummaryFields()
     $_SESSION['preferences']['summaryFields'] = $labels;
     savePreferences();
     log_message('changed summaryFields in preferences');
+    }
+
+function changeGroupPerformer($showorder,$time,$note,$groupperformerid)
+    {
+    $stmt = dbPrepare('update groupPerformer set showorder=?,time=?,note=? where id=?');
+    $stmt->bind_param('iisi',$showorder,$time,$note,$groupperformerid);
+    $stmt->execute();
+    $stmt->close();
+    log_message("changeGroupPerformer $groupperformerid to $showorder $time '$note'");
+    }
+
+function cancelGroupPerformer($groupperformerid)
+    {
+    $stmt = dbPrepare('update groupPerformer set cancelled=1 where id=?');
+    $stmt->bind_param('i',$groupperformerid);
+    $stmt->execute();
+    $stmt->close();
+    log_message('cancelGroupPerformer ' . $groupperformerid);
+    }
+
+function uncancelGroupPerformer($groupperformerid)
+    {
+    $stmt = dbPrepare('update groupPerformer set cancelled=0 where id=?');
+    $stmt->bind_param('i',$groupperformerid);
+    $stmt->execute();
+    $stmt->close();
+    log_message('uncancelGroupPerformer ' . $groupperformerid);
+    }
+
+function deleteGroupPerformer($groupperformerid)
+    {
+    $stmt = dbPrepare('delete from groupPerformer where id=?');
+    $stmt->bind_param('i',$groupperformerid);
+    $stmt->execute();
+    $stmt->close();
+    log_message('deleteGroupPerformer ' . $groupperformerid);
     }
 
 ?>
