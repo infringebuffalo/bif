@@ -24,6 +24,11 @@ function hideEditor(name)
     $('#show_' + name).show();
     $('#edit_' + name).hide();
     }
+function showScheduler(name)
+    {
+    $('.scheduleForm').hide()
+    $(name).show()
+    }
 
 $(document).ready(function() {
     $('.edit_info').hide();
@@ -35,6 +40,32 @@ ENDSTRING;
 
 $venueinfo = dbQueryByID('select name,shortname,info,deleted from venue where id=?',$id);
 bifPageheader('venue: ' . $venueinfo['name'],$header);
+
+function calEntry($day)
+    {
+    global $info;
+    return '<input type="checkbox" name="' . dayToDate($day) . '" value="1"/>';
+    }
+
+function calEntry2($day)
+    {
+    global $info;
+    return '<input type="checkbox" name="' . dayToDate($day) . '" value="1" checked/>';
+    }
+
+if (hasPrivilege('scheduler'))
+    {
+    echo <<<ENDSTRING
+<div class="schedulebox">
+Scheduling:<br/>
+<a href="" id="scheduleEventAnchor" onclick="showScheduler('#scheduleEventForm'); return false">performance</a>&nbsp;
+<a href="" id="scheduleInstallationAnchor" onclick="showScheduler('#scheduleInstallationForm'); return false">installation</a>&nbsp;
+ENDSTRING;
+    echo scheduleEventForm('venue.php?id=' . $id, 'calEntry', 0, $id);
+    echo scheduleInstallationForm('venue.php?id=' . $id, 'calEntry2', 0, $id);
+    echo "</div>\n";
+    }
+
 
 $dayshows = array();
 $dayinst = array();
