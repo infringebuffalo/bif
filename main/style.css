@@ -1,0 +1,11 @@
+body { margin: 1em 1em 2em 2em; font-family: sans-serif; color: black; background: white; }
+.theatre { background: #ffffd8 }
+.music { background: #ffe8ff }
+.groupshow { background: #d8ffff }
+th { background: #e8e8e8 }
+.problem { background: #ffa0a0; }
+.okay { background: #a0ffa0; }
+tr.oddrow { background: #e8f0f0; }
+tr.evenrow { background: #ffffff; }
+div.navbox { border:solid; border-width:thin; float:right; clear:both; background:#e0ffe0; padding:0.5em }
+div.box { float:both; }

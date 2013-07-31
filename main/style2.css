@@ -1,0 +1,421 @@
+/**
+ * The bif2 and bif-box tables also carry class bif, so in order to override
+ * the first-level styles, this selector MUST appear below table.bif
+ */ 
+table.bif2, table.bif-box, table.bif-comment, table.bif-node, 
+table.bif-linksbar, table.bif-forum, table.bif-forum-topic
+  {
+  border-spacing: 0; /* redundant with table cellspacing, kept for IE */ 
+  border-collapse: collapse;
+  }
+
+/**
+ * replace cellpadding at the table.bif[2] level: only apply to first level
+ * children
+ */
+table.bif>tbody>tr>th,             table.bif>tbody>tr>td,
+table.bif>thead>tr>th,             table.bif>thead>tr>td,
+table.bif2>tbody>tr>th,            table.bif2>tbody>tr>td,
+table.bif-box>tbody>tr>th,         table.bif-box>tbody>tr>td, 
+table.bif-linksbar>tbody>tr>th,    table.bif-linksbar>tbody>tr>td 
+  {
+  padding: 0;
+  /* border: solid red 1px ! important; */ 
+  }
+
+/**
+ * The bottom decoration of a table row must not take the normal full 1en height
+ * so we force its display to block instead of table-cell.
+ */
+.bif-d th *, .bif-d td *
+  {
+  display: block;
+  }
+.bif-d td.orcnt
+  {
+  height: 5px;
+  }
+
+#logoLeft
+  {
+  margin: 1px;
+  width: 1em; /* Browser will widen to the logo width */
+  }
+
+#slogan
+  {
+  width: auto;
+  padding-left: 1em;
+  font-size: 1.5em;
+  font-weight: 700;
+  color: #000;
+  text-align: right;
+  padding-right: 4em;
+  }
+
+#sloganLeft
+  {
+  width: auto;
+  padding-left: 1em;
+  font-size: 1.5em;
+  font-weight: 700;
+  color: #000;
+  text-align: left;
+  padding-right: 4em;
+  }
+
+#logoRight
+  {
+  margin: 1px;
+    text-align: right;
+  }
+#logoRight a
+  {
+  float: right;  
+  }
+    
+td.bifTopWrapper
+  {
+  width: 100%
+  }
+
+td#regionLeft, td#regionRight
+  {
+  vertical-align: top; 
+  width: 20%;
+  }
+  
+/**
+ * The original version specified width in the HTML:
+ * - 100% for colspan=1
+ * - 80% for colspan=2
+ * - 60% for colspan=3
+ *
+ * However, since the left/right widths are already specified where needed, 
+ * this seems redundant.
+ * @todo check behaviour with colspan=1, where no width at all is specified
+ */ 
+td#regionContent
+  {
+  vertical-align: top;  
+  }
+  
+p#footer
+  {
+  text-align: center;
+  } 
+
+img.bif
+  {
+  display: block;
+  }
+
+/****************************** Comments **************************************/
+.comment .picture 
+  {
+  border: 1px solid #770;
+  float: right;
+  margin: 0;
+  }
+
+td.comment-label
+  {
+  width: 5%; 
+  vertical-align: top;
+  text-align: right;
+  }
+  
+td.comment-subject
+  {
+  width: 80%;
+  font-weight: bold;
+  }
+  
+td.comment-right
+  {
+  vertical-align: middle; 
+  width: 15%;
+  }
+  
+/******************************* HTML elements  *******************************/
+ 
+body 
+  {
+  background-color: #FFFFFF;
+  font-size: 10pt;
+  font-family: tahoma,helvetica,arial,sans-serif;
+  }
+
+p,ul,li,div,form,em,blockquote,quote 
+  {
+  font-size: 10pt;
+  font-family: tahoma,helvetica,arial,sans-serif;
+  font-weight: normal;
+  }
+
+td 
+  {
+  font-family: tahoma,helvetica,arial,sans-serif;
+  font-size: 10pt;
+  font-weight: normal;
+  }
+
+td.left 
+  {
+  font-family: tahoma,helvetica,arial,sans-serif;
+  font-size: 10pt;
+  text-align: left;
+  }
+
+/**
+ * Zebras in tables: core includes bottom borders, which we need to remove
+ * on the sides of the tables, and leave on the internal cells
+ */
+tr.even
+  {
+  background-color: #FFF;
+  border: none; 
+  padding: 1px ; 
+  }
+
+tr.odd
+  {
+  background-color: #C6C6C6;
+  border: none;
+  padding: 1px ; 
+  }
+  
+tr.even td, tr.odd td
+  {
+  border-bottom: solid 1px #cccccc;
+  }
+    
+tr.even td.lgl, tr.odd td.lgl, 
+tr.even td.lgr, tr.odd td.lgr
+  {
+  border-bottom: none;
+  }  
+
+/*********************************  HEADER ************************************/
+
+table.bif td.oru 
+  {
+  background: url(images/or-u.png);
+  width: 100%;
+  }
+
+table.bif td.ord 
+  {
+  background: url(images/or-d.png);
+  width: 100%;
+  }
+
+table.bif td.orl 
+  {
+  background: url(images/or-l.png);
+  border: none;
+  }
+
+table.bif td.orr 
+  {
+  background: url(images/or-r.png);
+  }
+
+table.bif td.orcnt 
+  {
+  background: #FBC636;
+  width: 100%;
+  font-family: tahoma,helvetica,arial,sans-serif;
+  font-size: 10pt;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: top;
+  padding: 0 0.2em;
+  }
+
+/*  ????? */
+
+td.gru 
+  {
+  background: url(images/gr-u.png);
+  width: 100%;
+  }
+
+td.grd 
+  {
+  background: url(images/gr-d.png);
+  width: 100%;
+  }
+
+td.grl 
+  {
+  background: url(images/gr-l.png);
+  }
+
+td.grr 
+  {
+  background: url(images/gr-r.png);
+  }
+
+td.grcnt 
+  {
+  background: #C6C6C6;
+  width: 100%;
+  font-family: tahoma,helvetica,arial,sans-serif;
+  font-size: 10pt;
+  }
+
+/***********************************  BODY ************************************/
+
+td.lgu 
+  {
+  background: url(images/lg-u.png);
+  width: 100%;
+  }
+
+td.lgd 
+  {
+  background: url(images/lg-d.png);
+  width: 100%;
+  }
+
+td.lgl 
+  {
+  border: none;
+  background: url(images/lg-l.png);
+  }
+
+td.lgr 
+  {
+  background: url(images/lg-r.png);
+  }
+
+td.lgcnt 
+  {
+  background: #E4E4E4;
+  width: 100%;
+  font-family: tahoma,helvetica,arial,sans-serif;
+  font-size: 10pt;
+  white-space: normal;
+  }
+
+table.bif-linksbar td.lgcnt
+  {
+  text-align: center;
+  }
+  
+td.lgcntnw 
+  {
+  background: #FFF;
+  width: 100%;
+  font-family: tahoma,helvetica,arial,sans-serif;
+  font-size: 10pt;
+  white-space: nowrap;
+  text-align: right;
+  }
+
+/******************************/
+
+small 
+  {
+  font-size: 8pt;
+  }
+
+big 
+  {
+  font-size: 12pt;
+  }
+
+hr 
+  {
+  color: #404040;
+  height: 1px;
+  clear: right;
+  }
+
+a {
+  text-decoration: none;
+  }
+
+b {
+  font-weight: bold;
+  }
+
+.node .picture 
+  {
+  border: 2px solid #ddd;
+  float: right;
+  margin: 0.5em;
+  }
+
+a.read-more, a.read-more:link, a.read-more:visited, a.read-more:active 
+  {
+  color: #f00;
+  font-weight: bold;
+  }
+
+tr.dark 
+  {
+  background-color: #e0e0e0;
+  }
+  
+tr.light 
+  {
+  background-color: #eee;
+  }
+  
+td.active 
+  {
+  background-color: #d4d4d4;
+  }
+
+/****************************** Watchdog.module *******************************/
+
+/**
+ * Fix watchdog values we just overrode... this should be updated when 
+ * drupal.css is updated
+ */ 
+tr.watchdog-user 
+  {
+  background: #ffd;
+  }
+  
+tr.watchdog-user .active 
+  {
+  background: #eed;
+  }
+  
+tr.watchdog-content 
+  {
+  background: #ddf;
+  }
+  
+tr.watchdog-content .active 
+  {
+  background: #cce;
+  }
+  
+tr.watchdog-page-not-found, tr.watchdog-access-denied 
+  {
+  background: #dfd;
+  }
+  
+tr.watchdog-page-not-found .active, tr.watchdog-access-denied .active 
+  {
+  background: #cec;
+  }
+  
+tr.watchdog-error 
+  {
+  background: #ffc9c9;
+  }
+  
+tr.watchdog-error .active 
+  {
+  background: #eeb9b9;
+  }
+
+span.showname { font-style: italic; color: #250 }
+
+td.cancelled { text-decoration: line-through; color: #444 }
+span.cancelled { text-decoration: line-through; color: #444 }
