@@ -17,6 +17,7 @@ bifPageheader('all venues',$header);
 ?>
 
 <table>
+<tr><th>name</th><th>venue sheet</th><th>venue sign</th></tr>
 <?php
 $festival = getFestivalID();
 $stmt = dbPrepare('select `id`, `name` from `venue` where `festival`=? and deleted=0 order by name');
@@ -27,7 +28,11 @@ while ($stmt->fetch())
     {
     if ($name == '')
         $name = '!!NEEDS A NAME!!';
-    echo "<tr><td><a href='venue.php?id=$id'>$name</a></td></tr>\n";
+    echo "<tr>\n";
+    echo "<td><a href='venue.php?id=$id'>$name</a></td>\n";
+    echo "<td><a href='venuesheet.php?id=$id'>sheet</a></td>\n";
+    echo "<td><a href='venuesign.php?id=$id'>sign</a></td>\n";
+    echo "</tr>\n";
     }
 $stmt->close();
 ?>

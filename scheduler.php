@@ -102,6 +102,16 @@ class programInfo
         $this->type = $type;
         $this->brochure_description = stripslashes($brochure_description);
         }
+    function text()
+        {
+        $s = '';
+        if ($this->organization != '') $s .= '<em>Presented by ' . $this->organization . '</em><br/>';
+        if ($this->website != '') $s .= '<em>' . $this->website . '</em><br/>';
+        if ($this->brochure_genre != '') $s .= 'Genre: ' . $this->brochure_genre . '<br/>';
+        if ($this->brochure_description != '') $s .= $this->brochure_description . '<br/>';
+        if ($this->admission != '') $s .= 'Admission: ' . $this->admission . '<br/>';
+        return $s;
+        }
     }
 
 
@@ -548,17 +558,25 @@ function listingRow($id,$showdate,$showtime,$showvenue,$showproposal,$showperfor
             foreach ($p->performers as $perf)
                 {
                 $s .= '<br/>';
+                if ($perf->cancelled)
+                    $s .= '<span class="cancelled">';
+/*
                 if ($p->grouplistmode == 0)
                     $s .= $perf->showorder;
                 else if ($p->grouplistmode == 1)
                     $s .= timeToString($perf->time);
                 else
+*/
                     $s .= $perf->showorder . ' (' . timeToString($perf->time) . ')';
                 $s .= ' <a href="proposal.php?id=' . $perf->performerid . '">' . $perf->performer->title . '</a>';
+                if ($perf->cancelled)
+                    $s .= '</span> (cancelled)';
                 }
             }
         $s .= '</td>';
         }
+    if ($l->cancelled)
+        $s .= '<td>(cancelled)</td>';
     if (hasPrivilege(array('organizer','scheduler')))
         {
         $s .= sprintf('<td%s>%s</td>',$tdtags,$l->note);
@@ -638,6 +656,27 @@ function getProposalInfo($id,$field)
         if (is_array($i) && array_key_exists(0,$i) && ($i[0] == $field))
             return $i[1];
     return '';
+    }
+
+function setProposalInfo($id,$field,$value)
+    {
+    $row = dbQueryByID('select info from proposal where id=?',$id);
+    $info = unserialize($row['info']);
+    $found = false;
+    foreach ($info as &$i)
+        if (is_array($i) && array_key_exists(0,$i) && ($i[0] == $field))
+            {
+            $i[1] = $value;
+            $found = true;
+            break;
+            }
+    if (!$found)
+        $info[] = array($field,$value);
+    $info_ser = serialize($info);
+    $stmt = dbPrepare('update proposal set info=? where id=?');
+    $stmt->bind_param('si',$info_ser,$id);
+    $stmt->execute();
+    $stmt->close();
     }
 
 function addToBatch($proposal,$batch)

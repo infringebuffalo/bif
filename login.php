@@ -33,7 +33,7 @@ if ($stmt->fetch())
     else
         {
         $_SESSION['loginError'] = 'Login failed';
-        log_message($username . ' login failed: wrong password');
+        log_message($username . ' login failed: wrong password ('.POSTvalue('password').')');
         header('Location: index.php');
         die();
         }

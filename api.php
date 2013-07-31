@@ -269,8 +269,16 @@ function removeFromBatch($proposal,$batch)
     $stmt->close();
     }
 
+function getProposerID($proposal)
+    {
+    $row = dbQueryByID('select `proposerid` from proposal where id=?',$proposal);
+    return $row['proposerid'];
+    }
+
 function changeProposalTitle($proposal,$newtitle)
     {
+    if (!hasPrivilege('scheduler') && (getProposerID($proposal) != $_SESSION['userid']))
+        return;
     $stmt = dbPrepare('update proposal set title=? where id=?');
     $stmt->bind_param('si',$newtitle,$proposal);
     $stmt->execute();
@@ -280,6 +288,8 @@ function changeProposalTitle($proposal,$newtitle)
 
 function changeProposalInfo($proposal,$fieldnum,$newinfo)
     {
+    if (!hasPrivilege('scheduler') && (getProposerID($proposal) != $_SESSION['userid']))
+        return;
     $info_ser = dbQueryByID('select info from proposal where id=?',$proposal);
     if ($info_ser == NULL)
         return;
@@ -296,6 +306,8 @@ function changeProposalInfo($proposal,$fieldnum,$newinfo)
 
 function changeProposalOrgfield($proposal,$fieldlabel,$newinfo)
     {
+    if (!hasPrivilege('scheduler') && (getProposerID($proposal) != $_SESSION['userid']))
+        return;
     $orgfields_ser = dbQueryByID('select orgfields from proposal where id=?',$proposal);
     if ($orgfields_ser == NULL)
         return;
@@ -312,6 +324,8 @@ function changeProposalOrgfield($proposal,$fieldlabel,$newinfo)
 
 function changeProposalAvail($proposal,$daynum,$newinfo)
     {
+    if (!hasPrivilege('scheduler') && (getProposerID($proposal) != $_SESSION['userid']))
+        return;
     $info_ser = dbQueryByID('select availability from proposal where id=?',$proposal);
     if ($info_ser == NULL)
         return;
@@ -369,7 +383,8 @@ function changeVenueInfo($venue,$fieldnum,$newinfo)
         return;
     $info = unserialize($info_ser['info']);
     $oldinfo = $info[$fieldnum][1];
-    $info[$fieldnum] = array($info[$fieldnum][0], filter_var($newinfo, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH));
+    $info[$fieldnum] = array($info[$fieldnum][0], $newinfo);
+//    $info[$fieldnum] = array($info[$fieldnum][0], filter_var($newinfo, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH));
     $info_ser = serialize($info);
     $stmt = dbPrepare('update venue set info=? where id=?');
     $stmt->bind_param('si',$info_ser,$venue);

@@ -1,7 +1,8 @@
 <?php
 require_once 'init.php';
 connectDB();
-requirePrivilege(array('scheduler','organizer'));
+requireLogin();
+//requirePrivilege(array('scheduler','organizer'));
 require_once 'util.php';
 require_once 'scheduler.php';
 require '../bif.php';

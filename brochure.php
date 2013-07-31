@@ -77,7 +77,7 @@ foreach ($programinfoList as $p)
         }
     $a = array();
     foreach ($proposalList[$p->id]->listings as $l)
-        if (!$l->installation)
+        if ((!$l->installation) && ($l->proposal->id == $p->id))
             {
             $s2 = sortingKey($l->date . $l->starttime) . dateToString($l->date) . ' ' . timeToString($l->starttime) . '-' . timeToString($l->endtime) . ' ' . $l->venue->name;
             if ($l->venuenote != '')

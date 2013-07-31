@@ -22,6 +22,7 @@ $info = unserialize($info_ser);
 $availability = unserialize($availability_ser);
 $forminfo = unserialize($forminfo_ser);
 
+/*
 if (!hasPrivilege('scheduler'))
     {
     if ($proposer_id != $_SESSION['userid'])
@@ -30,6 +31,7 @@ if (!hasPrivilege('scheduler'))
         die();
         }
     }
+*/
 
 $orgcontactinfo = dbQueryByID('select `name`,`card`.`id` from `user` join `card` on `user`.`id`=`card`.`userid` where `user`.`id`=?',$orgcontact);
 
@@ -161,13 +163,15 @@ bifPageheader('proposal: ' . $title,$header);
 echo $batches;
 echo "<br>";
 $canSeeSchedule = hasPrivilege(array('scheduler','organizer'));
+$canSeeSchedule = true;
+$canEditSchedule = hasPrivilege('scheduler');
 $proposal = $proposalList[$proposal_id];
 if ($canSeeSchedule)
     {
     echo "<table>\n";
     foreach ($proposal->listings as $listing)
         {
-        if ($listing->proposalid == $proposal_id)
+        if (($listing->proposalid == $proposal_id) && ($canEditSchedule))
             echo editableListingRow($listing->id,1,1,1,0,0);
         else
             echo listingRow($listing->id,1,1,1,1,1);
@@ -218,6 +222,7 @@ if ($proposal->isgroupshow)
 if (hasPrivilege('scheduler'))
     echo HTML_schedulingTools($proposal_id);
 
+echo "<div><a href=\"imageUpload.php?id=$proposal_id\">upload image for web</a></div>\n";
 echo "<div style=\"float:right\"><a href=\"proposalForm.php?id=$proposal_id\">[original form]</a></div>\n";
 echo '<span><button id="editing_enabler" onclick="enableEditing();">enable editing</button><span id="editing_disabler"><button onclick="disableEditing();">disable editing</button> (click on a field to edit it; <b>NOTE: you must save any changed field before going to edit another field</b>)</span></span>';
 echo '<table rules="all" cellpadding="3">';
