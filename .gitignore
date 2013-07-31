@@ -3,3 +3,4 @@ tmp/
 *.swp
 *.tar
 *.tgz
+config/config.php
