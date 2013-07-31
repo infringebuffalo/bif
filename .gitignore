@@ -4,3 +4,4 @@ tmp/
 *.tar
 *.tgz
 config/config.php
+main/dbconfig.php
