@@ -19,7 +19,7 @@ bifPageheader('all venues',$header);
 <table>
 <tr><th>name</th><th>venue sheet</th><th>venue sign</th></tr>
 <?php
-$festival = getFestivalID();
+$festival = GETvalue('festival',getFestivalID());
 $stmt = dbPrepare('select `id`, `name` from `venue` where `festival`=? and deleted=0 order by name');
 $stmt->bind_param('i',$festival);
 $stmt->execute();
