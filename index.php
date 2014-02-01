@@ -40,7 +40,15 @@ if (hasPrivilege('scheduler'))
 <li><a href="subscribe.php">Add person to mailing list</a></li>
 <br>
 <li><a href="preferences.php">Preferences</a></li>
+<br>
 ENDSTRING;
+    }
+else
+    {
+    if (hasPrivilege('confirmed'))
+        echo '<li><a href="tbd.php">Submit a proposal</a></li>' . "\n";
+    else
+        echo '<li>Your e-mail address must be verified before you can submit a proposal: <a href="verifyEmail.php">send verification message</a></li>' . "\n";
     }
 
 $stmt = dbPrepare('select id,title from proposal where proposerid=? and deleted=0 order by title');
