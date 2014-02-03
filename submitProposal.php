@@ -373,12 +373,10 @@ function emailProposal($formtext,$proposerid,$orgcontact)
     {
     $body = "The following proposal has been submitted for the Buffalo Infringement Festival:\n\n" . $formtext;
     $row = dbQueryByID("select email from user where id=?",$proposerid);
-    $addr1 = $row['email'];
-    $addr2 = $orgcontact['email'];
+    $addr = $row['email']. ', ' . $orgcontact['email'];
     $subject = "Buffalo Infringement proposal";
-    $header = "From: scheduler@infringebuffalo.org\r\nTo: $addr1, $addr2\r\n";
-    loggedMail($addr1, $subject, $body, $header);
-    loggedMail($addr2, $subject, $body, $header);
+    $header = "From: scheduler@infringebuffalo.org\r\n";
+    loggedMail($addr, $subject, $body, $header);
     }
 
 ?>

@@ -56,7 +56,11 @@ if ($id != 0)
     $stmt->bind_param('i',$id);
     }
 else
-    $stmt = dbPrepare('select `proposal`.`id`, `proposerid`, `name`, `title`, `orgfields` from `proposal` join `user` on `proposerid`=`user`.`id` where `deleted` = 0 order by `title`');
+    {
+    $festival = GETvalue('festival',getFestivalID());
+    $stmt = dbPrepare('select `proposal`.`id`, `proposerid`, `name`, `title`, `orgfields` from `proposal` join `user` on `proposerid`=`user`.`id` where `deleted` = 0 and `festival` = ? order by `title`');
+    $stmt->bind_param('i',$festival);
+    }
 
 class propRow
     {
