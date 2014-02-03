@@ -15,7 +15,7 @@ if ($proposal_id == 0)
 $row = dbQueryByID('select title,name,email from proposal join user on proposerid=user.id where proposal.id=?',$proposal_id);
 
 $header = <<<ENDSTRING
-<script src="jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="jquery.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 $(document).ready(function() {
  });

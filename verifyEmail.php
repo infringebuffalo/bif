@@ -10,7 +10,7 @@ $addr = $_SESSION['username'];
 $subject = 'Infringement festival e-mail verification';
 $code = md5('bif-' . $addr);
 $body = "Thanks for signing up to be a part of the Buffalo Infringement Festival.\nTo verify that your e-mail address is correct, please click on this link: http://infringebuffalo.org/db2/confirmEmail.php?id=" . $_SESSION['userid'] . "&code=" . $code . "\n";
-$header = 'From: dave@infringebuffalo.org';
+$header = 'From: scheduler@infringebuffalo.org';
 log_message("verifying address $addr");
 if (loggedMail($addr, $subject, $body, $header))
     {
@@ -18,7 +18,7 @@ if (loggedMail($addr, $subject, $body, $header))
     }
 else
     {
-    echo '<p>I\'m sorry, but there was an error in trying to send a verification e-mail to ' . $addr . '</p><p>Please contact dave@infringebuffalo.org for assistance.</p>';
+    echo '<p>I\'m sorry, but there was an error in trying to send a verification e-mail to ' . $addr . '</p><p>Please contact depape@buffalo.edu for assistance.</p>';
     }
 
 bifPageFooter();

@@ -60,7 +60,7 @@ if (hasPrivilege('scheduler'))
 
 
 $header = <<<ENDSTRING
-<script src="jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="jquery.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 var editable = true;
 var availability = {
@@ -150,7 +150,7 @@ $(document).ready(function() {
 ENDSTRING;
 
 if (!hasPrivilege('scheduler'))
-    $header .= "$('.brochure_description').keyup(function(){ limitChars($(this), 240) });\n";
+    $header .= "$('.brochure_description').keyup(function(){ limitChars($(this), 140) });\n";
 
 $header .= <<<ENDSTRING
  });
@@ -239,7 +239,7 @@ foreach ($info as $fieldnum=>$v)
     {
     if ($v[0] == 'Description for brochure')
         {
-        echo "<tr id='edit_field$fieldnum' class='edit_info'><th>$v[0]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalInfo' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='hidden' name='fieldnum' value='$fieldnum' /><textarea id='input_field$fieldnum' name='newinfo' cols='80' rows='5' class='brochure_description'>$v[1]</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>don't edit</button><div class='brochure_description_warning'>(max 240 characters)</div></td></form></tr>\n";
+        echo "<tr id='edit_field$fieldnum' class='edit_info'><th>$v[0]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalInfo' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='hidden' name='fieldnum' value='$fieldnum' /><textarea id='input_field$fieldnum' name='newinfo' cols='80' rows='5' class='brochure_description'>$v[1]</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>don't edit</button><div class='brochure_description_warning'>(max 140 characters)</div></td></form></tr>\n";
         echo "<tr id='show_field$fieldnum' class='show_info' onclick='showEditor(\"field$fieldnum\");'><th>$v[0]</th><td>" . multiline(strip_tags($v[1])) . "</td></tr>\n";
         }
     else

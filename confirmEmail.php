@@ -23,7 +23,7 @@ if ($row)
     else
         {
         log_message("WARNING: email confirmation for $row[email] failed: expected '$expectedCode', got '$code'");
-        echo "<p>I'm sorry, but the e-mail verification has failed, due to an incorrect verification code.  If you reached this page via an e-mail sent to you by the Infringement proposal system, please contact dave@infringebuffalo.org for help.</p>";
+        echo "<p>I'm sorry, but the e-mail verification has failed, due to an incorrect verification code.  If you reached this page via an e-mail sent to you by the Infringement proposal system, please contact depape@buffalo.edu for help.</p>";
         }
     }
 else

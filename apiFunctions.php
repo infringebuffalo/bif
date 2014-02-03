@@ -378,7 +378,7 @@ function subscribe($address,$mailinglist)
     $email = $mailinglist . '-subscribe-' . str_replace('@','=',$address) . '@infringebuffalo.org';
     $subject = '';
     $body = '';
-    $header = 'From: dave@infringebuffalo.org';
+    $header = 'From: scheduler@infringebuffalo.org';
     log_message("subscribing $email to $mailinglist");
     if (loggedMail($email, $subject, $body, $header))
         {
