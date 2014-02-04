@@ -1,5 +1,5 @@
 <?php
-//echo "<pre>\n"; print_r($_POST); echo "</pre>\n"; die();
+echo "<pre>\n"; print_r($_POST); echo "</pre>\n"; die();
 
 require_once 'init.php';
 connectDB();
@@ -251,73 +251,67 @@ function createVisualartProposal($title,$proposerid,$festival,$batchid,$orgconta
     insertProposal($info,$availability,$proposerid,$festival,$title,$orgcontact,$batchid);
     }
 
-function createDanceProposal($title,$proposer,$proposerName,$festival,$batchid,$orgcontact)
+function createDanceProposal($title,$proposerid,$festival,$batchid,$orgcontact)
     {
     global $festivalNumberOfDays;
-    $proposerid = getUserID($proposer);
-    if ($proposerid == 0)
-        $proposerid = createUser($proposer,$proposerName,'','');
     $info = array();
-    addInfo($info,'Contact info', "$proposerName\n$proposer\nPhone:\nAddress:\nBest contact method:");
+    addInfo($info,'Contact info',contactInfo());
     addInfo($info,'Type', 'dance');
-    addInfo($info,'Website','');
-    addInfo($info,'Group','');
-    addInfo($info,'Description','');
-    addInfo($info,'Names of all performers','');
-    addInfo($info,'Over age 21','');
-    addInfo($info,'Image link','');
-    addInfo($info,'How does it infringe','');
-    addInfo($info,'Venue needs','');
-    addInfo($info,'Can perform in non-traditional space','');
-    addInfo($info,'Willing to perform to live band','');
-    addInfo($info,'Pre-arranged venue','');
-    addInfo($info,'Admission','');
-    addInfo($info,'Other artists you\'d like to be booked with','');
-    addInfo($info,'Other infringement projects','');
-    addInfo($info,'Previous infringement festivals','');
-    addInfo($info,'Out of town / housing','');
-    addInfo($info,'How will you help Infringement','');
-    addInfo($info,'What can you provide to help','');
-    addInfo($info,'Any questions','');
-    addInfo($info,'Description for web','');
-    addInfo($info,'Description for brochure','');
+    addInfo($info,'Group', POSTvalue('organization'));
+    addInfo($info,'Website', POSTvalue('website'));
+    addInfo($info,'Description', POSTvalue('description_org'));
+    addInfo($info,'Description for web', POSTvalue('description_web'));
+    addInfo($info,'Description for brochure', POSTvalue('description_brochure'));
+    addInfo($info,'Image link', POSTvalue('imagelink'));
+    addInfo($info,'Names of all performers', POSTvalue('performernames'));
+    addInfo($info,'Over age 21', POSTvalue('over21'));
+    addInfo($info,'Setup time', POSTvalue('setuptime'));
+    addInfo($info,'Length of performance', POSTvalue('length'));
+    addInfo($info,'Strike time', POSTvalue('striketime'));
+    addInfo($info,'Number of performances', POSTvalue('numberperformances'));
+    addInfo($info,'Pre-arranged venue', POSTvalue('hasvenue'));
+    addInfo($info,'Venue needs', POSTvalue('venuefeatures'));
+    addInfo($info,'Can perform in non-traditional space', POSTvalue('nontraditionalvenue'));
+    addInfo($info,'Willing to perform to live band', POSTvalue('performwithband'));
+    addInfo($info,'Admission', POSTvalue('admission'));
+    addInfo($info,'Other infringement projects', POSTvalue('othershows'));
+    addInfo($info,'How will you help Infringement', POSTvalue('volunteer'));
+    addInfo($info,'How does it infringe', POSTvalue('infringe'));
+    addInfo($info,'Out of town / housing', POSTvalue('outoftown'));
+    addInfo($info,'Previous infringement festivals', POSTvalue('pastfestivals'));
+    addInfo($info,'Any questions', POSTvalue('questions'));
     $availability = array();
     for ($d = 0; $d < $festivalNumberOfDays; $d++)
-        $availability[$d] = "yes";
+        $availability[$d] = POSTvalue('can_day' . $d);
     insertProposal($info,$availability,$proposerid,$festival,$title,$orgcontact,$batchid);
     }
 
-function createLiteraryProposal($title,$proposer,$proposerName,$festival,$batchid,$orgcontact)
+function createLiteraryProposal($title,$proposerid,$festival,$batchid,$orgcontact)
     {
     global $festivalNumberOfDays;
-    $proposerid = getUserID($proposer);
-    if ($proposerid == 0)
-        $proposerid = createUser($proposer,$proposerName,'','');
     $info = array();
-    addInfo($info,'Contact info', "$proposerName\n$proposer\nPhone:\nAddress:\nBest contact method:");
+    addInfo($info,'Contact info',contactInfo());
     addInfo($info,'Type', 'literary');
-    addInfo($info,'Website', '');
-    addInfo($info,'Group', '');
-    addInfo($info,'Description', '');
-    addInfo($info,'Names of all performers', '');
-    addInfo($info,'Over age 21', '');
-    addInfo($info,'Image link', '');
-    addInfo($info,'How does it infringe', '');
-    addInfo($info,'Venue needs', '');
-    addInfo($info,'Pre-arranged venue', '');
-    addInfo($info,'Other artists you\'d like to perform with', '');
-    addInfo($info,'Number of performances', '');
-    addInfo($info,'Other infringement projects', '');
-    addInfo($info,'Previous infringement festivals', '');
-    addInfo($info,'Out of town / housing', '');
-    addInfo($info,'How will you help Infringement', '');
-    addInfo($info,'What can you provide to help', '');
-    addInfo($info,'Any questions', '');
-    addInfo($info,'Description for web', '');
-    addInfo($info,'Description for brochure', '');
+    addInfo($info,'Group', POSTvalue('organization'));
+    addInfo($info,'Website', POSTvalue('website'));
+    addInfo($info,'Description', POSTvalue('description_org'));
+    addInfo($info,'Description for web', POSTvalue('description_web'));
+    addInfo($info,'Description for brochure', POSTvalue('description_brochure'));
+    addInfo($info,'Image link', POSTvalue('imagelink'));
+    addInfo($info,'Names of all performers', POSTvalue('performernames'));
+    addInfo($info,'Over age 21', POSTvalue('over21'));
+    addInfo($info,'Pre-arranged venue', POSTvalue('hasvenue'));
+    addInfo($info,'Venue needs', POSTvalue('venuefeatures'));
+    addInfo($info,'Number of performances', POSTvalue('numberperformances'));
+    addInfo($info,'Other infringement projects', POSTvalue('othershows'));
+    addInfo($info,'How will you help Infringement', POSTvalue('volunteer'));
+    addInfo($info,'How does it infringe', POSTvalue('infringe'));
+    addInfo($info,'Out of town / housing', POSTvalue('outoftown'));
+    addInfo($info,'Previous infringement festivals', POSTvalue('pastfestivals'));
+    addInfo($info,'Any questions', POSTvalue('questions'));
     $availability = array();
     for ($d = 0; $d < $festivalNumberOfDays; $d++)
-        $availability[$d] = "yes";
+        $availability[$d] = POSTvalue('can_day' . $d);
     insertProposal($info,$availability,$proposerid,$festival,$title,$orgcontact,$batchid);
     }
 

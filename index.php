@@ -38,9 +38,9 @@ if (hasPrivilege('scheduler'))
 <li><a href="newMusic.php">Music</a></li>
 <li><a href="newFilm.php">Film/video</a></li>
 <li><a href="newVisualart.php">Visual art</a></li>
-<li>Dance (form coming soon)</li>
-<li>Literary/poetry (form coming soon)</li>
-<li>Street performance (form coming soon)</li>
+<li><a href="newDance.php">Dance</a></li>
+<li><a href="newLiterary.php">Literary/poetry</a></li>
+<li><a href="newStreet.php">Street performance</a></li>
 </ul></li>
 <li><a href="newProposal.php">New proposal (for someone else)</a></li>
 <li><a href="newGroupshow.php">New group show</a></li>

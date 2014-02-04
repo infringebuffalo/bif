@@ -96,7 +96,7 @@ function datesCanDo($verb="perform")
     $s .= <<<ENDSTRING
 <img src="questionmark.png" class="questionmark" />
 <div class="helptext">
-Please let us know if your availability for day and evening hours on all festival days to the best of your ability.<br>We understand that this far out you may not be able to determine your exact schedule.<br>After the sign up period closes and we start scheduling in earnest, having correct availability becomes MOST important.<br>Please update your availability as it becomes clear to you!!
+Please let us know your availability for day and evening hours on all festival days, to the best of your ability.<br>We understand that this far out you may not be able to determine your exact schedule.<br>After the sign up period closes and we start scheduling in earnest, having correct availability becomes MOST important.<br>Please update your availability as it becomes clear to you!!
 </div>
 </th>
 ENDSTRING;
@@ -129,11 +129,11 @@ function otherQuestions($verb='perform',$band=false)
     $s = <<<ENDSTRING
 <div class="otherQuestions"><h3>Other questions</h3><table cellpadding=3>
 <tr>
-<th style="width:40%">How can you volunteer to help the festival?<br/><font size=-1>examples: venue czar, audio tech, lighting tech, equipment gopher</font></th>
+<th style="width:40%">How can you volunteer to help the festival?<br/>(examples: venue czar, audio tech, lighting tech, equipment gopher)</th>
 <td><textarea name="volunteer" rows="2" cols="60"></textarea></td>
 </tr>
 <tr>
-<th>What makes your proposal appropriate for Infringement? (What\'s "infringey" about it?)</th>
+<th>What makes your proposal appropriate for Infringement? (What's "infringey" about it?)</th>
 <td><textarea name="infringe" rows="2" cols="60"></textarea></td>
 </tr>
 <tr><th>If anyone involved in this proposal will be traveling from out of town, please give details - where from, and will you need housing?</th><td><input type="text" name="outoftown" size="60" /></td></tr>
@@ -467,7 +467,7 @@ function proposalFormNontraditionalVenue()
 We don't have many "proper" theatres in the festival, please check "YES" if you COULD perform in an art gallery, a store front, a bar, in somebodys living room, outside, perhaps rooftop? (this includes ALL street theatre performances.)
 </div>
 </th>
-<td><select name="nontraditionalvenue"><option value="n">no</option><option value="y" selected>yes</option></select></td>
+<td><select name="nontraditionalvenue"><option value="n">no</option><option value="y">yes</option></select></td>
 </tr>
 ENDSTRING;
     }
@@ -494,7 +494,7 @@ function proposalFormVenueFeatures()
 <th>Any specific features requested at your venue
 <img src="questionmark.png" class="questionmark" />
 <div class="helptext">
-Dressing rooms, theatrical lighting, sound system, video system, storage space, etc.<br/>We cannot guarantee anything, but will work with you to find the best space possible.
+Dressing rooms, theatrical lighting, sound system, video system, storage space, etc.<br>Please try to obtain any equipment you may need, as we have very limited resources and cannot guarantee anything.<br>We will try to accommodate you when we can but please be aware that this is a DIY festival and the success of your show is up to you.
 </div>
 </th>
 <td><textarea name="venuefeatures" rows="2" cols="60"></textarea></td>
@@ -724,14 +724,129 @@ function proposalFormHowLoud()
 ENDSTRING;
     }
 
-/*
-
-function proposalFormOrganization()
+function proposalFormPerformerNames()
     {
     return <<<ENDSTRING
+<tr>
+<th>Names of all performers
+<div class="helptext">
+Please include first and last names of everyone involved in your project
+</div>
+</th>
+<td><textarea name="performernames" rows="2" cols="60"></textarea></td>
+</tr>
 ENDSTRING;
     }
 
-*/
+function proposalFormPerformers()
+    {
+    return <<<ENDSTRING
+<tr>
+<th>Names and roles of all project members
+</th>
+<td><textarea name="performers" rows="3" cols="60"></textarea></td>
+</tr>
+ENDSTRING;
+    }
+
+function proposalFormPerformWithBand()
+    {
+    return <<<ENDSTRING
+<tr>
+<th>Would you be willing to peform to the live music of one of our Infringement bands?
+<img src="questionmark.png" class="questionmark" />
+<div class="helptext">
+We would love you to! You would then be scheduled to come dance while that band is playing their music, at one or more venues!
+</div>
+</th>
+<td><select name="performwithband"><option value="n">no</option><option value="y">yes</option></select></td>
+</tr>
+ENDSTRING;
+    }
+
+function proposalFormAdmission()
+    {
+    return <<<ENDSTRING
+<tr>
+<th>Admission charge for your show
+<img src="questionmark.png" class="questionmark" />
+<div class="helptext">
+Examples: free, pay what you can, or set cost.<br>Please understand that charging more than $10 admission is not allowed by the Infringement Festival.<br>If you plan to charge, we would recommend you kept it as "pay what you can" or "donation".
+</div>
+</th>
+<td><input type="text" name="admission" size="60" /></td>
+</tr>
+ENDSTRING;
+    }
+
+function proposalFormStreetExperience()
+    {
+    return <<<ENDSTRING
+<tr>
+<th>Do you have experience street performing?
+</th>
+<td><select name="streetexperience"><option value="n">no</option><option value="y">yes</option></select></td>
+</tr>
+ENDSTRING;
+    }
+
+function proposalFormStreetLicense()
+    {
+    return <<<ENDSTRING
+<tr>
+<th>Do you have a street performers license for Buffalo valid through the festival?
+</th>
+<td><select name="streetlicense"><option value="n">no</option><option value="y">yes</option></select></td>
+</tr>
+ENDSTRING;
+    }
+
+function proposalFormNeedOutlet()
+    {
+    return <<<ENDSTRING
+<tr>
+<th>Do you need access to an outlet? 
+</th>
+<td><select name="needoutlet"><option value="n">no</option><option value="y">yes</option></select></td>
+</tr>
+ENDSTRING;
+    }
+
+function proposalFormPerformanceSpace()
+    {
+    return <<<ENDSTRING
+<tr>
+<th>What size performance space does your act require?
+<img src="questionmark.png" class="questionmark" />
+<div class="helptext">
+Examples: none (projections), minimal - up to 5x5 feet, large (large multi-instrument group, group activities, large theater piece, etc)- up to 20x20 feet
+</div>
+</th>
+<td><input type="text" name="performancespace" size="60" /></td>
+</tr>
+ENDSTRING;
+    }
+
+function proposalFormStreetVenueDescription()
+    {
+    return <<<ENDSTRING
+<tr>
+<th>Ideal location type and/or specific locations you would like to perform at?
+</th>
+<td><input type="text" name="venue" size="60" /></td>
+</tr>
+ENDSTRING;
+    }
+
+function proposalFormStreetVenueFeatures()
+    {
+    return <<<ENDSTRING
+<tr>
+<th>Other REQUIRED location features
+</th>
+<td><textarea name="venuefeatures" rows="2" cols="60"></textarea></td>
+</tr>
+ENDSTRING;
+    }
 
 ?>
