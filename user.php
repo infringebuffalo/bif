@@ -81,10 +81,11 @@ if ($row)
     echo "</table>\n";
     }
 
-$stmt = dbPrepare('select id, title from proposal where proposerid=? and deleted=0 order by title');
+$currentFestival = getFestivalID();
+$stmt = dbPrepare('select proposal.id, title, festival.id, festival.name from proposal join festival on proposal.festival=festival.id where proposerid=? and deleted=0 order by title');
 $stmt->bind_param('i',$user_id);
 $stmt->execute();
-$stmt->bind_result($proposal_id, $title);
+$stmt->bind_result($proposal_id, $title, $festivalid, $festivalname);
 $first = true;
 while ($stmt->fetch())
     {
@@ -96,7 +97,10 @@ while ($stmt->fetch())
         }
     if ($title == '')
         $title = '!!NEEDS A TITLE!!';
-    echo "<li><a href=\"proposal.php?id=$proposal_id\">$title</a></li>\n";
+    echo "<li><a href=\"proposal.php?id=$proposal_id\">$title</a>";
+    if ($festivalid != $currentFestival)
+        echo " ($festivalname)";
+    echo "</li>\n";
     }
 if (!$first)
     echo "</ul>\n";

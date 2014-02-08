@@ -73,8 +73,9 @@ else
         echo '<li>Your e-mail address must be verified before you can submit a proposal: <a href="verifyEmail.php">send verification message</a></li>' . "\n";
     }
 
-$stmt = dbPrepare('select id,title from proposal where proposerid=? and deleted=0 order by title');
-$stmt->bind_param('i',$_SESSION['userid']);
+$festival = getFestivalID();
+$stmt = dbPrepare('select id,title from proposal where proposerid=? and festival=? and deleted=0 order by title');
+$stmt->bind_param('ii',$_SESSION['userid'],$festival);
 $stmt->execute();
 $stmt->bind_result($proposalid,$title);
 $first = true;
@@ -90,6 +91,25 @@ while ($stmt->fetch())
 if (!$first)
     echo "</ul>\n";
 $stmt->close();
+
+$stmt = dbPrepare('select id,title from proposal where proposerid=? and festival!=? and deleted=0 order by title');
+$stmt->bind_param('ii',$_SESSION['userid'],$festival);
+$stmt->execute();
+$stmt->bind_result($proposalid,$title);
+$first = true;
+while ($stmt->fetch())
+    {
+    if ($first)
+        {
+        echo "<li>Your proposals from previous festivals:<ul>\n";
+        $first = false;
+        }
+    echo "<li><a href='proposal.php?id=$proposalid'>$title</a></li>\n";
+    }
+if (!$first)
+    echo "</ul>\n";
+$stmt->close();
+
 ?>
 
 <br>
