@@ -92,6 +92,7 @@ if (!$first)
     echo "</ul>\n";
 $stmt->close();
 
+/*
 $stmt = dbPrepare('select id,title from proposal where proposerid=? and festival!=? and deleted=0 order by title');
 $stmt->bind_param('ii',$_SESSION['userid'],$festival);
 $stmt->execute();
@@ -109,7 +110,7 @@ while ($stmt->fetch())
 if (!$first)
     echo "</ul>\n";
 $stmt->close();
-
+*/
 ?>
 
 <br>
