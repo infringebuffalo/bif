@@ -49,7 +49,7 @@ If you have any questions, ask away:
 </p>
 <ul>
 <li>General/PR: pr@infringebuffalo.org / info@infringebuffalo.org
-<li>Music: Curt, merlinsbooking@gmail.com
+<li>Music: Curt, steelcrazybooking@gmail.com
 <li>Theater/Poetry: Carly, infringecarly@gmail.com
 <li>Dance: Leslie, danceundertheradar@gmail.com
 <li>Film: Aaron, rubygroove@aol.com
@@ -78,7 +78,7 @@ function userInfo($email)
 function orgContact($formtype)
     {
     if ($formtype == 'music')
-        return userInfo('merlinsbooking@gmail.com');
+        return userInfo('steelcrazybooking@gmail.com');
     else if ($formtype == 'dance')
         return userInfo('danceundertheradar@gmail.com');
     else if ($formtype == 'theatre')
