@@ -12,10 +12,10 @@ if (!isset($_GET['id']))
 else
     $proposal_id = $_GET['id'];
 
-$stmt = dbPrepare('select `proposerid`, `festival`, `title`, `info`, `availability`, `forminfo`, `orgcontact`, `deleted`, `submitted`, `user`.`name` from `proposal` join `user` on `proposerid`=`user`.`id` where `proposal`.`id`=?');
+$stmt = dbPrepare('select `proposerid`, `proposal`.`festival`, `title`, `info`, `availability`, `forminfo`, `orgcontact`, `deleted`, `submitted`, `user`.`name`, `festival`.`name` from `proposal` join `user` on `proposerid`=`user`.`id` join `festival` on `proposal`.`festival`=`festival`.`id` where `proposal`.`id`=?');
 $stmt->bind_param('i',$proposal_id);
 $stmt->execute();
-$stmt->bind_result($proposer_id,$festival_id,$title,$info_ser,$availability_ser,$forminfo_ser,$orgcontact,$deleted,$submitted,$proposer_name);
+$stmt->bind_result($proposer_id,$festival_id,$title,$info_ser,$availability_ser,$forminfo_ser,$orgcontact,$deleted,$submitted,$proposer_name, $festivalname);
 $stmt->fetch();
 $stmt->close();
 $info = unserialize($info_ser);
@@ -229,6 +229,8 @@ echo '<table rules="all" cellpadding="3">';
 
 echo "<tr id='edit_fieldTitle' class='edit_info'><th>Title</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalTitle' /><input type='hidden' name='proposal' value='$proposal_id' /><input id='input_fieldTitle' type='text' name='newtitle' value=\"". htmlspecialchars($title) . "\" /><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldTitle\"); return false;'>don't edit</button></td></form></tr>\n";
 echo "<tr id='show_fieldTitle' class='show_info' onclick='showEditor(\"fieldTitle\");'><th>Title</th><td>" . htmlspecialchars($title) . "</td></tr>\n";
+
+echo "<tr><th>Festival</th><td>$festivalname</a></td></tr>\n";
 
 echo "<tr><th>Proposer</th><td><a href='user.php?id=$proposer_id'>$proposer_name</a>";
 if (hasPrivilege('scheduler'))
