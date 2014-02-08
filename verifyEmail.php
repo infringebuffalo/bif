@@ -8,7 +8,7 @@ bifPageHeader('verify e-mail');
 
 $addr = $_SESSION['username'];
 $subject = 'Infringement festival e-mail verification';
-$code = md5('bif-' . $addr);
+$code = md5('bif-' . strtolower($addr));
 $body = "Thanks for signing up to be a part of the Buffalo Infringement Festival.\nTo verify that your e-mail address is correct, please click on this link: http://infringebuffalo.org/db2/confirmEmail.php?id=" . $_SESSION['userid'] . "&code=" . $code . "\n";
 $header = 'From: scheduler@infringebuffalo.org';
 log_message("verifying address $addr");

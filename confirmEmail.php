@@ -13,7 +13,7 @@ if ($row)
     {
     log_message("confirming address for email $row[email]");
     $code = GETvalue('code');
-    $expectedCode = md5('bif-' . $row['email']);
+    $expectedCode = md5('bif-' . strtolower($row['email']));
     if ($code == $expectedCode)
         {
         log_message("email confirmed for $row[email]");
