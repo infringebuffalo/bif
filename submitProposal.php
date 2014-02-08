@@ -1,6 +1,4 @@
 <?php
-echo "<pre>\n"; print_r($_POST); echo "</pre>\n"; die();
-
 require_once 'init.php';
 connectDB();
 requirePrivilege(array('scheduler','confirmed'));
