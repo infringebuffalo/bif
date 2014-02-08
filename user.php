@@ -10,6 +10,33 @@ if (!isset($_GET['id']))
 else
     $user_id = $_GET['id'];
 
+
+function privButton($priv,$thisUserPrivs,$user_id)
+    {
+    $s = <<<ENDSTRING
+<form method="POST" action="api.php">
+<input type="hidden" name="privilege" value="$priv" />
+<input type="hidden" name="userid" value="$user_id" />
+ENDSTRING;
+    if (stripos($thisUserPrivs,"/$priv/") !== false)
+        {
+        $s .= <<< ENDSTRING
+<input type="hidden" name="command" value="removePrivilege" />
+<input type="submit" name="submit" value="Remove $priv privilege" />
+ENDSTRING;
+        }
+    else
+        {
+        $s .= <<< ENDSTRING
+<input type="hidden" name="command" value="addPrivilege" />
+<input type="submit" name="submit" value="Grant $priv privilege" />
+ENDSTRING;
+        }
+    $s .= "</form>\n";
+    return $s;
+    }
+
+
 $row = dbQueryByID('select name,email,phone,snailmail from user where id=?',$user_id);
 bifPageheader('user: ' . $row['name']);
 
@@ -22,47 +49,9 @@ if (hasPrivilege('admin'))
     $stmt->bind_result($thisUserPrivs);
     $stmt->fetch();
     $stmt->close();
-    echo <<< ENDSTRING
-<div style="float:right">
-<form method="POST" action="api.php">
-<input type="hidden" name="privilege" value="scheduler" />
-<input type="hidden" name="userid" value="$user_id" />
-ENDSTRING;
-    if (stripos($thisUserPrivs,'/scheduler/') !== false)
-        {
-        echo <<< ENDSTRING
-<input type="hidden" name="command" value="removePrivilege" />
-<input type="submit" name="submit" value="Remove scheduler privilege" />
-ENDSTRING;
-        }
-    else
-        {
-        echo <<< ENDSTRING
-<input type="hidden" name="command" value="addPrivilege" />
-<input type="submit" name="submit" value="Grant scheduler privilege" />
-ENDSTRING;
-        }
-    echo "</form>\n";
-    echo <<< ENDSTRING
-<form method="POST" action="api.php">
-<input type="hidden" name="privilege" value="organizer" />
-<input type="hidden" name="userid" value="$user_id" />
-ENDSTRING;
-    if (stripos($thisUserPrivs,'/organizer/') !== false)
-        {
-        echo <<< ENDSTRING
-<input type="hidden" name="command" value="removePrivilege" />
-<input type="submit" name="submit" value="Remove organizer privilege" />
-ENDSTRING;
-        }
-    else
-        {
-        echo <<< ENDSTRING
-<input type="hidden" name="command" value="addPrivilege" />
-<input type="submit" name="submit" value="Grant organizer privilege" />
-ENDSTRING;
-        }
-    echo "</form>\n";
+    echo "<div style='float:right'>\n";
+    foreach (array('scheduler','organizer','confirmed') as $priv)
+        echo privButton($priv,$thisUserPrivs,$user_id);
     echo "</div>\n";
     }
 
