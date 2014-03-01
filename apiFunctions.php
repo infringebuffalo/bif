@@ -15,6 +15,23 @@ function newVenue($name,$shortname)
     $returnurl = 'venue.php?id=' . $venueid;
     }
 
+function copyVenue($id)
+    {
+    $row = dbQueryByID('select name,shortname,info from venue where id=?',$id);
+    $name = $row['name'];
+    $shortname = $row['shortname'];
+    $info = $row['info'];
+    $newvenueid = newEntityID('venue');
+    $festival = getFestivalID();
+    $stmt = dbPrepare('insert into `venue` (`id`, `name`, `shortname`, `festival`, `info`) values (?,?,?,?,?)');
+    $stmt->bind_param('issis',$newvenueid,$name,$shortname,$festival,$info);
+    $stmt->execute();
+    $stmt->close();
+    log_message('copyVenue ' . $id . ' (' . $name . ') to ' . $newvenueid);
+    global $returnurl;
+    $returnurl = 'venue.php?id=' . $newvenueid;
+    }
+
 function newCard($userid,$role,$email,$phone,$snailmail)
     {
     $cardid = newEntityID('card');

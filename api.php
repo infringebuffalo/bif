@@ -29,6 +29,7 @@ class apiFunction
     }
 
 $api = array(new apiFunction('newVenue',1,0),
+            new apiFunction('copyVenue',1,0),
             new apiFunction('newCard',1,0),
             new apiFunction('newBatch',1,0),
             new apiFunction('newGroupshow',1,0),

@@ -99,8 +99,8 @@ function loggedMail($addr, $subject, $body, $header)
 
 function getBatch($name,$festival,$create=false,$desc='')
     {
-    $stmt = dbPrepare('select id from batch where name=?');
-    $stmt->bind_param('s',$name);
+    $stmt = dbPrepare('select id from batch where name=? and festival=?');
+    $stmt->bind_param('si',$name,$festival);
     $stmt->execute();
     $stmt->bind_result($id);
     if ($stmt->fetch())

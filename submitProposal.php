@@ -12,6 +12,7 @@ $festival = getFestivalID();
 $batchid = getBatch($formtype,$festival);
 $orgcontact = orgContact($formtype);
 $title = POSTvalue('title');
+if (trim($title) == '') $title = 'NEEDS A TITLE';
 $proposerid = $_SESSION['userid'];
 log_message("createProposal \"$title\", type \"$formtype\"");
 
@@ -27,7 +28,10 @@ else if ($formtype == 'visualart')
     createVisualartProposal($title,$proposerid,$festival,$batchid,$orgcontact);
 else if ($formtype == 'literary')
     createLiteraryProposal($title,$proposerid,$festival,$batchid,$orgcontact);
-
+else if ($formtype == 'street')
+    createStreetProposal($title,$proposerid,$festival,$batchid,$orgcontact);
+else
+    die('ERROR: UNKNOWN PROPOSAL TYPE');
 ?>
 <p>
 Congratulations!<br>
@@ -101,7 +105,7 @@ function contactInfo()
     $contactaddress = POSTvalue('contactaddress');
     $contactfacebook = POSTvalue('contactfacebook');
     $contactmethod = POSTvalue('bestcontactmethod');
-    return "$contactname\nE-mail:$contactemail\nPhone:$contactphone\nAddress:$contactaddress\nFacebook:$contactfacebook\nBest contact method:$contactmethod";
+    return "$contactname\nE-mail: $contactemail\nPhone: $contactphone\nAddress: $contactaddress\nFacebook: $contactfacebook\nBest contact method: $contactmethod";
     }
 
 function secondContactInfo()
@@ -110,7 +114,7 @@ function secondContactInfo()
     $contact2email = POSTvalue('secondcontactemail');
     $contact2phone = POSTvalue('secondcontactphone');
     $contact2address = POSTvalue('secondcontactaddress');
-    return "$contact2name\nE-mail:$contact2email\nPhone:$contact2phone\nAddress:$contact2address";
+    return "$contact2name\nE-mail: $contact2email\nPhone: $contact2phone\nAddress: $contact2address";
     }
 
 function createTheatreProposal($title,$proposerid,$festival,$batchid,$orgcontact)
@@ -173,7 +177,7 @@ function createMusicProposal($title,$proposerid,$festival,$batchid,$orgcontact)
     addInfo($info,'Play without amplification', POSTvalue('withoutamp'));
     addInfo($info,'Willing to busk', POSTvalue('busking'));
     addInfo($info,'Share drum kit', POSTvalue('sharedrums'));
-    addInfo($info,'Have tables &amp; mixer', POSTvalue('djowntables'));
+    addInfo($info,'Have tables and mixer', POSTvalue('djowntables'));
     addInfo($info,'Describe gear etc', POSTvalue('bandgear'));
     addInfo($info,'Equipment to share', POSTvalue('shareequipment'));
     addInfo($info,'How loud', POSTvalue('howloud'));
@@ -306,6 +310,75 @@ function createLiteraryProposal($title,$proposerid,$festival,$batchid,$orgcontac
     addInfo($info,'How does it infringe', POSTvalue('infringe'));
     addInfo($info,'Out of town / housing', POSTvalue('outoftown'));
     addInfo($info,'Previous infringement festivals', POSTvalue('pastfestivals'));
+    addInfo($info,'Any questions', POSTvalue('questions'));
+    $availability = array();
+    for ($d = 0; $d < $festivalNumberOfDays; $d++)
+        $availability[$d] = POSTvalue('can_day' . $d);
+    insertProposal($info,$availability,$proposerid,$festival,$title,$orgcontact,$batchid);
+    }
+
+function createStreetProposal($title,$proposerid,$festival,$batchid,$orgcontact)
+    {
+    global $festivalNumberOfDays;
+    $info = array();
+    addInfo($info,'Contact info',contactInfo());
+    addInfo($info,'Secondary contact info', secondContactInfo());
+    addInfo($info,'Type', 'street');
+    addInfo($info,'Website', POSTvalue('website'));
+    addInfo($info,'Facebook etc', POSTvalue('otherwebsite'));
+    addInfo($info,'Description', POSTvalue('description_org'));
+    addInfo($info,'Description for web', POSTvalue('description_web'));
+    addInfo($info,'Description for brochure', POSTvalue('description_brochure'));
+    addInfo($info,'Image link', POSTvalue('imagelink'));
+    addInfo($info,'Performers\' names and roles', POSTvalue('performers'));
+    addInfo($info,'Everyone over 21', POSTvalue('over21'));
+    addInfo($info,'Experience street performing', POSTvalue('streetexperience'));
+    addInfo($info,'Street performer\'s license', POSTvalue('streetlicense'));
+    addInfo($info,'Play without amplification', POSTvalue('withoutamp'));
+    addInfo($info,'Need outlet', POSTvalue('needoutlet'));
+    addInfo($info,'Performance space size', POSTvalue('performancespace'));
+    addInfo($info,'Required location features', POSTvalue('venuefeatures'));
+    addInfo($info,'Ideal location', POSTvalue('venue'));
+    addInfo($info,'Interested in tips or making scene', POSTvalue('tipsorscene'));
+    addInfo($info,'Scheduled or busking', POSTvalue('scheduledorbusking'));
+    addInfo($info,'Improvisatory', POSTvalue('improvisatory'));
+    addInfo($info,'Willing to improvise with other artists', POSTvalue('improvcollaborate'));
+    addInfo($info,'Interactive', POSTvalue('interactive'));
+    addInfo($info,'Family friendly', POSTvalue('familyfriendly'));
+    addInfo($info,'Setup time', POSTvalue('setuptime'));
+    addInfo($info,'Length of performance', POSTvalue('length'));
+    addInfo($info,'Strike time', POSTvalue('striketime'));
+    addInfo($info,'Any other proposals', POSTvalue('othershows'));
+    addInfo($info,'Number of performances', POSTvalue('numberperformances'));
+    addInfo($info,'Equipment', POSTvalue('equipment'));
+    addInfo($info,'Equipment to share', POSTvalue('shareequipment'));
+    addInfo($info,'[MUSIC] Main genre', POSTvalue('genre'));
+    addInfo($info,'[MUSIC] Secondary genre', POSTvalue('secondgenre'));
+    addInfo($info,'[MUSIC] How loud', POSTvalue('howloud'));
+    addInfo($info,'[MUSIC] Have vocalist', POSTvalue('vocalist'));
+    addInfo($info,'[MUSIC] Dance or theatrical component', POSTvalue('havedanceortheatre'));
+    addInfo($info,'[MUSIC] Willing to perform with dancers', POSTvalue('playwithdancers'));
+    addInfo($info,'[MUSIC] Willing to improvise to projected film', POSTvalue('playwithfilm'));
+    addInfo($info,'[DANCE] Act has sound component', POSTvalue('streetdancehavesound'));
+    addInfo($info,'[DANCE] Will provide own sound', POSTvalue('streetdanceownsound'));
+    addInfo($info,'[DANCE] Willing to perform to live music', POSTvalue('streetdancelivemusic'));
+    addInfo($info,'[DANCE] Would prefer to dance to', POSTvalue('streetdancepreferredmusic'));
+    addInfo($info,'[DANCE] Can\'t dance to', POSTvalue('streetdancecantmusic'));
+    addInfo($info,'[THEATRE] Genre', POSTvalue('streettheatregenre'));
+    addInfo($info,'[THEATRE] Have props/wardrobe', POSTvalue('streettheatreprops'));
+    addInfo($info,'[LITERARY] Genre', POSTvalue('streetliterarygenre'));
+    addInfo($info,'[FILM] Have own projector', POSTvalue('streetfilmprojector'));
+    addInfo($info,'[FILM] Have own screen', POSTvalue('streetfilmscreen'));
+    addInfo($info,'[FILM] Have permission to use a wall', POSTvalue('streetfilmwall'));
+    addInfo($info,'[FILM] Film has sound', POSTvalue('streetfilmsound'));
+    addInfo($info,'[FILM] Would like musicians to improvise', POSTvalue('streetfilmmusicians'));
+    addInfo($info,'[FILM] Any specific musicians in mind', POSTvalue('streetfilmmusiciansdetail'));
+    addInfo($info,'[VISUAL ART] Medium', POSTvalue('streetartmedium'));
+    addInfo($info,'[VISUAL ART] Making in public, or displaying', POSTvalue('streetartmaking'));
+    addInfo($info,'How will you help Infringement', POSTvalue('volunteer'));
+    addInfo($info,'How does it infringe', POSTvalue('infringe'));
+    addInfo($info,'Out of town / housing', POSTvalue('outoftown'));
+    addInfo($info,'Previous festivals', POSTvalue('pastfestivals'));
     addInfo($info,'Any questions', POSTvalue('questions'));
     $availability = array();
     for ($d = 0; $d < $festivalNumberOfDays; $d++)

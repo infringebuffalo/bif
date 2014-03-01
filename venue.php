@@ -39,7 +39,7 @@ $(document).ready(function() {
 ENDSTRING;
 
 
-$venueinfo = dbQueryByID('select name,shortname,info,deleted from venue where id=?',$id);
+$venueinfo = dbQueryByID('select name,shortname,info,festival,deleted from venue where id=?',$id);
 bifPageheader('venue: ' . $venueinfo['name'],$header);
 
 function calEntry($day)
@@ -114,6 +114,9 @@ if ($venueinfo['deleted'])
     echo "<span><form method='POST' action='api.php'><input type='hidden' name='command' value='undeleteVenue' /><input type='hidden' name='id' value='$id' /><input type='submit' value='undelete venue' /></form></span>";
 else
     echo "<span><form method='POST' action='api.php'><input type='hidden' name='command' value='deleteVenue' /><input type='hidden' name='id' value='$id' /><input type='submit' value='delete venue' /></form></span>";
+
+if ($venueinfo['festival'] != getFestivalID())
+    echo "<span><form method='POST' action='api.php'><input type='hidden' name='command' value='copyVenue' /><input type='hidden' name='id' value='$id' /><input type='submit' value='copy venue' /></form></span>";
 
 $info = unserialize($venueinfo['info']);
 

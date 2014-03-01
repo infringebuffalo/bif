@@ -11,7 +11,6 @@ log_message("confirming address for id $userid");
 $row = dbQueryByID('select email from user where id=?',$userid);
 if ($row)
     {
-    log_message("confirming address for email $row[email]");
     $code = GETvalue('code');
     $expectedCode = md5('bif-' . strtolower($row['email']));
     if ($code == $expectedCode)
