@@ -256,6 +256,8 @@ if (hasPrivilege('scheduler'))
     echo "<tr id='show_fieldNew' class='show_info' onclick='showEditor(\"fieldNew\");'><th style='background:#ff8'>[add field]</th><td>&nbsp;</td></tr>\n";
     }
 echo "<tr><th>Availability</th><td>" . availTable($proposal_id,$availability) . "</td></tr>\n";
+echo '<tr><th>Submitted</th><td>' . $submitted . '</td></tr>';
+
 echo '</table>';
 
 bifPagefooter();
