@@ -170,22 +170,20 @@ function hasPrivilege($priv)
 
 function bifPageheader($title,$headerExtras='')
 {
+if ($title != '')
+    $titleprefix = $title . ' |';
+else
+    $titleprefix = '';
 echo <<<ENDSTRING
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta charset="utf-8">
+<link type="text/css" rel="stylesheet" href="style2.css" />
+<title>$titleprefix Buffalo Infringement Festival</title>
 ENDSTRING;
 echo $headerExtras;
 echo <<<ENDSTRING
-<link type="text/css" rel="stylesheet" media="all" href="style2.css" />
-<title>
-ENDSTRING;
-if ($title != '')
-    echo $title . ' | ';
-echo <<<ENDSTRING
-Buffalo Infringement Festival</title>
 </head>
 <body>
 <div class="menubar">
