@@ -1,7 +1,6 @@
 <?php
 require_once 'init.php';
 require_once 'scheduler.php';
-require '../bif.php';
 connectDB();
 
 bifPageheader('new group show');

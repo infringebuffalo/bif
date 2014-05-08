@@ -4,7 +4,6 @@ connectDB();
 requirePrivilege(array('scheduler','confirmed'));
 require_once 'util.php';
 require_once 'scheduler.php';
-require '../bif.php';
 
 bifPageheader('proposal submitted');
 $formtype = POSTvalue('formtype');

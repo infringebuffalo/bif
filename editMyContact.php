@@ -3,7 +3,6 @@ require_once 'init.php';
 require_once 'util.php';
 requireLogin();
 connectDB();
-require_once '../bif.php';
 bifPageHeader("edit contact info");
 
 $data = dbQueryByID('select name,phone,snailmail from user where id=?',$_SESSION['userid']);

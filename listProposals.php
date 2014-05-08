@@ -2,7 +2,6 @@
 require_once 'init.php';
 connectDB();
 requirePrivilege('scheduler');
-require '../bif.php';
 
 $header = <<<ENDSTRING
 <script src="jquery.min.js" type="text/javascript"></script>

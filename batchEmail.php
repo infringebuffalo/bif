@@ -3,7 +3,6 @@ require_once 'init.php';
 connectDB();
 requirePrivilege(array('scheduler','organizer'));
 require_once 'util.php';
-require '../bif.php';
 
 if (!isset($_GET['id']))
     die('no batch id given');

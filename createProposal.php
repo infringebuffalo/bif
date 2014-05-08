@@ -3,7 +3,6 @@ require_once 'init.php';
 connectDB();
 requirePrivilege('scheduler');
 require_once 'util.php';
-require '../bif.php';
 
 $orgcontacts = array('music'=>2,
                      'dance'=>141,

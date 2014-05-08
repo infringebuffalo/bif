@@ -8,7 +8,6 @@ require_once 'init.php';
 connectDB();
 requirePrivilege('admin');
 require_once 'util.php';
-require '../bif.php';
 
 $orgcontacts = array('music'=>2,
                      'dance'=>141,

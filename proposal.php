@@ -4,7 +4,6 @@ connectDB();
 requireLogin();
 require_once 'util.php';
 require_once 'scheduler.php';
-require '../bif.php';
 getDatabase();
 
 if (!isset($_GET['id']))
@@ -38,7 +37,7 @@ $orgcontactinfo = dbQueryByID('select `name`,`card`.`id` from `user` join `card`
 $batches = '';
 if (hasPrivilege('scheduler'))
     {
-    $batches = "<table rules='all'>\n<tr>\n";
+    $batches = "<table>\n<tr>\n";
     $stmt = dbPrepare('select batch_id,name from proposalBatch join batch on batch_id=batch.id where proposal_id=?');
     $stmt->bind_param('i',$proposal_id);
     $stmt->execute();
@@ -225,7 +224,7 @@ if (hasPrivilege('scheduler'))
 echo "<div><a href=\"imageUpload.php?id=$proposal_id\">upload image for web</a></div>\n";
 echo "<div style=\"float:right\"><a href=\"proposalForm.php?id=$proposal_id\">[original form]</a></div>\n";
 echo '<span><button id="editing_enabler" onclick="enableEditing();">enable editing</button><span id="editing_disabler"><button onclick="disableEditing();">disable editing</button> (click on a field to edit it; <b>NOTE: you must save any changed field before going to edit another field</b>)</span></span>';
-echo '<table rules="all" cellpadding="3">';
+echo '<table cellpadding="3">';
 
 echo "<tr id='edit_fieldTitle' class='edit_info'><th>Title</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalTitle' /><input type='hidden' name='proposal' value='$proposal_id' /><input id='input_fieldTitle' type='text' name='newtitle' value=\"". htmlspecialchars($title) . "\" /><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldTitle\"); return false;'>don't edit</button></td></form></tr>\n";
 echo "<tr id='show_fieldTitle' class='show_info' onclick='showEditor(\"fieldTitle\");'><th>Title</th><td>" . htmlspecialchars($title) . "</td></tr>\n";

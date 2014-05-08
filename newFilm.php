@@ -1,7 +1,6 @@
 <?php
 require_once 'init.php';
 require_once 'proposalUtil.php';
-require '../bif.php';
 connectDB();
 requirePrivilege(array('scheduler','confirmed'));
 

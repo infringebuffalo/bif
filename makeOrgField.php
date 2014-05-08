@@ -3,7 +3,6 @@ require_once 'init.php';
 connectDB();
 requirePrivilege(array('scheduler','organizer'));
 require_once 'util.php';
-require '../bif.php';
 
 $type = POSTvalue('type');
 if ($type=='')

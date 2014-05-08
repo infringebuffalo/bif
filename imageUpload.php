@@ -2,7 +2,6 @@
 require_once 'init.php';
 requireLogin();
 connectDB();
-require '../bif.php';
 
 if (!isset($_GET['id']))
     die('no proposal selected');

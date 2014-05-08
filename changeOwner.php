@@ -3,7 +3,6 @@ require_once 'init.php';
 connectDB();
 requirePrivilege('scheduler');
 require_once 'util.php';
-require '../bif.php';
 
 $proposal_id = GETvalue('id',0);
 if ($proposal_id == 0)

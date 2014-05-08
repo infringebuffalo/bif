@@ -3,7 +3,6 @@ require_once 'init.php';
 require_once 'util.php';
 connectDB();
 requirePrivilege('admin');
-require '../bif.php';
 
 bifPageheader('log');
 ?>

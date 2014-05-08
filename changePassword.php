@@ -1,7 +1,6 @@
 <?php
 require_once 'init.php';
 require_once 'util.php';
-require_once '../bif.php';
 requireLogin();
 connectDB();
 bifPageHeader('change password');

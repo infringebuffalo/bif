@@ -3,7 +3,6 @@ require_once 'init.php';
 connectDB();
 requireLogin();
 require_once 'util.php';
-require '../bif.php';
 
 
 $header = <<<ENDSTRING

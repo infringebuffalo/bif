@@ -2,7 +2,6 @@
 require 'init.php';
 connectDB();
 requirePrivilege(array('scheduler','organizer'));
-require '../bif.php';
 
 header('Content-Type: text/csv');
 header('Content-Disposition: attachment; filename="volinfo.csv"');

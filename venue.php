@@ -5,7 +5,6 @@ requireLogin();
 //requirePrivilege(array('scheduler','organizer'));
 require_once 'util.php';
 require_once 'scheduler.php';
-require '../bif.php';
 
 if (!isset($_GET['id']))
     die('no venue id given');

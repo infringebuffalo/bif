@@ -3,7 +3,6 @@ require_once 'init.php';
 connectDB();
 requirePrivilege(array('scheduler','organizer'));
 require_once 'util.php';
-require '../bif.php';
 
 $header = <<<ENDSTRING
 <script src="jquery.min.js" type="text/javascript"></script>

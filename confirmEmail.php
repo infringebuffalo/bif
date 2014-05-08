@@ -2,7 +2,6 @@
 require_once 'init.php';
 require_once 'util.php';
 require_once 'apiFunctions.php';
-require_once '../bif.php';
 connectDB();
 bifPageHeader('confirm e-mail');
 

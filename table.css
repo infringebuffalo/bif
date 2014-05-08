@@ -1,0 +1,239 @@
+table.bifo
+  {
+  width: 100%;
+  border-collapse: collapse;
+  empty-cells: show;
+  }
+
+tbody
+  {
+  border-top:none; /* Override system.css */
+  }
+tr.even, tr.odd
+  {
+  border-bottom:none; /* Override system.css */
+  }
+    
+
+/**
+ * The header rows, top left to bottom right
+ */
+table.bifo td.htl
+  {
+  border: none;
+  background: url(images/or-ul.png) no-repeat bottom right; 
+  width: 17px;
+  height: 17px;
+  vertical-align: bottom;
+  margin: 0;
+  padding: 0;
+  }      
+table.bifo td.htc
+  {
+  border:  none;
+  background: url(images/or-u.png) repeat-x bottom left;
+  margin: 0;
+  padding: 0;
+  }
+ 
+table.bifo td.htc img
+  {
+  width: 100%;
+  height: 17px;
+  }
+  
+table.bifo td.htr
+  {
+  border:  none;
+  background: url(images/or-ur.png) no-repeat bottom left;
+  width: 17px;
+  height: 17px;
+  vertical-align: bottom;
+  margin: 0;
+  padding: 0;
+  }      
+
+table.bifo td.hml
+  {
+  border: none;
+  background: url(images/or-l.png) repeat-y top right;
+  margin: 0;
+  padding: 0;
+  }
+   
+table.bifo tr.hm th.hmc
+  {
+  border: none;
+  background: #FBC636;
+  text-align: center;
+  font-weight: bold; 
+  font-size: 14pt;
+  color: #000;
+  }
+
+table.bifo tr.hm td.hmc
+  {
+  border: none;
+  background: #FBC636;
+  text-align: left;
+  font-weight: normal; 
+  }
+
+table.bifo td.hmr
+  {
+  border:  none;
+  background: url(images/or-r.png) repeat-y top left;
+  margin: 0;
+  padding: 0;
+  }
+
+table.bifo tr.hb
+  {
+  height: 5px;
+  }
+
+table.bifo td.hbl
+  {
+  border:  none;
+  background: url(images/or-l.png) repeat-y top right;
+  margin: 0;
+  padding: 0;
+  }      
+
+table.bifo td.hbc
+  {
+  border:  none;
+  background: url(images/or-d.png) repeat-x top left;
+  margin: 0;
+  padding: 0;
+  }
+  
+table.bifo td.hbr
+  {
+  border:  none;
+  background: url(images/or-r.png) repeat-y top left;
+  margin: 0;
+  padding: 0;
+  }
+        
+table.bifo tr.hbs
+  {
+  height: 17px;
+  }
+table.bifo tr.hbs td.hbl
+  {
+  background: url(images/or-dl.png) no-repeat top right;
+  }  
+table.bifo tr.hbs td.hbr
+  {
+  background: url(images/or-dr.png) no-repeat top left;
+  }   
+
+/**
+ * The data rows, top left to bottom right
+ */
+table.bifo tr.rts
+  {
+  height: 17px;
+  }
+table.bifo tr.rts td.rtl
+  {
+  background: url(images/lw-ul.png) no-repeat bottom right;
+  }
+table.bifo tr.rts td.rtr
+  {
+  background: url(images/lw-ur.png) no-repeat bottom left;
+  }
+
+table.bifo tr.rt
+  {
+  height: 4px;
+  }
+
+table.bifo td.rtl
+  {
+  border:  none;
+  background: url(images/lw-l.png) repeat-y bottom right;
+  width: 17px;
+  margin: 0;
+  padding: 0;
+  vertical-align: bottom;
+  }      
+
+table.bifo td.rtc
+  {
+  border:  none;
+  background: url(images/lw-u.png) repeat-x bottom left;
+  margin: 0;
+  padding: 0;
+  vertical-align: bottom;
+  }
+ 
+table.bifo td.rtr
+  {
+  border:  none;
+  background: url(images/lw-r.png) repeat-y bottom left;
+  width: 17px;
+  margin: 0;
+  padding: 0;
+  vertical-align: bottom;
+  }      
+
+/**
+ * The "redundant" tr.odd selector is here to increase selectivity
+ * and force the background over the one in table.bifo tr.odd td
+ */
+table.bifo td.rml,
+table.bifo tr.odd td.rml
+  {
+  border:  none;
+  background: transparent url(images/lw-l.png) repeat-y center right;
+  margin: 0;
+  padding: 0;
+  }
+   
+table.bifo td
+  {
+  border: none;
+  padding: 0 0.2em;
+  }
+  
+
+table.bifo td.rmr,
+table.bifo tr.odd td.rmr  
+  {
+  border:  none;
+  background: url(images/lw-r.png) repeat-y center left;
+  margin: 0;
+  padding: 0;
+  }
+ 
+table.bifo td.rbl
+  {
+  border:  none;
+  background: url(images/lw-dl.png) no-repeat top right;
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  padding: 0;
+  }      
+
+table.bifo td.rbc
+  {
+  border:  none;
+  background: url(images/lw-d.png) repeat-x top left;
+  height: 17px;
+  margin: 0;
+  padding: 0;
+  }
+  
+table.bifo td.rbr
+  {
+  border:  none;
+  background: url(images/lw-dr.png) no-repeat top left;
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  padding: 0;
+  }      
+

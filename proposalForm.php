@@ -4,7 +4,6 @@ connectDB();
 requireLogin();
 require_once 'util.php';
 require_once 'scheduler.php';
-require '../bif.php';
 getDatabase();
 
 $header = <<<ENDSTRING

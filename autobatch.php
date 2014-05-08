@@ -5,7 +5,6 @@ connectDB();
 requirePrivilege(array('admin'));
 require_once 'util.php';
 require_once 'scheduler.php';
-require '../bif.php';
 
 bifPageheader('autobatching');
 

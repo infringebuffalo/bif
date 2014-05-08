@@ -1,6 +1,5 @@
 <?php
 require_once 'init.php';
-require '../bif.php';
 connectDB();
 
 bifPageheader('new summary field');
