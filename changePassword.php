@@ -3,7 +3,7 @@ require_once 'init.php';
 require_once 'util.php';
 requireLogin();
 connectDB();
-bifPageHeader('change password');
+bifPageheader('change password');
 if ((array_key_exists('changepasswordError',$_SESSION)) && ($_SESSION['changepasswordError'] != ''))
     {
     echo '<div style="background:#ff8080">' . $_SESSION['changepasswordError'] . '</div>';
@@ -33,5 +33,5 @@ if ((array_key_exists('changepasswordError',$_SESSION)) && ($_SESSION['changepas
 </div>
 
 <?php
-bifPageFooter();
+bifPagefooter();
 ?>

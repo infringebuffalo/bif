@@ -14,7 +14,7 @@ when people edit proposal fields, they expect to be able to edit several then hi
 
 force batch names to be unique
 
-fix init-basic setting of festival data
+fix init.php setting of festival data
 
 maybe change venues to have a status value, rather than deleted flag
     - confirmed, maybe, not-this-year (but then this should somehow be tied to festival id)

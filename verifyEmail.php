@@ -3,7 +3,7 @@ require_once 'init.php';
 require_once 'util.php';
 requireLogin();
 connectDB();
-bifPageHeader('verify e-mail');
+bifPageheader('verify e-mail');
 
 $addr = $_SESSION['username'];
 $subject = 'Infringement festival e-mail verification';
@@ -21,5 +21,5 @@ else
     echo '<p>I\'m sorry, but there was an error in trying to send a verification e-mail to ' . $addr . '</p><p>Please contact depape@buffalo.edu for assistance.</p>';
     }
 
-bifPageFooter();
+bifPagefooter();
 ?>

@@ -3,7 +3,7 @@ require_once 'init.php';
 require_once 'util.php';
 connectDB();
 
-bifPageHeader('forgotten password');
+bifPageheader('forgotten password');
 
 $username = $db->real_escape_string(htmlentities(POSTvalue('username')));
 
@@ -34,5 +34,5 @@ else
     echo '<p>No such account was found</p>';
     }
 
-bifPageFooter();
+bifPagefooter();
 ?>

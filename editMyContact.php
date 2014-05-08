@@ -3,7 +3,7 @@ require_once 'init.php';
 require_once 'util.php';
 requireLogin();
 connectDB();
-bifPageHeader("edit contact info");
+bifPageheader("edit contact info");
 
 $data = dbQueryByID('select name,phone,snailmail from user where id=?',$_SESSION['userid']);
 ?>
@@ -35,5 +35,5 @@ Note: Because your e-mail address is also your login name, it cannot be changed 
 </p>
 
 <?php
-bifPageFooter();
+bifPagefooter();
 ?>

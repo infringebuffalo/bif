@@ -3,7 +3,7 @@ require_once 'init.php';
 require_once 'util.php';
 require_once 'apiFunctions.php';
 connectDB();
-bifPageHeader('confirm e-mail');
+bifPageheader('confirm e-mail');
 
 $userid = GETvalue('id');
 log_message("confirming address for id $userid");
@@ -29,5 +29,5 @@ else
     echo "<p>Could not verify e-mail - the user id $userid is not valid.</p>";
     }
 
-bifPageFooter();
+bifPagefooter();
 ?>
