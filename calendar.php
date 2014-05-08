@@ -5,16 +5,7 @@ connectDB();
 require_once 'scheduler.php';
 getDatabase();
 
-$header = <<<ENDSTRING
-<script src="jquery.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-$(document).ready(function() {
- });
-</script>
-<link rel="stylesheet" href="style.css" type="text/css" />
-ENDSTRING;
-
-bifPageheader('calendar',$header);
+bifPageheader('calendar');
 
 ?>
 <table rules=all><tr><th>S<th>M<th>T<th>W<th>T<th>F<th>S</tr><tr><td colspan=4>

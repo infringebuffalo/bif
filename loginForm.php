@@ -14,7 +14,6 @@ function toggleElement(name)
 $(document).ready(function() {
  });
 </script>
-<link rel="stylesheet" href="style.css" type="text/css" />
 ENDSTRING;
 
 bifPageheader('proposals database login',$header);

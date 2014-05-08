@@ -34,7 +34,6 @@ $(document).ready(function() {
     $('.edit_info').hide();
  });
 </script>
-<link rel="stylesheet" href="style.css" type="text/css" />
 ENDSTRING;
 
 

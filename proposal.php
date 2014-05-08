@@ -154,7 +154,6 @@ if (!hasPrivilege('scheduler'))
 $header .= <<<ENDSTRING
  });
 </script>
-<link rel="stylesheet" href="style.css" type="text/css" />
 ENDSTRING;
 
 bifPageheader('proposal: ' . $title,$header);

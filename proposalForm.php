@@ -6,15 +6,6 @@ require_once 'util.php';
 require_once 'scheduler.php';
 getDatabase();
 
-$header = <<<ENDSTRING
-<script src="jquery.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-$(document).ready(function() {
- });
-</script>
-<link rel="stylesheet" href="style.css" type="text/css" />
-ENDSTRING;
-
 if (!isset($_GET['id']))
     die('no proposal selected');
 else
@@ -37,7 +28,7 @@ if (!hasPrivilege('scheduler'))
         }
     }
 
-bifPageheader('proposal: ' . $title,$header);
+bifPageheader('proposal: ' . $title);
 
 echo '<table rules="all" cellpadding="3">';
 

@@ -10,7 +10,6 @@ $header = <<<ENDSTRING
 $(document).ready(function() {
  });
 </script>
-<link rel="stylesheet" href="style.css" type="text/css" />
 ENDSTRING;
 
 $stmt = dbPrepare('select `proposal`.`id`, `proposerid`, `name`, `title`, `orgfields` from `proposal` join `user` on `proposerid`=`user`.`id` where `deleted` = 1 order by `title`');

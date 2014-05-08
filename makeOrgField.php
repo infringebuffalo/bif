@@ -14,11 +14,7 @@ $field = POSTvalue('field',0);
 $label = POSTvalue('label');
 $default = POSTvalue('default');
 
-$header = <<<ENDSTRING
-<link rel="stylesheet" href="style.css" type="text/css" />
-ENDSTRING;
-
-bifPageheader('make summary field', $header);
+bifPageheader('make summary field');
     
 $neworgfields = array();
 $stmt = dbPrepare('select id, title, info, forminfo, orgfields from proposal where deleted=0 order by title');

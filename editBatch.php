@@ -22,7 +22,6 @@ function showClass(name)
 $(document).ready(function() {
  });
 </script>
-<link rel="stylesheet" href="style.css" type="text/css" />
 ENDSTRING;
 
 

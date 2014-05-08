@@ -4,16 +4,6 @@ connectDB();
 requireLogin();
 require_once 'util.php';
 
-
-$header = <<<ENDSTRING
-<script src="jquery.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-$(document).ready(function() {
- });
-</script>
-<link rel="stylesheet" href="style.css" type="text/css" />
-ENDSTRING;
-
 bifPageheader('change preferences');
 
 $summaryLabels = array();
