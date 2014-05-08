@@ -52,7 +52,7 @@ If you have any questions, ask away:
 <ul>
 <li>General/PR: pr@infringebuffalo.org / info@infringebuffalo.org
 <li>Music: Curt, steelcrazybooking@gmail.com
-<li>Theater/Poetry: Carly, infringecarly@gmail.com
+<li>Theater/Poetry: TBD; contact info@infringebuffalo.org for now
 <li>Dance: Leslie, danceundertheradar@gmail.com
 <li>Film: Aaron, rubygroove@aol.com
 <li>Street performance: Dave, dga8787@aol.com
@@ -84,13 +84,13 @@ function orgContact($formtype)
     else if ($formtype == 'dance')
         return userInfo('danceundertheradar@gmail.com');
     else if ($formtype == 'theatre')
-        return userInfo('infringecarly@gmail.com');
+        return userInfo('depape@buffalo.edu');
     else if ($formtype == 'film')
         return userInfo('rubygroove@aol.com');
     else if ($formtype == 'visualart')
         return userInfo('visualinfringement@live.com');
     else if ($formtype == 'literary')
-        return userInfo('infringecarly@gmail.com');
+        return userInfo('depape@buffalo.edu');
     else if ($formtype == 'street')
         return userInfo('dga8787@aol.com');
     else

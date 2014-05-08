@@ -62,7 +62,7 @@ if (hasPrivilege('scheduler'))
 $header = <<<ENDSTRING
 <script src="jquery.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-var editable = true;
+var editable = false;
 var availability = {
 ENDSTRING;
 function jsSafe($s)
@@ -145,7 +145,7 @@ function limitChars(node, limit)
  
 $(document).ready(function() {
     $('.edit_info').hide();
-    $('#editing_enabler').hide();
+    $('#editing_disabler').hide();
     $('.calEntry').hover(hoverFunc,unhoverFunc);
 ENDSTRING;
 
