@@ -435,12 +435,11 @@ function createFormText($info,$availability,$title)
 
 function emailProposal($formtext,$proposerid,$orgcontact)
     {
-    $body = "The following proposal has been submitted for the Buffalo Infringement Festival:\n\n" . $formtext;
+    $body = "The following proposal has been submitted for the Buffalo Infringement Festival:\r\n\r\n" . $formtext;
     $row = dbQueryByID("select email from user where id=?",$proposerid);
     $addr = $row['email']. ', ' . $orgcontact['email'];
     $subject = "Buffalo Infringement proposal";
-    $header = "From: scheduler@infringebuffalo.org\r\n";
-    loggedMail($addr, $subject, $body, $header);
+    loggedMail($addr, $subject, $body);
     }
 
 ?>

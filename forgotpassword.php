@@ -23,9 +23,8 @@ if ($data)
 
     $email = $username;
     $subject = 'Buffalo Infringement password';
-    $body = "A new password has been generated for your infringebuffalo.org login.\nThe new password is:\n   " . $password . "\n\n(If you did not request a new password, you may safely ignore this message and continue to use your old password.)\n";
-    $header = 'From: scheduler@infringebuffalo.org' . "\r\n";
-    loggedMail($email, $subject, $body, $header);
+    $body = "A new password has been generated for your infringebuffalo.org login.\r\nThe new password is:\r\n   " . $password . "\r\n\r\n(If you did not request a new password, you may safely ignore this message and continue to use your old password.)\r\n";
+    loggedMail($email, $subject, $body);
     echo '<p>Done.  Check your e-mail for the new password.<br/>(Be sure to also check your spam folder if you don\'t see the message with your password soon.)</p><br/><br/><p>Contact Dave Pape [depape@buffalo.edu] with any technical problems.</p>';
     }
 else

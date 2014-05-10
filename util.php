@@ -83,8 +83,9 @@ function dbQueryByString($query,$str)
     return $data;
     }
 
-function loggedMail($addr, $subject, $body, $header)
+function loggedMail($addr, $subject, $body, $header='')
     {
+    $header = "From: scheduler@infringebuffalo.org\r\n" . $header;
     if (mail($addr, $subject, $body, $header))
         {
         log_message("sent mail to $addr");
