@@ -1,3 +1,5 @@
+check character set used everywhere - make it utf-8 consistently.  add 'encoding' argument to htmlspecialchars() & htmlentities() - in php < 5.5, defaults to iso-8859-1 
+
 "create proposal for other" apparently doesn't validate its input - allows one to create a proposal with no proposer
 also, it appears to use its own, outdated list of festival contacts
 
