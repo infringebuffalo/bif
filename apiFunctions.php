@@ -217,7 +217,7 @@ function changeProposalInfo($proposal,$fieldnum,$newinfo)
         return;
     $info = unserialize($info_ser['info']);
     $oldinfo = $info[$fieldnum][1];
-    $info[$fieldnum] = array($info[$fieldnum][0], filter_var($newinfo, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH));
+    $info[$fieldnum] = array($info[$fieldnum][0], $newinfo);
     $info_ser = serialize($info);
     $stmt = dbPrepare('update proposal set info=? where id=?');
     $stmt->bind_param('si',$info_ser,$proposal);
@@ -235,7 +235,7 @@ function changeProposalOrgfield($proposal,$fieldlabel,$newinfo)
         return;
     $orgfields = unserialize($orgfields_ser['orgfields']);
     $oldinfo = $orgfields[$fieldlabel];
-    $orgfields[$fieldlabel] = filter_var($newinfo, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
+    $orgfields[$fieldlabel] = $newinfo;
     $orgfields_ser = serialize($orgfields);
     $stmt = dbPrepare('update proposal set orgfields=? where id=?');
     $stmt->bind_param('si',$orgfields_ser,$proposal);
@@ -253,7 +253,7 @@ function changeProposalAvail($proposal,$daynum,$newinfo)
         return;
     $info = unserialize($info_ser['availability']);
     $oldinfo = $info[$daynum];
-    $info[$daynum] = filter_var($newinfo, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
+    $info[$daynum] = $newinfo;
     $info_ser = serialize($info);
     $stmt = dbPrepare('update proposal set availability=? where id=?');
     $stmt->bind_param('si',$info_ser,$proposal);
@@ -306,7 +306,6 @@ function changeVenueInfo($venue,$fieldnum,$newinfo)
     $info = unserialize($info_ser['info']);
     $oldinfo = $info[$fieldnum][1];
     $info[$fieldnum] = array($info[$fieldnum][0], $newinfo);
-//    $info[$fieldnum] = array($info[$fieldnum][0], filter_var($newinfo, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH));
     $info_ser = serialize($info);
     $stmt = dbPrepare('update venue set info=? where id=?');
     $stmt->bind_param('si',$info_ser,$venue);
