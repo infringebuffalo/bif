@@ -2,7 +2,7 @@
 
 function multiline($s)
     {
-    return str_replace("\n", "<br>\n", htmlspecialchars(stripslashes($s)));
+    return str_replace("\n", "<br>\n", htmlspecialchars(stripslashes($s),ENT_COMPAT | ENT_HTML5, "UTF-8"));
     }
 
 // Turn a possibly incomplete URL into a valid one for an <a href=...

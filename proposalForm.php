@@ -32,7 +32,7 @@ bifPageheader('proposal: ' . $title);
 
 echo '<table rules="all" cellpadding="3">';
 
-echo "<tr><th>Title</th><td>" . htmlspecialchars($title) . "</td></tr>\n";
+echo "<tr><th>Title</th><td>" . htmlspecialchars($title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "</td></tr>\n";
 
 echo "<tr><th>Proposer</th><td><a href='user.php?id=$proposer_id'>$proposer_name</a></td></tr>\n";
 

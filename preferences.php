@@ -35,7 +35,7 @@ else
 <?php
 foreach ($summaryLabels as $s)
     {
-    echo '<li>' . $s . '<input type="checkbox" name="summaryLabel[]" value="' . htmlspecialchars($s) . '"';
+    echo '<li>' . $s . '<input type="checkbox" name="summaryLabel[]" value="' . htmlspecialchars($s,ENT_COMPAT | ENT_HTML5, "UTF-8") . '"';
     if (($currentLabels==='all') || (in_array($s,$currentLabels)))
         echo " checked";
     echo " /></li>\n";

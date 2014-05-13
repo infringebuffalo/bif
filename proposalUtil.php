@@ -165,7 +165,7 @@ function textInput($field, $size=60, $id='')
   global $info;
   if ($id != '')
     $id = 'id="' . $id . '" ';
-  if (array_key_exists($field,$info)) $val = htmlentities(stripslashes($info[$field]));
+  if (array_key_exists($field,$info)) $val = htmlentities(stripslashes($info[$field]),ENT_COMPAT | ENT_HTML5, "UTF-8");
   else $val = '';
   return '<td class="proposalTD"><input ' . $id . 'type="text" name="' . $field . '" size="' . $size . '" value="' . $val . '" /></td>';
   }

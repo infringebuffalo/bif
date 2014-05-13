@@ -39,7 +39,7 @@ if ($_FILES)
         $imageid = newEntityID('image');
         $filename = 'uploads/file' . $imageid . '.jpg';
         exec('convert ' . $f['tmp_name'] . ' -thumbnail 300x300 -unsharp 0x.5 ' . $filename);
-        $origFilename = $db->real_escape_string(htmlentities($f['name']));
+        $origFilename = $db->real_escape_string(htmlentities($f['name'],ENT_COMPAT | ENT_HTML5, "UTF-8"));
         $description = "image for show $proposalid ('$title')";
         $stmt = dbPrepare('insert into image (id,filename,origFilename,description) values (?,?,?,?)');
         $stmt->bind_param('isss',$imageid,$filename,$origFilename,$description);

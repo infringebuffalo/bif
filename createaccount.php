@@ -9,7 +9,7 @@ if (loggedIn())
     session_start();
     }
 
-$username = htmlentities(POSTvalue('username'));
+$username = htmlentities(POSTvalue('username'),ENT_COMPAT | ENT_HTML5, "UTF-8");
 
 if (preg_match('/^(Viagra|Cialis|Levitra)$/', $username))
     {
@@ -48,9 +48,9 @@ else
         }
     else
         {
-        $name = htmlentities(POSTvalue('name'));
-        $phone = htmlentities(POSTvalue('phone'));
-        $snailmail = htmlentities(POSTvalue('snailmail'));
+        $name = htmlentities(POSTvalue('name'),ENT_COMPAT | ENT_HTML5, "UTF-8");
+        $phone = htmlentities(POSTvalue('phone'),ENT_COMPAT | ENT_HTML5, "UTF-8");
+        $snailmail = htmlentities(POSTvalue('snailmail'),ENT_COMPAT | ENT_HTML5, "UTF-8");
         $encPassword = md5($password);
         $userid = newEntityID('user');
         $stmt = dbPrepare('insert into user (id,email,password,newpassword,name,phone,snailmail) values (?,?,?,?,?,?,?)');

@@ -5,7 +5,7 @@ connectDB();
 
 bifPageheader('forgotten password');
 
-$username = $db->real_escape_string(htmlentities(POSTvalue('username')));
+$username = $db->real_escape_string(htmlentities(POSTvalue('username'),ENT_COMPAT | ENT_HTML5, "UTF-8"));
 
 $data = dbQueryByString('select id from user where email=?',$username);
 if ($data)
