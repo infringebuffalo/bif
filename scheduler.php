@@ -301,7 +301,9 @@ function timeMenu($startHour, $endHour, $name, $default='1900')
 function venueMenu($name,$selected='')
     {
     $retstr = "<select name='" . $name . "'>\n";
-    $stmt = dbPrepare('select id,name,shortname from venue where deleted=0 order by shortname');
+    $stmt = dbPrepare('select id,name,shortname from venue where deleted=0 and festival=? order by shortname');
+    $festival = getFestivalID();
+    $stmt->bind_param('i',$festival);
     $stmt->execute();
     $stmt->bind_result($id,$name,$shortname);
     while ($stmt->fetch())
