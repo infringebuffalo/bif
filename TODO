@@ -8,6 +8,8 @@ newOrgfield: form should include default value
 
 need to do proper htmlspecialchars etc on ALL variables being output
 
+venue.php should show which festival this venue is for
+
 search proposals
 
 add 'change festival contact' to proposal page
