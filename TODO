@@ -1,13 +1,14 @@
 check character set used everywhere - make it utf-8 consistently.  add 'encoding' argument to htmlspecialchars() & htmlentities() - in php < 5.5, defaults to iso-8859-1 
 
-"create proposal for other" apparently doesn't validate its input - allows one to create a proposal with no proposer
-also, it appears to use its own, outdated list of festival contacts
+MERGE createProposal.php and submitProposal.php --- "create proposal for other" apparently doesn't validate its input - allows one to create a proposal with no proposer also, it appears to use its own, outdated list of festival contacts
 
 need to add some sort of "organizer positions" feature, to replace current use of "cards" (public contact info).  currently, cards include a 'role' entry (such as "theatre scheduler"); when this role changes to someone else, you have to create a card for the new person in that role, but that doesn't remove the role information from the old person, leaving outdated/contradictory information
 
 newOrgfield: form should include default value
 
 need to do proper htmlspecialchars etc on ALL variables being output
+
+venue.php should show which festival this venue is for
 
 search proposals
 
@@ -31,4 +32,6 @@ user privileges should be per festival - ie need to make a table with userid / f
 newGroupshow command should redirect you to the group show's page on success
 
 maybe: a table of 'rules' for special proposal fields.  eg if a field is named "batch" (as in a group show), it would be nice to convert the number into the batch name, and to add a special edit box for changing it.  "Description for brochure" field could have a modified editor that limited the text length
+
+maybe: add some sort of 'lock' feature to venues (& proposals?), to use on ones from past years - makes it so they can't be edited, and can't be scheduled
 
