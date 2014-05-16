@@ -550,7 +550,7 @@ function newBatchColumn($columnname,$fieldlabel,$defaultvalue,$batchid)
         $columnval = $defaultvalue;
         foreach ($info as $formrow)
             {
-            if (stripos($formrow[0],$fieldlabel) != FALSE)
+            if (stripos($formrow[0],$fieldlabel) !== FALSE)
                 {
                 $columnval = $formrow[1];
                 break;

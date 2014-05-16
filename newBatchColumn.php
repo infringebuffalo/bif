@@ -15,7 +15,7 @@ To create something using data from the original forms, enter an appropriate par
 To create just a new column filled with the default value, leave the "Proposal field label..." line blank.
 </p>
 <p>
-If a summary field with the given name already exists, it will be replaced by the new information.
+If a column with the given name already exists, it will be replaced by the new information.
 </p>
 <form method="POST" action="api.php">
 <input type="hidden" name="command" value="newBatchColumn">
