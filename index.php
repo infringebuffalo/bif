@@ -55,6 +55,8 @@ ENDSTRING;
     }
 else
     {
+    echo "<li>Proposals are now closed</li><br>\n";
+/*
     if (hasPrivilege('confirmed'))
         {
         echo '<li>Submit a proposal:
@@ -70,6 +72,7 @@ else
         }
     else
         echo '<li>Your e-mail address must be verified before you can submit a proposal: <a href="verifyEmail.php">send verification message</a></li>' . "\n";
+*/
     }
 
 $festival = getFestivalID();

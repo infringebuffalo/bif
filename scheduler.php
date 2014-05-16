@@ -10,10 +10,11 @@ $programinfoList = array();
 
 class proposalInfo
     {
-    function __construct($id,$title,$grouplistmode,$isgroupshow,$deleted)
+    function __construct($id,$title,$festival,$grouplistmode,$isgroupshow,$deleted)
         {
         $this->id = $id;
         $this->title = $title;
+        $this->festival = $festival;
         $this->deleted = $deleted;
         $this->grouplistmode = $grouplistmode;
         $this->isgroupshow = $isgroupshow;
@@ -145,13 +146,13 @@ function getDatabase()
     $stmt->close();
 
     $proposalList = array();
-    $stmt = dbPrepare("select proposal.id,title,isgroupshow,deleted from proposal order by title");
+    $stmt = dbPrepare("select proposal.id,title,festival,isgroupshow,deleted from proposal order by title");
     $stmt->execute();
-    $stmt->bind_result($id,$title,$isgroupshow,$deleted);
+    $stmt->bind_result($id,$title,$festival,$isgroupshow,$deleted);
     $grouplistmode = 0;
     while ($stmt->fetch())
         {
-        $proposalList[$id] = new proposalInfo($id,stripslashes($title),$grouplistmode,$isgroupshow,$deleted);
+        $proposalList[$id] = new proposalInfo($id,stripslashes($title),$festival,$grouplistmode,$isgroupshow,$deleted);
         }
     $stmt->close();
 
@@ -351,7 +352,9 @@ function showMenu($name,$batchid=0,$includeNone=false,$selected=0)
         }
     else
         {
-        $stmt = dbPrepare("select id,title from proposal where deleted=0 order by title");
+        $festival = getFestivalID();
+        $stmt = dbPrepare("select id,title from proposal where deleted=0 and festival=? order by title");
+        $stmt->bind_param('i',$festival);
         }
     $stmt->execute();
     $stmt->bind_result($id,$title);
@@ -369,10 +372,11 @@ function showMenu($name,$batchid=0,$includeNone=false,$selected=0)
 function groupShowMenu($name)
     {
     global $proposalList;
+    $festival = getFestivalID();
     $retstr = '<select name="' . $name . '">';
     foreach ($proposalList as $proposal)
         {
-        if (($proposal->isgroupshow) && (!$proposal->deleted))
+        if (($proposal->isgroupshow) && (!$proposal->deleted) && ($proposal->festival == $festival))
             {
             $retstr .= '<option value="' . $proposal->id . '">' . $proposal->title . '</option>';
             }

@@ -133,13 +133,17 @@ bifPageheader($pageTitle, $header);
 echo $pageDescription;
 
 echo "<table id=\"batchtable\" class=\"tablesorter\">\n";
-echo "<thead><tr><th>title</th><th>proposer</th>";
+echo "<thead><tr><th></th><th>title</th><th>proposer</th>";
 foreach ($labels as $l)
     echo "<th>$l</th>";
 echo "</tr></thead>\n";
 echo "<tbody>\n";
+$count = 1;
 foreach ($rows as $r)
-    echo '<tr><td>' . $r->title() . '</td><td>' . $r->proposer() . '</td>' . $r->summary($labels) . "</tr>\n";
+    {
+    echo "<tr><td>$count</td><td>" . $r->title() . '</td><td>' . $r->proposer() . '</td>' . $r->summary($labels) . "</tr>\n";
+    $count += 1;
+    }
 echo "</tbody>\n";
 echo "</table>\n";
 
