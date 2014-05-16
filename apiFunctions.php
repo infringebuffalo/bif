@@ -522,4 +522,55 @@ function deleteGroupPerformer($groupperformerid)
     log_message('deleteGroupPerformer ' . $groupperformerid);
     }
 
+function newBatchColumn($columnname,$fieldlabel,$defaultvalue,$batchid)
+    {
+    $festival = getFestivalID();
+    if ($batchid == 0)
+        {
+        $stmt = dbPrepare('select id, info, orgfields from proposal where festival=? and deleted=0');
+        $stmt->bind_param('i',$festival);
+        }
+    else
+        {
+        $stmt = dbPrepare('select id, info, orgfields from proposal join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=? and festival=? and deleted=0');
+        $stmt->bind_param('ii',$batchid,$festival);
+        }
+    $stmt->execute();
+    $stmt->bind_result($id,$info_ser,$orgfields_ser);
+    $prop = array();
+    while ($stmt->fetch())
+        {
+        $prop[$id] = array("info"=>$info_ser, "orgfields"=>$orgfields_ser);
+        }
+    $stmt->close();
+    foreach ($prop as $id=>$data)
+        {
+        $info = unserialize($data["info"]);
+        $orgfields = unserialize($data["orgfields"]);
+        $columnval = $defaultvalue;
+        foreach ($info as $formrow)
+            {
+            if (stripos($formrow[0],$fieldlabel) != FALSE)
+                {
+                $columnval = $formrow[1];
+                break;
+                }
+            }
+        $orgfields[$columnname] = $columnval;
+        $orgfields_ser = serialize($orgfields);
+        $stmt = dbPrepare('update proposal set orgfields=? where id=?');
+        $stmt->bind_param('si',$orgfields_ser,$id);
+        $stmt->execute();
+        $stmt->close();
+        }
+    log_message("added batch column '$columnname' (field '$fieldlabel', default '$defaultvalue')");
+    if (!isset($_SESSION['preferences']))
+        $_SESSION['preferences'] = array();
+    if (!isset($_SESSION['preferences']['summaryFields']))
+        $_SESSION['preferences']['summaryFields'] = array();
+    $_SESSION['preferences']['summaryFields'][] = $columnname;
+    savePreferences();
+    global $returnurl;
+    $returnurl = 'batch.php?id=' . $batchid;
+    }
 ?>

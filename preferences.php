@@ -7,7 +7,9 @@ require_once 'util.php';
 bifPageheader('change preferences');
 
 $summaryLabels = array();
-$stmt = dbPrepare('select orgfields from proposal where deleted=0');
+$festival = getFestivalID();
+$stmt = dbPrepare('select orgfields from proposal where festival=? and deleted=0');
+$stmt->bind_param('i',$festival);
 $stmt->execute();
 $stmt->bind_result($orgfields_ser);
 while ($stmt->fetch())

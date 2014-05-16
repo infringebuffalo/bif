@@ -67,6 +67,7 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('uncancelGroupPerformer',1,0),
             new apiFunction('cancelGroupPerformer',1,0),
             new apiFunction('deleteGroupPerformer',1,0),
+            new apiFunction('newBatchColumn',1,0),
             );
 
 $command = POSTvalue('command');

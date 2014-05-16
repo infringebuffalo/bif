@@ -8,8 +8,6 @@ MERGE createProposal.php and submitProposal.php --- "create proposal for other" 
 
 need to add some sort of "organizer positions" feature, to replace current use of "cards" (public contact info).  currently, cards include a 'role' entry (such as "theatre scheduler"); when this role changes to someone else, you have to create a card for the new person in that role, but that doesn't remove the role information from the old person, leaving outdated/contradictory information
 
-newOrgfield: form should include default value
-
 need to do proper htmlspecialchars etc on ALL variables being output
 
 venue.php should show which festival this venue is for

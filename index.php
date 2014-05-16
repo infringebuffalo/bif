@@ -45,7 +45,7 @@ if (hasPrivilege('scheduler'))
 <li><a href="newGroupshow.php">New group show</a></li>
 <li><a href="newBatch.php">New batch</a></li>
 <li><a href="newVenue.php">New venue</a></li>
-<li><a href="newOrgField.php">New summary field</a></li>
+<li><a href="newBatchColumn.php">New batch column</a></li>
 <li><a href="newCard.php">New card (public contact)</a></li>
 <li><a href="subscribe.php">Add person to mailing list</a></li>
 <br>
