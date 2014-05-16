@@ -3,6 +3,8 @@ require_once 'init.php';
 connectDB();
 require_once 'scheduler.php';
 
+$batchid = GETvalue('id',0);
+
 bifPageheader('new batch column');
 ?>
 <p>
@@ -25,7 +27,7 @@ Proposal field label contains the string: <input type="text" name="fieldlabel" s
 <br>
 Default value: <input type="text" name="defaultvalue" size="20">
 <br>
-Apply to batch: <?php echo batchMenu("batchid"); ?>
+Apply to batch: <?php echo batchMenu("batchid",true,$batchid); ?>
 <p>
 <input type="submit" value="Create">
 </form>

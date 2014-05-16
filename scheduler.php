@@ -321,7 +321,7 @@ function venueMenu($name,$selected='')
     return $retstr;
     }
 
-function batchMenu($name,$includeAllShows=true)
+function batchMenu($name,$includeAllShows=true,$selected=0)
     {
     $retstr = "<select name='$name'>\n";
     if ($includeAllShows)
@@ -333,7 +333,10 @@ function batchMenu($name,$includeAllShows=true)
     $stmt->bind_result($id,$name);
     while ($stmt->fetch())
         {
-        $retstr .= "<option value='$id'>" . stripslashes($name) . "</option>\n";
+        $retstr .= "<option value='$id'";
+        if ($id == $selected)
+            $retstr .= " selected";
+        $retstr .= ">" . stripslashes($name) . "</option>\n";
         }
     $stmt->close();
     $retstr .= "</select>\n";
@@ -360,10 +363,10 @@ function showMenu($name,$batchid=0,$includeNone=false,$selected=0)
     $stmt->bind_result($id,$title);
     while ($stmt->fetch())
         {
-        $retstr .= '<option value="' . $id . '"';
+        $retstr .= "<option value='$id'";
         if ($id == $selected)
-            $retstr .= ' selected';
-        $retstr .= '>' . substr(stripslashes($title),0,32) . '</option>' . "\n";
+            $retstr .= " selected";
+        $retstr .= ">" . substr(stripslashes($title),0,32) . "</option>\n";
         }
     $retstr .= "</select>\n";
     return $retstr;

@@ -12,6 +12,7 @@ if ($id != 0)
     $pageTitle = 'batch: ' . $row['name'];
     $pageDescription = "<p>$row[description]</p>\n";
     $pageDescription .= "<p><a href='editBatch.php?id=$id'>[edit batch]</a>";
+    $pageDescription .= "&nbsp;&nbsp;&nbsp;&nbsp;<a href='newBatchColumn.php?id=$id'>[new column]</a>";
     $pageDescription .= "&nbsp;&nbsp;&nbsp;&nbsp;<a href='batchEmail.php?id=$id'>[email addresses]</a>";
     if (hasPrivilege('scheduler'))
         $pageDescription .= "&nbsp;&nbsp;&nbsp;&nbsp;<a href='batchChangeContact.php?id=$id'>[change festival contact for all]</a>";
@@ -25,6 +26,7 @@ else
 
 $header = <<<ENDSTRING
 <script src="jquery.min.js" type="text/javascript"></script>
+<link type="text/css" rel="stylesheet" href="tablesorter.css" />
 <script src="jquery.tablesorter.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 function showEditor(name)
@@ -42,32 +44,25 @@ function hideEditor(name)
 
 $(document).ready(function() {
     $('.edit_info').hide();
-    $('#batchtable').tablesorter({widgets: ['zebra']});
+    $('#batchtable').tablesorter();
  });
 </script>
 ENDSTRING;
 
-if ($id != 0)
-    {
-    $stmt = dbPrepare('select proposal.id, proposerid, name, title, orgfields from proposal join user on proposerid=user.id join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=? and deleted=0 order by title');
-    $stmt->bind_param('i',$id);
-    }
-else
-    {
-    $festival = GETvalue('festival',getFestivalID());
-    $stmt = dbPrepare('select `proposal`.`id`, `proposerid`, `name`, `title`, `orgfields` from `proposal` join `user` on `proposerid`=`user`.`id` where `deleted` = 0 and `festival` = ? order by `title`');
-    $stmt->bind_param('i',$festival);
-    }
+bifPageheader($pageTitle, $header);
+echo $pageDescription;
+
 
 class propRow
     {
-    function __construct($id,$title,$proposer_id,$proposer_name,$orgfields)
+    function __construct($id,$title,$proposer_id,$proposer_name,$orgfields,$submitted)
         {
         $this->id = $id;
         $this->title = $title;
         $this->proposer_id = $proposer_id;
         $this->proposer_name = $proposer_name;
         $this->orgfields = $orgfields;
+        $this->submitted = $submitted;
         }
     function title()
         {
@@ -76,6 +71,10 @@ class propRow
     function proposer()
         {
         return '<a href="user.php?id=' . $this->proposer_id . '">' . $this->proposer_name . '</a>';
+        }
+    function submitted()
+        {
+        return $this->submitted;
         }
     function summary($labels)
         {
@@ -106,16 +105,28 @@ function addSummaryLabels(&$labels,$orgfields)
             $labels[] = $k;
     }
 
+if ($id != 0)
+    {
+    $stmt = dbPrepare('select proposal.id, proposerid, name, title, orgfields, submitted from proposal join user on proposerid=user.id join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=? and deleted=0 order by title');
+    $stmt->bind_param('i',$id);
+    }
+else
+    {
+    $festival = GETvalue('festival',getFestivalID());
+    $stmt = dbPrepare('select `proposal`.`id`, `proposerid`, `name`, `title`, `orgfields`, `submitted` from `proposal` join `user` on `proposerid`=`user`.`id` where `deleted` = 0 and `festival` = ? order by `title`');
+    $stmt->bind_param('i',$festival);
+    }
+
 $rows = array();
 $labels = array();
 $stmt->execute();
-$stmt->bind_result($id,$proposer_id,$proposer_name,$title,$orgfields_ser);
+$stmt->bind_result($id,$proposer_id,$proposer_name,$title,$orgfields_ser,$submitted);
 while ($stmt->fetch())
     {
     if ($title == '')
         $title = '!!NEEDS A TITLE!!';
     $orgfields = unserialize($orgfields_ser);
-    $rows[] = new propRow($id,$title,$proposer_id,$proposer_name,$orgfields);
+    $rows[] = new propRow($id,$title,$proposer_id,$proposer_name,$orgfields,$submitted);
     addSummaryLabels($labels,$orgfields);
     }
 $stmt->close();
@@ -129,18 +140,15 @@ if (isset($_SESSION['preferences']['summaryFields']))
     }
 sort($labels);
 
-bifPageheader($pageTitle, $header);
-echo $pageDescription;
-
 echo "<table id=\"batchtable\" class=\"tablesorter\">\n";
-echo "<thead><tr><th>title</th><th>proposer</th>";
+echo "<thead><tr><th>title</th><th>proposer</th><th>submitted</th>";
 foreach ($labels as $l)
     echo "<th>$l</th>";
 echo "</tr></thead>\n";
 echo "<tbody>\n";
 foreach ($rows as $r)
     {
-    echo '<tr><td>' . $r->title() . '</td><td>' . $r->proposer() . '</td>' . $r->summary($labels) . "</tr>\n";
+    echo '<tr><td>' . $r->title() . '</td><td>' . $r->proposer() . '</td><td>' . $r->submitted() . '</td>' . $r->summary($labels) . "</tr>\n";
     }
 echo "</tbody>\n";
 echo "</table>\n";

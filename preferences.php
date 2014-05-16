@@ -33,6 +33,7 @@ else
 <h2>Which summary fields to view</h2>
 <form method="POST" action="api.php">
 <input type="hidden" name="command" value="prefsSummaryFields" />
+<input type="hidden" name="returnurl" value="." />
 <ul>
 <?php
 foreach ($summaryLabels as $s)
