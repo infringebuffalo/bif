@@ -13,6 +13,7 @@ if ($id != 0)
     $pageDescription = "<p>$row[description]</p>\n";
     $pageDescription .= "<p><a href='editBatch.php?id=$id'>[edit batch]</a>";
     $pageDescription .= "&nbsp;&nbsp;&nbsp;&nbsp;<a href='newBatchColumn.php?id=$id'>[new column]</a>";
+    $pageDescription .= "&nbsp;&nbsp;&nbsp;&nbsp;<a href='autobatch.php?id=$id'>[auto-add to this batch]</a>";
     $pageDescription .= "&nbsp;&nbsp;&nbsp;&nbsp;<a href='batchEmail.php?id=$id'>[email addresses]</a>";
     if (hasPrivilege('scheduler'))
         $pageDescription .= "&nbsp;&nbsp;&nbsp;&nbsp;<a href='batchChangeContact.php?id=$id'>[change festival contact for all]</a>";

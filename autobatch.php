@@ -1,50 +1,27 @@
 <?php
-die('disabled');
 require_once 'init.php';
 connectDB();
-requirePrivilege(array('admin'));
-require_once 'util.php';
 require_once 'scheduler.php';
 
-bifPageheader('autobatching');
+$batchid = GETvalue('id',0);
 
-$frombatch = 1035; /* Music batch */
-
-$stmt = dbPrepare('select proposal.id, title from proposal join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=? and deleted=0 order by title');
-$stmt->bind_param('i',$frombatch);
-
-$props = array();
-$stmt->execute();
-$stmt->bind_result($id,$title);
-while ($stmt->fetch())
-    {
-    if ($title == '')
-        $title = '!!NEEDS A TITLE!!';
-    $props[$id] = $title;
-    }
-$stmt->close();
-
-$festival = getFestivalID();
-
-echo "<pre>\n";
-foreach ($props as $id=>$title)
-    {
-    $genre = getProposalInfo($id,'Main genre');
-    if ($genre != '')
-        {
-        $batchname = 'music: ' . $genre;
-        $batchid = getBatch($batchname,$festival,true,"All \"$genre\" music proposals");
-        if ($batchid != 0)
-            {
-            echo "$title => $batchname\n";
-            addToBatch($id,$batchid);
-            }
-        else
-            echo "$title - no main genre given\n";
-        }
-    }
-echo "</pre>\n";
-
+bifPageheader('autobatch');
+?>
+<p>
+Automatically put proposals in a batch, based on data in the form.
+</p>
+<form method="POST" action="api.php">
+<input type="hidden" name="command" value="autobatch">
+Process proposals from batch: <?php echo batchMenu("frombatchid",true); ?>
+<br>
+Add them to: <?php echo batchMenu("newbatchid",false,$batchid); ?>
+<br>
+Proposal field label contains the string: <input type="text" name="fieldlabel" size="20">
+<br>
+Value: <input type="text" name="value" size="20">
+<p>
+<input type="submit" value="Do it">
+</form>
+<?php
 bifPagefooter();
-
 ?>

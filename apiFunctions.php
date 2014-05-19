@@ -573,4 +573,43 @@ function newBatchColumn($columnname,$fieldlabel,$defaultvalue,$batchid)
     global $returnurl;
     $returnurl = 'batch.php?id=' . $batchid;
     }
+
+function autobatch($newbatchid,$fieldlabel,$value,$frombatchid)
+    {
+    $festival = getFestivalID();
+    if ($frombatchid == 0)
+        {
+        $stmt = dbPrepare('select id, info from proposal where festival=? and deleted=0');
+        $stmt->bind_param('i',$festival);
+        }
+    else
+        {
+        $stmt = dbPrepare('select id, info from proposal join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=? and festival=? and deleted=0');
+        $stmt->bind_param('ii',$frombatchid,$festival);
+        }
+    $stmt->execute();
+    $stmt->bind_result($id,$info_ser);
+    $prop = array();
+    while ($stmt->fetch())
+        {
+        $info = unserialize($info_ser);
+        foreach ($info as $formrow)
+            {
+            if ((stripos($formrow[0],$fieldlabel) !== FALSE) && ($formrow[1] == $value))
+                {
+                $prop[] = $id;
+                break;
+                }
+            }
+        }
+    $stmt->close();
+    foreach ($prop as $id)
+        {
+        addToBatch($id,$newbatchid);
+        }
+    log_message("autobatch from $frombatchid to $newbatchid (field '$fieldlabel', value '$value')");
+    global $returnurl;
+    $returnurl = 'batch.php?id=' . $newbatchid;
+    }
+
 ?>
