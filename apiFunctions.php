@@ -574,7 +574,7 @@ function newBatchColumn($columnname,$fieldlabel,$defaultvalue,$batchid)
     $returnurl = 'batch.php?id=' . $batchid;
     }
 
-function autobatch($newbatchid,$fieldlabel,$value,$frombatchid)
+function autobatch($newbatchid,$fieldlabel,$exactlabel,$value,$exactvalue,$frombatchid)
     {
     $festival = getFestivalID();
     if ($frombatchid == 0)
@@ -595,10 +595,15 @@ function autobatch($newbatchid,$fieldlabel,$value,$frombatchid)
         $info = unserialize($info_ser);
         foreach ($info as $formrow)
             {
-            if ((stripos($formrow[0],$fieldlabel) !== FALSE) && ($formrow[1] == $value))
+            if ((($exactlabel==1) && (strcasecmp($formrow[0],$fieldlabel) == 0)) ||
+                (($exactlabel=='') && (stripos($formrow[0],$fieldlabel) !== FALSE)))
                 {
-                $prop[] = $id;
-                break;
+                if ((($exactvalue==1) && (strcasecmp($formrow[1],$value) == 0)) ||
+                    (($exactvalue=='') && (stripos($formrow[1],$value) !== FALSE)))
+                    {
+                    $prop[] = $id;
+                    break;
+                    }
                 }
             }
         }
@@ -607,7 +612,7 @@ function autobatch($newbatchid,$fieldlabel,$value,$frombatchid)
         {
         addToBatch($id,$newbatchid);
         }
-    log_message("autobatch from $frombatchid to $newbatchid (field '$fieldlabel', value '$value')");
+    log_message("autobatch from $frombatchid to $newbatchid (field '$fieldlabel'($exactlabel), value '$value'($exactvalue))");
     global $returnurl;
     $returnurl = 'batch.php?id=' . $newbatchid;
     }
