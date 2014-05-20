@@ -1,4 +1,4 @@
-check character set used everywhere - make it utf-8 consistently.  add 'encoding' argument to htmlspecialchars() & htmlentities() - in php < 5.5, defaults to iso-8859-1 
+check character set used everywhere - make it utf-8 consistently.
 
 add "last updated" timestamp to proposals.  needs to be set only when info is changed, not when orgfields changes.
 
