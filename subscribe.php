@@ -12,8 +12,7 @@ Address: <input type="text" name="address" size="60">
 <br>
 List:&nbsp;<select name="mailinglist">
 <?php
-#$lists = array('org', 'shows', 'dance', 'film', 'lit', 'music', 'theatre', 'visualart');
-$lists = array('org');
+$lists = array('shows', 'dance', 'film', 'lit', 'music', 'street', 'theatre', 'visualart');
 foreach ($lists as $list)
     echo "<option value=\"bif14-$list\">bif14-$list</option>\n";
 ?>
