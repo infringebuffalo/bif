@@ -1,4 +1,5 @@
 check character set used everywhere - make it utf-8 consistently.
+need to do proper htmlspecialchars etc on ALL variables being output
 
 add "last updated" timestamp to proposals.  needs to be set only when info is changed, not when orgfields changes.
 
@@ -9,10 +10,6 @@ need a way to check for proposals that aren't in any batches
 MERGE createProposal.php and submitProposal.php --- "create proposal for other" apparently doesn't validate its input - allows one to create a proposal with no proposer also, it appears to use its own, outdated list of festival contacts
 
 need to add some sort of "organizer positions" feature, to replace current use of "cards" (public contact info).  currently, cards include a 'role' entry (such as "theatre scheduler"); when this role changes to someone else, you have to create a card for the new person in that role, but that doesn't remove the role information from the old person, leaving outdated/contradictory information
-
-need to do proper htmlspecialchars etc on ALL variables being output
-
-venue.php should show which festival this venue is for
 
 search proposals
 

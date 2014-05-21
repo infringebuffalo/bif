@@ -37,8 +37,9 @@ $(document).ready(function() {
 ENDSTRING;
 
 
-$venueinfo = dbQueryByID('select name,shortname,info,festival,deleted from venue where id=?',$id);
+$venueinfo = dbQueryByID('select venue.name,shortname,info,festival,deleted,festival.name as festivalname from venue join festival on venue.festival=festival.id where venue.id=?',$id);
 bifPageheader('venue: ' . $venueinfo['name'],$header);
+echo "<p>Venue for $venueinfo[festivalname]</p>\n";
 
 function calEntry($day)
     {
