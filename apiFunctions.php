@@ -68,6 +68,8 @@ function newGroupshow($title,$description,$batch)
     log_message('newGroupshow ' . $showid . ' : ' . $title);
     $groupbatchid = getBatch('group',getFestivalID(),true,'All group shows');
     addToBatch($showid,$groupbatchid);
+    global $returnurl;
+    $returnurl = 'proposal.php?id=' . $showid;
     }
 
 
