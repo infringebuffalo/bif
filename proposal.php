@@ -95,7 +95,7 @@ if (hasPrivilege('scheduler'))
             $batchdiv .= "<div style='border: 1px solid'><span style='background:#aaa'>$n[creatorname]:</span> $n[note]</div>\n";
             }
         }
-    $batchdiv .= "<form method='POST' action='api.php'><input type='hidden' name='command' value='addNote' /><input type='hidden' name='entity' value='$proposal_id' /><textarea name='note' rows='2' cols='30'></textarea><br><input type='submit' name='submit' value='add comment'/></form>\n";
+    $batchdiv .= "<form method='POST' action='api.php'><input type='hidden' name='command' value='addNote' /><input type='hidden' name='entity' value='$proposal_id' /><textarea name='note' rows='2' cols='30'></textarea><br><input type='submit' name='submit' value='add note'/></form>\n";
     $batchdiv .= "</div>\n";
     }
 
