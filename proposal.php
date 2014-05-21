@@ -34,27 +34,51 @@ if (!hasPrivilege('scheduler'))
 
 $orgcontactinfo = dbQueryByID('select `name`,`card`.`id` from `user` join `card` on `user`.`id`=`card`.`userid` where `user`.`id`=?',$orgcontact);
 
-$batches = '';
+function newBatchMenu($name,$batchlist)
+    {
+    $retstr .= "<select name='$name'>\n";
+    $festival = getFestivalID();
+    $stmt = dbPrepare('select id,name from batch where festival=? order by name');
+    $stmt->bind_param('i',$festival);
+    $stmt->execute();
+    $stmt->bind_result($id,$name);
+    while ($stmt->fetch())
+        {
+        if (!array_key_exists($id,$batchlist))
+            {
+            $retstr .= "<option value='$id'";
+            if ($id == $selected)
+                $retstr .= " selected";
+            $retstr .= ">" . stripslashes($name) . "</option>\n";
+            }
+        }
+    $stmt->close();
+    $retstr .= "</select>\n";
+    return $retstr;
+    }
+
+$batchdiv = '';
 if (hasPrivilege('scheduler'))
     {
-    $batches = "<div style='float:right'>\n";
+    $batchdiv .= "<div style='float:right'>\n";
+    $batchlist = array();
     $stmt = dbPrepare('select batch_id,name from proposalBatch join batch on batch_id=batch.id where proposal_id=?');
     $stmt->bind_param('i',$proposal_id);
     $stmt->execute();
     $stmt->bind_result($batch_id,$batch_name);
     while ($stmt->fetch())
         {
-        $batches .= "<a href='batchMove.php?id=$batch_id&cur=$proposal_id&dir=-1'>&lt;-</a><a href='batch.php?id=$batch_id'>$batch_name</a><a href='batchMove.php?id=$batch_id&cur=$proposal_id&dir=1'>-&gt;</a><br>\n";
+        $batchlist[$batch_id] = $batch_name;
+        $batchdiv .= "<a href='batchMove.php?id=$batch_id&cur=$proposal_id&dir=-1'>&lt;-</a><a href='batch.php?id=$batch_id'>$batch_name</a><a href='batchMove.php?id=$batch_id&cur=$proposal_id&dir=1'>-&gt;</a>&nbsp;&nbsp;&nbsp;<form method='POST' action='api.php' style='display:inline'><input type='hidden' name='command' value='removeFromBatch' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='hidden' name='batch' value='$batch_id'><input type='submit' name='submit' value='x' style='border:0px; padding:0; background: yellow'/></form><br>\n";
         }
     $stmt->close();
-    $batches .= "<form method='POST' action='api.php'><input type='hidden' name='command' value='addToBatch' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='submit' name='submit' value='add to'/> " . batchMenu('batch',false) . "</form>\n";
-    $batches .= "<form method='POST' action='api.php'><input type='hidden' name='command' value='removeFromBatch' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='submit' name='submit' value='remove from'/> " . batchMenu('batch',false) . "</form>\n";
+    $batchdiv .= "<form method='POST' action='api.php'><input type='hidden' name='command' value='addToBatch' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='submit' name='submit' value='add to'/> " . newBatchMenu('batch',$batchlist) . "</form>\n";
     if ($deleted)
-        $batches .= "<form method='POST' action='api.php'><input type='hidden' name='command' value='undeleteProposal' /><input type='hidden' name='id' value='$proposal_id' /><input type='submit' value='undelete project' /></form>\n";
+        $batchdiv .= "<form method='POST' action='api.php'><input type='hidden' name='command' value='undeleteProposal' /><input type='hidden' name='id' value='$proposal_id' /><input type='submit' value='undelete project' /></form>\n";
     else
-        $batches .= "<form method='POST' action='api.php'><input type='hidden' name='command' value='deleteProposal' /><input type='hidden' name='id' value='$proposal_id' /><input type='submit' value='delete project' /></form>\n";
-    $batches .= "<br><a href=\"proposalForm.php?id=$proposal_id\">[original form]</a>";
-    $batches .= "</div>\n";
+        $batchdiv .= "<form method='POST' action='api.php'><input type='hidden' name='command' value='deleteProposal' /><input type='hidden' name='id' value='$proposal_id' /><input type='submit' value='delete project' /></form>\n";
+    $batchdiv .= "<br><a href=\"proposalForm.php?id=$proposal_id\">[original form]</a>";
+    $batchdiv .= "</div>\n";
     }
 
 
@@ -219,7 +243,7 @@ if (hasPrivilege('scheduler'))
     echo HTML_schedulingTools($proposal_id);
 
 echo "<div><a href=\"imageUpload.php?id=$proposal_id\">upload image for web</a></div>\n";
-echo $batches;
+echo $batchdiv;
 echo '<span><button id="editing_enabler" onclick="enableEditing();">enable editing</button><span id="editing_disabler"><button onclick="disableEditing();">disable editing</button> (click on a field to edit it; <b>NOTE: you must save any changed field before going to edit another field</b>)</span></span>';
 echo '<table cellpadding="3">';
 
