@@ -1,6 +1,8 @@
 check character set used everywhere - make it utf-8 consistently.
 need to do proper htmlspecialchars etc on ALL variables being output
 
+proposal forms and venue forms are very similar in how they work - it seems like it should be possible to merge their code somewhat
+
 add "last updated" timestamp to proposals.  needs to be set only when info is changed, not when orgfields changes.
 
 on batch.php page - show a list on the side of all 'columns' (orgfields) that exist, and make it easy for one to show/hide them
