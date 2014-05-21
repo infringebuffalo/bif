@@ -84,7 +84,7 @@ if (hasPrivilege('scheduler'))
         {
         if ($n['creatorid'] == $_SESSION['userid'])
             {
-            $batchdiv .= "<div id='show_note$n[id]' class='show_info' style='border: 1px solid' onclick='forceShowEditor(\"note$n[id]\",1);'><span style='background:#aaa'>$n[creatorname]:</span> $n[note]</div>\n";
+            $batchdiv .= "<div id='show_note$n[id]' class='show_info' style='border: 1px solid' onclick='showEditor(\"note$n[id]\",1);'><span style='background:#aaa'>$n[creatorname]:</span> $n[note]</div>\n";
             $batchdiv .= "<div id='edit_note$n[id]' class='edit_info' style='border: 1px solid'>";
             $batchdiv .= beginApiCallHtml('changeNote', array('noteid'=>$n['id']), true) . "<textarea name='note' rows='2' cols='30'>$n[note]</textarea><br><input type='submit' name='submit' value='update' /></form>\n";
             $batchdiv .= beginApiCallHtml('unlinkNote', array('noteid'=>$n['id'], 'entityid'=>$proposal_id), true) . "<input type='submit' name='submit' value='remove' />\n</form>\n";
@@ -103,7 +103,6 @@ if (hasPrivilege('scheduler'))
 $header = <<<ENDSTRING
 <script src="jquery.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-var editable = false;
 var availability = {
 ENDSTRING;
 function jsSafe($s)
@@ -120,18 +119,10 @@ for ($i=0; $i < $festivalNumberOfDays; $i++)
 
 $header .= <<<ENDSTRING
 };
-function forceShowEditor(name)
+function showEditor(name)
     {
     $('#show_' + name).hide();
     $('#edit_' + name).show();
-    }
-function showEditor(name)
-    {
-    if (editable)
-        {
-        $('#show_' + name).hide();
-        $('#edit_' + name).show();
-        }
     }
 function hideEditor(name)
     {
@@ -142,20 +133,6 @@ function hideEditor(name)
     origtext = shownode.find("td").html();
     inputnode.val(origtext);
     editnode.hide();
-    }
-function disableEditing()
-    {
-    $('.edit_info').hide();
-    $('.show_info').show();
-    $('#editing_enabler').show();
-    $('#editing_disabler').hide();
-    editable = false;
-    }
-function enableEditing()
-    {
-    $('#editing_enabler').hide();
-    $('#editing_disabler').show();
-    editable = true;
     }
 function showScheduler(name)
     {
@@ -191,7 +168,6 @@ function limitChars(node, limit)
  
 $(document).ready(function() {
     $('.edit_info').hide();
-    $('#editing_disabler').hide();
     $('.calEntry').hover(hoverFunc,unhoverFunc);
 ENDSTRING;
 
@@ -265,43 +241,48 @@ if ($proposal->isgroupshow)
 if (hasPrivilege('scheduler'))
     echo HTML_schedulingTools($proposal_id);
 
-echo "<div><a href=\"imageUpload.php?id=$proposal_id\">upload image for web</a></div>\n";
-echo $batchdiv;
-echo '<span><button id="editing_enabler" onclick="enableEditing();">enable editing</button><span id="editing_disabler"><button onclick="disableEditing();">disable editing</button> (click on a field to edit it; <b>NOTE: you must save any changed field before going to edit another field</b>)</span></span>';
-echo '<table cellpadding="3">';
+$html = '';
+/*
+$html .= "<div><a href=\"imageUpload.php?id=$proposal_id\">upload image for web</a></div>\n";
+*/
+$html .= $batchdiv;
+$html .= '<span>(<b>NOTE: when editing, you must save any changed field before going to edit another field</b>)</span>';
+$html .= '<table cellpadding="3">';
 
-echo "<tr id='edit_fieldTitle' class='edit_info'><th>Title</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalTitle' /><input type='hidden' name='proposal' value='$proposal_id' /><input id='input_fieldTitle' type='text' name='newtitle' value=\"". htmlspecialchars($title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "\" /><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldTitle\"); return false;'>don't edit</button></td></form></tr>\n";
-echo "<tr id='show_fieldTitle' class='show_info' onclick='showEditor(\"fieldTitle\");'><th>Title</th><td>" . htmlspecialchars($title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "</td></tr>\n";
+$html .= "<tr id='edit_fieldTitle' class='edit_info'><th>Title</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalTitle' /><input type='hidden' name='proposal' value='$proposal_id' /><input id='input_fieldTitle' type='text' name='newtitle' value=\"". htmlspecialchars($title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "\" /><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldTitle\"); return false;'>don't edit</button></td></form></tr>\n";
+$html .= "<tr id='show_fieldTitle' class='show_info'> <th>Title <span class='fieldEditLink' onclick='showEditor(\"fieldTitle\");'>[edit]</span></th> <td>" . htmlspecialchars($title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "</td></tr>\n";
 
-echo "<tr><th>Festival</th><td>$festivalname</a></td></tr>\n";
+$html .= "<tr><th>Festival</th><td>$festivalname</a></td></tr>\n";
 
-echo "<tr><th>Proposer</th><td><a href='user.php?id=$proposer_id'>$proposer_name</a>";
+$html .= "<tr><th>Proposer</th><td><a href='user.php?id=$proposer_id'>$proposer_name</a>";
 if (hasPrivilege('scheduler'))
-    echo "&nbsp&nbsp&nbsp;(<a href=\"changeOwner.php?id=$proposal_id\">change proposer</a>)";
-echo "</td></tr>\n";
-echo "<tr><th>Festival contact</th><td><a href='card.php?id=$orgcontactinfo[id]'>$orgcontactinfo[name]</a></td></tr>\n";
+    $html .= "&nbsp&nbsp&nbsp;(<a href=\"changeOwner.php?id=$proposal_id\">change proposer</a>)";
+$html .= "</td></tr>\n";
+$html .= "<tr><th>Festival contact</th><td><a href='card.php?id=$orgcontactinfo[id]'>$orgcontactinfo[name]</a></td></tr>\n";
 foreach ($info as $fieldnum=>$v)
     {
+    $html .= "<tr id='edit_field$fieldnum' class='edit_info'>\n<th>$v[0]</th>\n";
+    $html .= "<td>" . beginApiCallHtml('changeProposalInfo', array('proposal'=>"$proposal_id", 'fieldnum'=>"$fieldnum"));
+    $html .= "<textarea id='input_field$fieldnum' name='newinfo' cols='80'";
     if ($v[0] == 'Description for brochure')
-        {
-        echo "<tr id='edit_field$fieldnum' class='edit_info'><th>$v[0]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalInfo' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='hidden' name='fieldnum' value='$fieldnum' /><textarea id='input_field$fieldnum' name='newinfo' cols='80' rows='5' class='brochure_description'>$v[1]</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>don't edit</button><div class='brochure_description_warning'>(max 140 characters)</div></td></form></tr>\n";
-        echo "<tr id='show_field$fieldnum' class='show_info' onclick='showEditor(\"field$fieldnum\");'><th>$v[0]</th><td>" . multiline(strip_tags($v[1])) . "</td></tr>\n";
-        }
-    else
-        {
-        echo "<tr id='edit_field$fieldnum' class='edit_info'><th>$v[0]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalInfo' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='hidden' name='fieldnum' value='$fieldnum' /><textarea id='input_field$fieldnum' name='newinfo' cols='80'>$v[1]</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>don't edit</button></td></form></tr>\n";
-        echo "<tr id='show_field$fieldnum' class='show_info' onclick='showEditor(\"field$fieldnum\");'><th>$v[0]</th><td>" . multiline($v[1]) . "</td></tr>\n";
-        }
+        $html .=  " class='brochure_description'";
+    $html .= ">$v[1]</textarea>\n<input type='submit' name='submit' value='save'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>don't edit</button>";
+    if ($v[0] == 'Description for brochure')
+        $html .= "<div class='brochure_description_warning'>(max 140 characters)</div>\n";
+    $html .= "</td></form></tr>\n";
+    $html .= "<tr id='show_field$fieldnum' class='show_info'>\n<th>$v[0] <span class='fieldEditLink' onclick='showEditor(\"field$fieldnum\");'>[edit]</span></th>\n<td>" . multiline($v[1]) . "</td></tr>\n";
     }
 if (hasPrivilege('scheduler'))
     {
-    echo "<tr id='edit_fieldNew' class='edit_info'><th>[add field]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='addProposalInfoField' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='text' name='fieldname'><input type='submit' name='submit' value='add'><button onclick='hideEditor(\"fieldNew\"); return false;'>don't add</button></td></form></tr>\n";
-    echo "<tr id='show_fieldNew' class='show_info' onclick='showEditor(\"fieldNew\");'><th style='background:#ff8'>[add field]</th><td>&nbsp;</td></tr>\n";
+    $html .= "<tr id='edit_fieldNew' class='edit_info'><th>[add field]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='addProposalInfoField' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='text' name='fieldname'><input type='submit' name='submit' value='add'><button onclick='hideEditor(\"fieldNew\"); return false;'>don't add</button></td></form></tr>\n";
+    $html .= "<tr id='show_fieldNew' class='show_info' onclick='showEditor(\"fieldNew\");'><th style='background:#ff8'>[add field]</th><td>&nbsp;</td></tr>\n";
     }
-echo "<tr><th>Availability</th><td>" . availTable($proposal_id,$availability) . "</td></tr>\n";
-echo '<tr><th>Submitted</th><td>' . $submitted . '</td></tr>';
+$html .= "<tr><th>Availability</th><td>" . availTable($proposal_id,$availability) . "</td></tr>\n";
+$html .= '<tr><th>Submitted</th><td>' . $submitted . '</td></tr>';
 
-echo '</table>';
+$html .= '</table>';
+
+echo $html;
 
 bifPagefooter();
 

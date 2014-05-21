@@ -25,3 +25,4 @@ td.red { background: red }
 td.green { background: green }
 td.cancelled { text-decoration: line-through; color: #444 }
 span.cancelled { text-decoration: line-through; color: #444 }
+span.fieldEditLink { font-size: 70%; float: right; color: #660 }
