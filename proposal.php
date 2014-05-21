@@ -60,7 +60,7 @@ function newBatchMenu($name,$batchlist)
 $batchdiv = '';
 if (hasPrivilege('scheduler'))
     {
-    $batchdiv .= "<div style='float:right'>\n";
+    $batchdiv .= "<div style='float:right; width:20%'>\n";
     $batchlist = array();
     $stmt = dbPrepare('select batch_id,name from proposalBatch join batch on batch_id=batch.id where proposal_id=?');
     $stmt->bind_param('i',$proposal_id);
@@ -77,7 +77,25 @@ if (hasPrivilege('scheduler'))
         $batchdiv .= "<form method='POST' action='api.php'><input type='hidden' name='command' value='undeleteProposal' /><input type='hidden' name='id' value='$proposal_id' /><input type='submit' value='undelete project' /></form>\n";
     else
         $batchdiv .= "<form method='POST' action='api.php'><input type='hidden' name='command' value='deleteProposal' /><input type='hidden' name='id' value='$proposal_id' /><input type='submit' value='delete project' /></form>\n";
-    $batchdiv .= "<br><a href=\"proposalForm.php?id=$proposal_id\">[original form]</a>";
+    $batchdiv .= "<br><a href=\"proposalForm.php?id=$proposal_id\">[original form]</a>\n";
+    $batchdiv .= "<br><br>\n";
+    $notes = getNotes($proposal_id);
+    foreach ($notes as $n)
+        {
+        if ($n['creatorid'] == $_SESSION['userid'])
+            {
+            $batchdiv .= "<div id='show_note$n[id]' class='show_info' style='border: 1px solid' onclick='forceShowEditor(\"note$n[id]\",1);'><span style='background:#aaa'>$n[creatorname]:</span> $n[note]</div>\n";
+            $batchdiv .= "<div id='edit_note$n[id]' class='edit_info' style='border: 1px solid'>";
+            $batchdiv .= beginApiCallHtml('changeNote', array('noteid'=>$n['id']), true) . "<textarea name='note' rows='2' cols='30'>$n[note]</textarea><br><input type='submit' name='submit' value='update' /></form>\n";
+            $batchdiv .= beginApiCallHtml('unlinkNote', array('noteid'=>$n['id'], 'entityid'=>$proposal_id), true) . "<input type='submit' name='submit' value='remove' />\n</form>\n";
+            $batchdiv .= "</div>\n";
+            }
+        else
+            {
+            $batchdiv .= "<div style='border: 1px solid'><span style='background:#aaa'>$n[creatorname]:</span> $n[note]</div>\n";
+            }
+        }
+    $batchdiv .= "<form method='POST' action='api.php'><input type='hidden' name='command' value='addNote' /><input type='hidden' name='entity' value='$proposal_id' /><textarea name='note' rows='2' cols='30'></textarea><br><input type='submit' name='submit' value='add comment'/></form>\n";
     $batchdiv .= "</div>\n";
     }
 
@@ -102,6 +120,11 @@ for ($i=0; $i < $festivalNumberOfDays; $i++)
 
 $header .= <<<ENDSTRING
 };
+function forceShowEditor(name)
+    {
+    $('#show_' + name).hide();
+    $('#edit_' + name).show();
+    }
 function showEditor(name)
     {
     if (editable)

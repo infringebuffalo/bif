@@ -706,4 +706,31 @@ function addToBatch($proposal,$batch)
     log_message("Added proposal $proposal to batch $batch");
     }
 
+function getNotes($entity)
+    {
+    $stmt = dbPrepare('select note.id,creatorid,note,user.name from note join noteLink on note.id=noteLink.note_id join user on creatorid=user.id where noteLink.entity_id=?');
+    $stmt->bind_param('i',$entity);
+    $stmt->execute();
+    $notes = array();
+    $stmt->bind_result($id,$creatorid,$note,$creatorname);
+    while ($stmt->fetch())
+        {
+        $notes[] = array('id'=>$id, 'creatorid'=>$creatorid, 'creatorname'=>$creatorname, 'note'=>$note);
+        }
+    $stmt->close();
+    return $notes;
+    }
+
+function beginApiCallHtml($command, $parameters=array(), $inline=false)
+    {
+    $html = "<form method='POST' action='api.php'";
+    if ($inline)
+        $html .= " style='display:inline'";
+    $html .= ">\n<input type='hidden' name='command' value='$command' />\n";
+    foreach ($parameters as $name=>$value)
+        {
+        $html .= "<input type='hidden' name='$name' value='$value' />\n";
+        }
+    return $html;
+    }
 ?>

@@ -619,4 +619,37 @@ function autobatch($newbatchid,$fieldlabel,$exactlabel,$value,$exactvalue,$fromb
     $returnurl = 'batch.php?id=' . $newbatchid;
     }
 
+function addNote($entity,$note)
+    {
+    $noteid = newEntityID('note');
+    $creatorid = $_SESSION['userid'];
+    $stmt = dbPrepare('insert into `note` (`id`, `creatorid`, `note`) values (?,?,?)');
+    $stmt->bind_param('iis',$noteid,$creatorid,$note);
+    $stmt->execute();
+    $stmt->close();
+    $stmt = dbPrepare('insert into `noteLink` (`note_id`, `entity_id`) values (?,?)');
+    $stmt->bind_param('ii',$noteid,$entity);
+    $stmt->execute();
+    $stmt->close();
+    log_message("added note $noteid '$note' to $entity");
+    }
+
+function changeNote($noteid,$note)
+    {
+    $stmt = dbPrepare('update `note` set `note`=? where `id`=?');
+    $stmt->bind_param('si',$note,$noteid);
+    $stmt->execute();
+    $stmt->close();
+    log_message("changed note $noteid to '$note'");
+    }
+
+function unlinkNote($noteid,$entityid)
+    {
+    $stmt = dbPrepare('delete from `noteLink` where `note_id`=? and `entity_id`=?');
+    $stmt->bind_param('ii',$noteid,$entityid);
+    $stmt->execute();
+    $stmt->close();
+    log_message("removed note $noteid from $entityid");
+    }
+
 ?>
