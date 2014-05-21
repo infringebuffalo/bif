@@ -652,4 +652,18 @@ function unlinkNote($noteid,$entityid)
     log_message("removed note $noteid from $entityid");
     }
 
+function batchAddInfoField($batchid,$fieldname)
+    {
+    $stmt = dbPrepare('select proposal_id from proposalBatch where batch_id=?');
+    $stmt->bind_param('i',$batchid);
+    $stmt->execute();
+    $stmt->bind_result($id);
+    $props = array();
+    while ($stmt->fetch())
+        $props[] = $id;
+    $stmt->close();
+    foreach ($props as $p)
+        addProposalInfoField($p,$fieldname);
+    }
+
 ?>

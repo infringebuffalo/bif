@@ -11,13 +11,17 @@ if ($id != 0)
     $row = dbQueryByID('select name,description from `batch` where id=?',$id);
     $pageTitle = 'batch: ' . $row['name'];
     $pageDescription = "<p>$row[description]</p>\n";
-    $pageDescription .= "<p><a href='editBatch.php?id=$id'>[edit batch]</a>";
-    $pageDescription .= "&nbsp;&nbsp;&nbsp;&nbsp;<a href='newBatchColumn.php?id=$id'>[new column]</a>";
-    $pageDescription .= "&nbsp;&nbsp;&nbsp;&nbsp;<a href='autobatch.php?id=$id'>[auto-add to this batch]</a>";
-    $pageDescription .= "&nbsp;&nbsp;&nbsp;&nbsp;<a href='batchEmail.php?id=$id'>[email addresses]</a>";
+    $pageDescription .= "<p>";
+    $pageDescription .= "<a href='batchEmail.php?id=$id'>[email addresses]</a>\n";
     if (hasPrivilege('scheduler'))
-        $pageDescription .= "&nbsp;&nbsp;&nbsp;&nbsp;<a href='batchChangeContact.php?id=$id'>[change festival contact for all]</a>";
-    $pageDescription .= "</p>";
+        {
+        $pageDescription .= "&nbsp;&nbsp;<a href='editBatch.php?id=$id'>[edit batch]</a>\n";
+        $pageDescription .= "&nbsp;&nbsp;<a href='newBatchColumn.php?id=$id'>[new column]</a>\n";
+        $pageDescription .= "&nbsp;&nbsp;<a href='autobatch.php?id=$id'>[auto-add to this batch]</a>\n";
+        $pageDescription .= "&nbsp;&nbsp;<a href='batchChangeContact.php?id=$id'>[change festival contact for all]</a>\n";
+        $pageDescription .= "&nbsp;&nbsp;<a href='batchAddField.php?id=$id'>[add info field to all]</a>\n";
+        }
+    $pageDescription .= "</p>\n";
     }
 else
     {
