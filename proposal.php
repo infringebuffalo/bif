@@ -182,7 +182,6 @@ ENDSTRING;
 bifPageheader('proposal: ' . $title,$header);
 
 $canSeeSchedule = hasPrivilege(array('scheduler','organizer'));
-$canSeeSchedule = true;
 $canEditSchedule = hasPrivilege('scheduler');
 $proposal = $proposalList[$proposal_id];
 if ($canSeeSchedule)
