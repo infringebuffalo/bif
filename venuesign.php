@@ -3,6 +3,7 @@ require_once 'init.php';
 connectDB();
 require_once 'scheduler.php';
 getDatabase();
+getPrograminfoList();
 
 if ((array_key_exists('id',$_GET)) && ($_GET['id']) && (is_numeric($_GET['id'])))
     $id=$_GET['id'];

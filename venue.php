@@ -85,7 +85,7 @@ function venueScheduleDiv($id,$venueinfo)
         $dayshows[dayToDate($i)] = array();
         $dayinst[dayToDate($i)] = array();
         }
-    getDatabase();
+    getDatabase($venueinfo['festival']);
     foreach ($venueList[$id]->listings as $l)
         {
         if ($l->installation)

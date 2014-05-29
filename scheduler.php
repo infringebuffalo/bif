@@ -22,8 +22,6 @@ class proposalInfo
             $this->performers = array();
         $this->listings = array();
         $this->groupshows = array();
-        global $programinfoList;
-        $this->programinfo = $programinfoList[$id];
         }
     }
 
@@ -116,17 +114,101 @@ class programInfo
     }
 
 
-function getDatabase()
+function getDatabase($festival=0)
     {
     global $proposalList;
-    global $programinfoList;
     global $venueList;
     global $listingList;
     global $groupPerformerList;
 
+    if ($festival == 0)
+        $festival = getFestivalID();
+
+    $proposalList = array();
+    $stmt = dbPrepare("select proposal.id,title,isgroupshow,deleted from proposal where festival=? order by title");
+    $stmt->bind_param('i',$festival);
+    $stmt->execute();
+    $stmt->store_result();
+    $stmt->bind_result($id,$title,$isgroupshow,$deleted);
+    $grouplistmode = 0;
+    while ($stmt->fetch())
+        {
+        $proposalList[$id] = new proposalInfo($id,stripslashes($title),$festival,$grouplistmode,$isgroupshow,$deleted);
+        }
+    $stmt->free_result();
+    $stmt->close();
+
+    $batchList = array();
+    $stmt = dbPrepare("select id,name from batch where festival=?");
+    $stmt->bind_param('i',$festival);
+    $stmt->execute();
+    $stmt->store_result();
+    $stmt->bind_result($id,$name);
+    while ($stmt->fetch())
+        {
+        $batchList[$id] = new batchInfo($id,stripslashes($name));
+        }
+    $stmt->free_result();
+    $stmt->close();
+    foreach ($batchList as $batch)
+        {
+        $stmt = dbPrepare("select proposal_id from proposalBatch where batch_id=?");
+        $stmt->bind_param('i',$batch->id);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($proposal_id);
+        while ($stmt->fetch())
+            {
+            $batch->proposals[] = $proposalList[$proposal_id];
+            }
+        $stmt->free_result();
+        $stmt->close();
+        }
+
+    $venueList = array();
+    $stmt = dbPrepare("select id,name from venue where festival=?");
+    $stmt->bind_param('i',$festival);
+    $stmt->execute();
+    $stmt->store_result();
+    $stmt->bind_result($id,$name);
+    while ($stmt->fetch())
+        {
+        $venueList[$id] = new venueInfo($id,stripslashes($name));
+        }
+    $stmt->free_result();
+    $stmt->close();
+
+    $groupPerformerList = array();
+    $stmt = dbPrepare("select id,groupevent,performer,showorder,time,note,cancelled from groupPerformer order by groupevent,showorder,time");
+    $stmt->execute();
+    $stmt->store_result();
+    $stmt->bind_result($id,$groupevent,$performer,$showorder,$time,$note,$cancelled);
+    while ($stmt->fetch())
+        $groupPerformerList[$id] = new groupPerformerInfo($id,$groupevent,$performer,$showorder,$time,stripslashes($note),$cancelled);
+    $stmt->free_result();
+    $stmt->close();
+
+    $listingList = array();
+    $stmt = dbPrepare("select id,proposal,venue,venuenote,date,starttime,endtime,installation,cancelled,note from listing");
+    $stmt->execute();
+    $stmt->store_result();
+    $stmt->bind_result($id,$proposal,$venue,$venuenote,$date,$starttime,$endtime,$installation,$cancelled,$note);
+    while ($stmt->fetch())
+        {
+        $listingList[$id] = new listingInfo($id,$proposal,$venue,stripslashes($venuenote),$date,$starttime,$endtime,$installation,$cancelled,stripslashes($note));
+        }
+    $stmt->free_result();
+    $stmt->close();
+    }
+
+
+function getPrograminfoList($festival=0)
+    {
+    global $programinfoList;
     $programinfoList = array();
     $stmt = dbPrepare("select id,title,info from proposal");
     $stmt->execute();
+    $stmt->store_result();
     $stmt->bind_result($id,$title,$info_ser);
     while ($stmt->fetch())
         {
@@ -143,69 +225,10 @@ function getDatabase()
                 }
         $programinfoList[$id] = new programInfo($id,$title,$type,$description);
         }
-    $stmt->close();
-
-    $proposalList = array();
-    $stmt = dbPrepare("select proposal.id,title,festival,isgroupshow,deleted from proposal order by title");
-    $stmt->execute();
-    $stmt->bind_result($id,$title,$festival,$isgroupshow,$deleted);
-    $grouplistmode = 0;
-    while ($stmt->fetch())
-        {
-        $proposalList[$id] = new proposalInfo($id,stripslashes($title),$festival,$grouplistmode,$isgroupshow,$deleted);
-        }
-    $stmt->close();
-
-    $batchList = array();
-    $stmt = dbPrepare("select id,name from batch");
-    $stmt->execute();
-    $stmt->bind_result($id,$name);
-    while ($stmt->fetch())
-        {
-        $batchList[$id] = new batchInfo($id,stripslashes($name));
-        }
-    $stmt->close();
-    foreach ($batchList as $batch)
-        {
-        $stmt = dbPrepare("select proposal_id from proposalBatch where batch_id=?");
-        $stmt->bind_param('i',$batch->id);
-        $stmt->execute();
-        $stmt->bind_result($proposal_id);
-        while ($stmt->fetch())
-            {
-            $batch->proposals[] = $proposalList[$proposal_id];
-            }
-        $stmt->close();
-        }
-
-    $venueList = array();
-    $stmt = dbPrepare("select id,name from venue");
-    $stmt->execute();
-    $stmt->bind_result($id,$name);
-    while ($stmt->fetch())
-        {
-        $venueList[$id] = new venueInfo($id,stripslashes($name));
-        }
-    $stmt->close();
-
-    $groupPerformerList = array();
-    $stmt = dbPrepare("select id,groupevent,performer,showorder,time,note,cancelled from groupPerformer order by groupevent,showorder,time");
-    $stmt->execute();
-    $stmt->bind_result($id,$groupevent,$performer,$showorder,$time,$note,$cancelled);
-    while ($stmt->fetch())
-        $groupPerformerList[$id] = new groupPerformerInfo($id,$groupevent,$performer,$showorder,$time,stripslashes($note),$cancelled);
-    $stmt->close();
-
-    $listingList = array();
-    $stmt = dbPrepare("select id,proposal,venue,venuenote,date,starttime,endtime,installation,cancelled,note from listing");
-    $stmt->execute();
-    $stmt->bind_result($id,$proposal,$venue,$venuenote,$date,$starttime,$endtime,$installation,$cancelled,$note);
-    while ($stmt->fetch())
-        {
-        $listingList[$id] = new listingInfo($id,$proposal,$venue,stripslashes($venuenote),$date,$starttime,$endtime,$installation,$cancelled,stripslashes($note));
-        }
+    $stmt->free_result();
     $stmt->close();
     }
+
 
 function generateSmallCalendar($dayfunc)
     {
