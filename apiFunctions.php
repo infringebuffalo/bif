@@ -349,6 +349,21 @@ function addVenueInfoField($venue,$fieldname)
     log_message("added field '$fieldname' to venue $venue");
     }
 
+function deleteVenueInfoField($venue,$fieldnum)
+    {
+    $info_ser = dbQueryByID('select info from venue where id=?',$venue);
+    if ($info_ser == NULL)
+        return;
+    $info = unserialize($info_ser['info']);
+    unset($info[$fieldnum]);
+    $info_ser = serialize($info);
+    $stmt = dbPrepare('update venue set info=? where id=?');
+    $stmt->bind_param('si',$info_ser,$venue);
+    $stmt->execute();
+    $stmt->close();
+    log_message("deleted field $fieldnum from venue $venue");
+    }
+
 function changeListing($listingid,$venue,$venuenote,$date,$starttime,$endtime,$note)
     {
     $installation = POSTvalue('installation',0);

@@ -138,8 +138,10 @@ function venueInfoDiv($id,$venueinfo)
     foreach ($info as $fieldnum=>$v)
         {
         $html .= "<tr id='edit_field$fieldnum' class='edit_info'><th>$v[0]</th>\n";
-        $html .= "<td>" . beginApiCallHtml('changeVenueInfo', array('venue'=>"$id", 'fieldnum'=>"$fieldnum"));
-        $html .= "<textarea id='input_field$fieldnum' name='newinfo' cols='80'>$v[1]</textarea>\n<input type='submit' name='submit' value='save'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>don't edit</button></td></form></tr>\n";
+        $html .= "<td style='white-space:nowrap'>" . beginApiCallHtml('changeVenueInfo', array('venue'=>"$id", 'fieldnum'=>"$fieldnum"));
+        $html .= "<textarea id='input_field$fieldnum' name='newinfo' cols='80'>$v[1]</textarea>\n<input type='submit' name='submit' value='save'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>don't edit</button></form>";
+        $html .= beginApiCallHtml('deleteVenueInfoField', array('venue'=>"$id", 'fieldnum'=>"$fieldnum")) . "<input type='submit' name='submit' value='delete field'></form>\n";
+        $html .= "</td></tr>\n";
         $html .= "<tr id='show_field$fieldnum' class='show_info'><th>$v[0] <span class='fieldEditLink' onclick='showEditor(\"field$fieldnum\");'>[edit]</span></th><td>" . multiline($v[1]) . "</td></tr>\n";
         }
 
