@@ -23,18 +23,7 @@ function venueToolsDiv($id,$venueinfo)
         $notes = getNotes($id);
         foreach ($notes as $n)
             {
-            if ($n['creatorid'] == $_SESSION['userid'])
-                {
-                $html .= "<div id='show_note$n[id]' class='show_info' style='border: 1px solid' onclick='showEditor(\"note$n[id]\",1);'><span style='background:#aaa'>$n[creatorname]:</span> $n[note]</div>\n";
-                $html .= "<div id='edit_note$n[id]' class='edit_info' style='border: 1px solid'>";
-                $html .= beginApiCallHtml('changeNote', array('noteid'=>$n['id']), true) . "<textarea name='note' rows='2' cols='30'>$n[note]</textarea><br><input type='submit' name='submit' value='update' /></form>\n";
-                $html .= beginApiCallHtml('unlinkNote', array('noteid'=>$n['id'], 'entityid'=>$id), true) . "<input type='submit' name='submit' value='remove' />\n</form>\n";
-                $html .= "</div>\n";
-                }
-            else
-                {
-                $html .= "<div style='border: 1px solid'><span style='background:#aaa'>$n[creatorname]:</span> $n[note]</div>\n";
-                }
+            $html .= noteDiv($n,$id);
             }
         $html .= "<form method='POST' action='api.php'><input type='hidden' name='command' value='addNote' /><input type='hidden' name='entity' value='$id' /><textarea name='note' rows='2' cols='30'></textarea><br><input type='submit' name='submit' value='add note'/></form>\n";
         $html .= "</div>\n";
