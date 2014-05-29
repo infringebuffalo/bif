@@ -82,18 +82,7 @@ if (hasPrivilege('scheduler'))
     $notes = getNotes($proposal_id);
     foreach ($notes as $n)
         {
-        if ($n['creatorid'] == $_SESSION['userid'])
-            {
-            $batchdiv .= "<div id='show_note$n[id]' class='show_info' style='border: 1px solid' onclick='showEditor(\"note$n[id]\",1);'><span style='background:#aaa'>$n[creatorname]:</span> $n[note]</div>\n";
-            $batchdiv .= "<div id='edit_note$n[id]' class='edit_info' style='border: 1px solid'>";
-            $batchdiv .= beginApiCallHtml('changeNote', array('noteid'=>$n['id']), true) . "<textarea name='note' rows='2' cols='30'>$n[note]</textarea><br><input type='submit' name='submit' value='update' /></form>\n";
-            $batchdiv .= beginApiCallHtml('unlinkNote', array('noteid'=>$n['id'], 'entityid'=>$proposal_id), true) . "<input type='submit' name='submit' value='remove' />\n</form>\n";
-            $batchdiv .= "</div>\n";
-            }
-        else
-            {
-            $batchdiv .= "<div style='border: 1px solid'><span style='background:#aaa'>$n[creatorname]:</span> $n[note]</div>\n";
-            }
+        $batchdiv .= noteDiv($n,$proposal_id);
         }
     $batchdiv .= "<form method='POST' action='api.php'><input type='hidden' name='command' value='addNote' /><input type='hidden' name='entity' value='$proposal_id' /><textarea name='note' rows='2' cols='30'></textarea><br><input type='submit' name='submit' value='add note'/></form>\n";
     $batchdiv .= "</div>\n";
@@ -248,14 +237,14 @@ $html .= $batchdiv;
 $html .= '<span>(<b>NOTE: when editing, you must save any changed field before going to edit another field</b>)</span>';
 $html .= '<table cellpadding="3">';
 
-$html .= "<tr id='edit_fieldTitle' class='edit_info'><th>Title</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalTitle' /><input type='hidden' name='proposal' value='$proposal_id' /><input id='input_fieldTitle' type='text' name='newtitle' value=\"". htmlspecialchars($title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "\" /><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldTitle\"); return false;'>don't edit</button></td></form></tr>\n";
+$html .= "<tr id='edit_fieldTitle' class='edit_info'><th>Title</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalTitle' /><input type='hidden' name='proposal' value='$proposal_id' /><input id='input_fieldTitle' type='text' name='newtitle' value=\"". htmlspecialchars($title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "\" /><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldTitle\"); return false;'>don't edit</button></form></td></tr>\n";
 $html .= "<tr id='show_fieldTitle' class='show_info'> <th>Title <span class='fieldEditLink' onclick='showEditor(\"fieldTitle\");'>[edit]</span></th> <td>" . htmlspecialchars($title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "</td></tr>\n";
 
-$html .= "<tr><th>Festival</th><td>$festivalname</a></td></tr>\n";
+$html .= "<tr><th>Festival</th><td>$festivalname</td></tr>\n";
 
 $html .= "<tr><th>Proposer</th><td><a href='user.php?id=$proposer_id'>$proposer_name</a>";
 if (hasPrivilege('scheduler'))
-    $html .= "&nbsp&nbsp&nbsp;(<a href=\"changeOwner.php?id=$proposal_id\">change proposer</a>)";
+    $html .= "&nbsp;&nbsp;&nbsp;(<a href=\"changeOwner.php?id=$proposal_id\">change proposer</a>)";
 $html .= "</td></tr>\n";
 $html .= "<tr><th>Festival contact</th><td><a href='card.php?id=$orgcontactinfo[id]'>$orgcontactinfo[name]</a></td></tr>\n";
 foreach ($info as $fieldnum=>$v)
@@ -268,12 +257,12 @@ foreach ($info as $fieldnum=>$v)
     $html .= ">$v[1]</textarea>\n<input type='submit' name='submit' value='save'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>don't edit</button>";
     if ($v[0] == 'Description for brochure')
         $html .= "<div class='brochure_description_warning'>(max 140 characters)</div>\n";
-    $html .= "</td></form></tr>\n";
+    $html .= "</form></td></tr>\n";
     $html .= "<tr id='show_field$fieldnum' class='show_info'>\n<th>$v[0] <span class='fieldEditLink' onclick='showEditor(\"field$fieldnum\");'>[edit]</span></th>\n<td>" . multiline($v[1]) . "</td></tr>\n";
     }
 if (hasPrivilege('scheduler'))
     {
-    $html .= "<tr id='edit_fieldNew' class='edit_info'><th>[add field]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='addProposalInfoField' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='text' name='fieldname'><input type='submit' name='submit' value='add'><button onclick='hideEditor(\"fieldNew\"); return false;'>don't add</button></td></form></tr>\n";
+    $html .= "<tr id='edit_fieldNew' class='edit_info'><th>[add field]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='addProposalInfoField' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='text' name='fieldname'><input type='submit' name='submit' value='add'><button onclick='hideEditor(\"fieldNew\"); return false;'>don't add</button></form></td></tr>\n";
     $html .= "<tr id='show_fieldNew' class='show_info' onclick='showEditor(\"fieldNew\");'><th style='background:#ff8'>[add field]</th><td>&nbsp;</td></tr>\n";
     }
 $html .= "<tr><th>Availability</th><td>" . availTable($proposal_id,$availability) . "</td></tr>\n";
