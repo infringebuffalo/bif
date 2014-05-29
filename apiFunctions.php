@@ -658,6 +658,15 @@ function changeNote($noteid,$note)
     log_message("changed note $noteid to '$note'");
     }
 
+function linkNote($noteid,$entityid)
+    {
+    $stmt = dbPrepare('insert into `noteLink` (`note_id`, `entity_id`) values (?,?)');
+    $stmt->bind_param('ii',$noteid,$entityid);
+    $stmt->execute();
+    $stmt->close();
+    log_message("linked note $noteid to $entityid");
+    }
+
 function unlinkNote($noteid,$entityid)
     {
     $stmt = dbPrepare('delete from `noteLink` where `note_id`=? and `entity_id`=?');

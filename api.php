@@ -72,6 +72,7 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('autobatch',1,0),
             new apiFunction('addNote',1,0),
             new apiFunction('changeNote',1,0),
+            new apiFunction('linkNote',1,0),
             new apiFunction('unlinkNote',1,0),
             new apiFunction('batchAddInfoField',1,0),
             );
