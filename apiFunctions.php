@@ -2,7 +2,37 @@
 
 function newVenue($name,$shortname)
     {
-    $defaultInfo = array(array('owner',''), array('address',''), array('phone',''), array('website',''), array('contact',''), array('contact phone',''), array('contact e-mail',''), array('venue type',''), array('allowed performances',''), array('best performances',''), array('performance space',''), array('wall space',''), array('description',''));
+    $defaultInfo = array(array('Owner',''),
+                         array('Address',''),
+                         array('Phone',''),
+                         array('Website',''),
+                         array('Contact',''),
+                         array('Contact phone',''),
+                         array('Contact e-mail',''),
+                         array('Venue type',''),
+                         array('Allowed performances',''),
+                         array('Best performances',''),
+                         array('Performance space',''),
+                         array('Wall space',''),
+                         array('maphtml',''),
+                         array('Infringement contact',''),
+                         array('Capacity',''),
+                         array('Stage',''),
+                         array('Sound system/cost',''),
+                         array('Age Restrictions',''),
+                         array('Alcohol served',''),
+                         array('Other beverages served',''),
+                         array('Food served',''),
+                         array('BYOB',''),
+                         array('Backline available',''),
+                         array('Door person provided?',''),
+                         array('Dressing rooms',''),
+                         array('Hospitality for performers',''),
+                         array('Seating',''),
+                         array('Parking',''),
+                         array('Performer load-in',''),
+                         array('Wheelchair accessible',''),
+                         array('Regular business hours',''));
     $venueid = newEntityID('venue');
     $festival = getFestivalID();
     $stmt = dbPrepare('insert into `venue` (`id`, `name`, `shortname`, `festival`, `info`) values (?,?,?,?,?)');
