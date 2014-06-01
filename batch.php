@@ -13,6 +13,7 @@ if ($id != 0)
     $pageDescription = "<p>$row[description]</p>\n";
     $pageDescription .= "<p>";
     $pageDescription .= "<a href='batchEmail.php?id=$id'>[email addresses]</a>\n";
+    $pageDescription .= "<a href='batchCsv.php?id=$id'>[csv spreadsheet]</a>\n";
     if (hasPrivilege('scheduler'))
         {
         $pageDescription .= "&nbsp;&nbsp;<a href='editBatch.php?id=$id'>[edit batch]</a>\n";
