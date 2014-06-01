@@ -36,3 +36,5 @@ maybe: a table of 'rules' for special proposal fields.  eg if a field is named "
 
 maybe: add some sort of 'lock' feature to venues (& proposals?), to use on ones from past years - makes it so they can't be edited, and can't be scheduled
 
+when a show is deleted, all performances should be deleted (deleted, not cancelled).  when a group show is deleted, all performers should be removed.  probably should have a page asking for confirmation before this is done.
+
