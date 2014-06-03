@@ -120,7 +120,7 @@ function scheduleEvent()
         if ($_POST[$date] == '1')
             {
             $listingid = newEntityID('listing');
-            log_message(' scheduling day ' . $date);
+            log_message("scheduling proposal $proposal at venue $venue on $date");
             $stmt = dbPrepare("insert into listing (id,date,proposal,venue,venuenote,starttime,endtime,installation,note) values (?,?,?,?,?,?,?,?,?)");
             $stmt->bind_param('isiisiiis',$listingid,$date,$proposal,$venue,$venuenote,$starttime,$endtime,$installation,$note);
             if (!$stmt->execute())
