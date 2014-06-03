@@ -32,7 +32,7 @@ if (!hasPrivilege('scheduler'))
     }
 */
 
-$orgcontactinfo = dbQueryByID('select `name`,`card`.`id` from `user` join `card` on `user`.`id`=`card`.`userid` where `user`.`id`=?',$orgcontact);
+$orgcontactinfo = dbQueryByID('select `name`,`card`.`id`,`card`.`email` from `user` join `card` on `user`.`id`=`card`.`userid` where `user`.`id`=?',$orgcontact);
 
 function newBatchMenu($name,$batchlist)
     {
@@ -246,7 +246,7 @@ $html .= "<tr><th>Proposer</th><td><a href='user.php?id=$proposer_id'>$proposer_
 if (hasPrivilege('scheduler'))
     $html .= "&nbsp;&nbsp;&nbsp;(<a href=\"changeOwner.php?id=$proposal_id\">change proposer</a>)";
 $html .= "</td></tr>\n";
-$html .= "<tr><th>Festival contact</th><td><a href='card.php?id=$orgcontactinfo[id]'>$orgcontactinfo[name]</a></td></tr>\n";
+$html .= "<tr><th>Festival contact</th><td><a href='card.php?id=$orgcontactinfo[id]'>$orgcontactinfo[name]</a> ($orgcontactinfo[email])</td></tr>\n";
 foreach ($info as $fieldnum=>$v)
     {
     $html .= "<tr id='edit_field$fieldnum' class='edit_info'>\n<th>$v[0]</th>\n";
