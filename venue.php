@@ -2,7 +2,7 @@
 require_once 'init.php';
 connectDB();
 requireLogin();
-//requirePrivilege(array('scheduler','organizer'));
+requirePrivilege(array('scheduler','organizer'));
 require_once 'util.php';
 require_once 'scheduler.php';
 
