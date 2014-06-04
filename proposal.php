@@ -11,28 +11,7 @@ if (!isset($_GET['id']))
 else
     $proposal_id = $_GET['id'];
 
-$stmt = dbPrepare('select `proposerid`, `proposal`.`festival`, `title`, `info`, `availability`, `forminfo`, `orgcontact`, `deleted`, `submitted`, `user`.`name`, `festival`.`name` from `proposal` join `user` on `proposerid`=`user`.`id` join `festival` on `proposal`.`festival`=`festival`.`id` where `proposal`.`id`=?');
-$stmt->bind_param('i',$proposal_id);
-$stmt->execute();
-$stmt->bind_result($proposer_id,$festival_id,$title,$info_ser,$availability_ser,$forminfo_ser,$orgcontact,$deleted,$submitted,$proposer_name, $festivalname);
-$stmt->fetch();
-$stmt->close();
-$info = unserialize($info_ser);
-$availability = unserialize($availability_ser);
-$forminfo = unserialize($forminfo_ser);
 
-/*
-if (!hasPrivilege('scheduler'))
-    {
-    if ($proposer_id != $_SESSION['userid'])
-        {
-        header('Location: .');
-        die();
-        }
-    }
-*/
-
-$orgcontactinfo = dbQueryByID('select `name`,`card`.`id`,`card`.`email` from `user` join `card` on `user`.`id`=`card`.`userid` where `user`.`id`=?',$orgcontact);
 
 function newBatchMenu($name,$batchlist)
     {
@@ -57,10 +36,10 @@ function newBatchMenu($name,$batchlist)
     return $retstr;
     }
 
-$batchdiv = '';
-if (hasPrivilege('scheduler'))
+
+function proposalSideControlDiv($proposal_id,$deleted)
     {
-    $batchdiv .= "<div style='float:right; width:20%'>\n";
+    $batchdiv = "<!--BEGIN SIDECONTROLDIV--><div style='float:right; width:20%'>\n";
     $batchlist = array();
     $stmt = dbPrepare('select batch_id,name from proposalBatch join batch on batch_id=batch.id where proposal_id=?');
     $stmt->bind_param('i',$proposal_id);
@@ -85,15 +64,11 @@ if (hasPrivilege('scheduler'))
         $batchdiv .= noteDiv($n,$proposal_id);
         }
     $batchdiv .= "<form method='POST' action='api.php'><input type='hidden' name='command' value='addNote' /><input type='hidden' name='entity' value='$proposal_id' /><textarea name='note' rows='2' cols='30'></textarea><br><input type='submit' name='submit' value='add note'/></form>\n";
-    $batchdiv .= "</div>\n";
+    $batchdiv .= "</div><!--END SIDECONTROLDIV-->\n";
+    return $batchdiv;
     }
 
 
-$header = <<<ENDSTRING
-<script src="jquery.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-var availability = {
-ENDSTRING;
 function jsSafe($s)
     {
     $s = addslashes($s);
@@ -102,11 +77,19 @@ function jsSafe($s)
     return $s;
     }
 
-for ($i=0; $i < $festivalNumberOfDays; $i++)
-    if (is_array($availability) && array_key_exists($i,$availability))
-        $header .= " $i : '" . dayToDateday($i) . ': ' . jsSafe($availability[$i]) . "',";
+function proposalPageHeader()
+    {
+    $header = <<<ENDSTRING
+<script src="jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+var availability = {
+ENDSTRING;
 
-$header .= <<<ENDSTRING
+    for ($i=0; $i < $festivalNumberOfDays; $i++)
+        if (is_array($availability) && array_key_exists($i,$availability))
+            $header .= " $i : '" . dayToDateday($i) . ': ' . jsSafe($availability[$i]) . "',";
+
+    $header .= <<<ENDSTRING
 };
 function showEditor(name)
     {
@@ -160,145 +143,81 @@ $(document).ready(function() {
     $('.calEntry').hover(hoverFunc,unhoverFunc);
 ENDSTRING;
 
-if (!hasPrivilege('scheduler'))
-    $header .= "$('.brochure_description').keyup(function(){ limitChars($(this), 140) });\n";
+    if (!hasPrivilege('scheduler'))
+        $header .= "$('.brochure_description').keyup(function(){ limitChars($(this), 140) });\n";
 
-$header .= <<<ENDSTRING
+    $header .= <<<ENDSTRING
  });
 </script>
 ENDSTRING;
+    return $header;
+    }
 
-bifPageheader('proposal: ' . $title,$header);
 
-$canSeeSchedule = hasPrivilege(array('scheduler','organizer'));
-$canEditSchedule = hasPrivilege('scheduler');
-$proposal = $proposalList[$proposal_id];
-if ($canSeeSchedule)
+function proposalScheduleDiv($proposal_id,$proposal,$canEditSchedule)
     {
-    echo "<table>\n";
+    $schedulediv = "<!--BEGIN SCHEDULE--><div class='schedule'>\n";
+    $schedulediv .= "<table>\n";
     foreach ($proposal->listings as $listing)
         {
         if (($listing->proposalid == $proposal_id) && ($canEditSchedule))
-            echo editableListingRow($listing->id,1,1,1,0,0);
+            $schedulediv .= editableListingRow($listing->id,1,1,1,0,0);
         else
-            echo listingRow($listing->id,1,1,1,1,1);
+            $schedulediv .= listingRow($listing->id,1,1,1,1,1);
         }
-    echo "</table>\n";
+    $schedulediv .= "</table>\n";
+    $schedulediv .= "</div><!--END SCHEDULE-->\n";
+    return $schedulediv;
     }
-if ($proposal->isgroupshow)
-    {
-    $out = "<p>Performers:</p><table rules='all'>\n";
-        $count = 0;
-        foreach ($proposal->performers as $perf)
-            {
-            $count++;
-            if ($perf->cancelled) $tdtags = ' class="cancelled"';
-            else $tdtags = '';
-            $out .= '<tr id="groupschedulerow' . $count . '">';
-            $out .= '<td' . $tdtags . '><a href="proposal.php?id=' . $perf->performerid . '">' . $perf->performer->title . '</a></td>';
-            $out .= '<td' . $tdtags . '>' . $perf->showorder . '</td>';
-            $out .= '<td' . $tdtags . '>' . timeToString($perf->time) . '</td>';
-            $out .= '<td' . $tdtags . '>' . $perf->note . '</td>';
-            $out .= '<td' . $tdtags . '> &nbsp;<a href="" onclick="toggleEdit(\'groupschedulerow' . $count . '\'); return false;">edit</a>&nbsp; </td>';
-            $out .= '</tr>';
 
+
+function proposalGroupShowPerformers($proposal,$canEditSchedule)
+    {
+    $out = "<!--BEGIN PERFORMERS--><div>\n";
+    $out .= "<p>Performers:</p><table rules='all'>\n";
+    $count = 0;
+    foreach ($proposal->performers as $perf)
+        {
+        $count++;
+        if ($perf->cancelled)
+            $tdtags = ' class="cancelled"';
+        else
+            $tdtags = '';
+        $out .= '<tr id="groupschedulerow' . $count . '">';
+        $out .= '<td' . $tdtags . '><a href="proposal.php?id=' . $perf->performerid . '">' . $perf->performer->title . '</a></td>';
+        $out .= '<td' . $tdtags . '>' . $perf->showorder . '</td>';
+        $out .= '<td' . $tdtags . '>' . timeToString($perf->time) . '</td>';
+        $out .= '<td' . $tdtags . '>' . $perf->note . '</td>';
+        if ($canEditSchedule)
+            {
+            $out .= '<td' . $tdtags . '> &nbsp;<a href="" onclick="toggleEdit(\'groupschedulerow' . $count . '\'); return false;">edit</a>&nbsp; </td>';
+            }
+        $out .= '</tr>';
+ 
+        if ($canEditSchedule)
+            {
             $out .= '<tr id="groupschedulerow' . $count . 'edit" style="display:none">';
-            $out .= '<form method="POST" action="api.php">';
-            $out .= '<input type="hidden" name="command" value="changeGroupPerformer" />';
-            $out .= '<input type="hidden" name="groupperformerid" value="' . $perf->id . '" />';
             $out .= '<td><a href="proposal.php?id=' . $perf->performerid . '">' . $perf->performer->title . '</a></td>';
-            $out .= '<td><input type="text" name="showorder" value="' . $perf->showorder . '" /></td>';
-            $out .= '<td>' . timeMenu(11,28,'time',$perf->time) . '</td>';
-            $out .= '<td><input type="text" name="note" value="' . $perf->note . '" /></td>';
-            $out .= '<td><input type="submit" value="Save" /></td>';
-            $out .= '</form>';
+            $out .= '<td colspan="3">' . beginApiCallHtml('changeGroupPerformer',array('groupperformerid'=>$perf->id));
+            $out .= '<input type="text" name="showorder" size="2" value="' . $perf->showorder . '" />';
+            $out .= timeMenu(11,28,'time',$perf->time);
+            $out .= '<input type="text" name="note" value="' . $perf->note . '" />';
+            $out .= '<input type="submit" value="Save" />';
+            $out .= '</form></td>';
             $out .= '<td>';
             if ($perf->cancelled)
-                $out .= '<form method="POST" action="api.php"><input type="hidden" name="command" value="uncancelGroupPerformer" /><input type="hidden" name="groupperformerid" value="' . $perf->id . '" /><input type="submit" value="uncancel" /></form>';
+                $out .= beginApiCallHtml('uncancelGroupPerformer',array('groupperformerid'=>$perf->id)) . endApiCallHtml('uncancel');
             else
-                $out .= '<form method="POST" action="api.php"><input type="hidden" name="command" value="cancelGroupPerformer" /><input type="hidden" name="groupperformerid" value="' . $perf->id . '" /><input type="submit" value="cancel" /></form>';
-            $out .= '<form method="POST" action="api.php"><input type="hidden" name="command" value="deleteGroupPerformer" /><input type="hidden" name="groupperformerid" value="' . $perf->id . '" /><input type="submit" value="delete" /></form>';
-            $out .= '</td>';
-            $out .= '<td><a href="" onclick="toggleEdit(\'groupschedulerow' . $count . '\'); return false;">don\'t edit</a></td>';
-            $out .= '</tr>';
+                $out .= beginApiCallHtml('cancelGroupPerformer',array('groupperformerid'=>$perf->id)) . endApiCallHtml('cancel');
+            $out .= beginApiCallHtml('deleteGroupPerformer',array('groupperformerid'=>$perf->id)) . endApiCallHtml('delete');
+            $out .= '<a href="" onclick="toggleEdit(\'groupschedulerow' . $count . '\'); return false;">don\'t edit</a></td>';
             }
-    $out .= "</table>\n";
-    echo $out;
-    }
-
-if (hasPrivilege('scheduler'))
-    echo HTML_schedulingTools($proposal_id);
-
-$html = '';
-/*
-$html .= "<div><a href=\"imageUpload.php?id=$proposal_id\">upload image for web</a></div>\n";
-*/
-$html .= $batchdiv;
-$html .= '<span>(<b>NOTE: when editing, you must save any changed field before going to edit another field</b>)</span>';
-$html .= '<table cellpadding="3">';
-
-$html .= "<tr id='edit_fieldTitle' class='edit_info'><th>Title</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalTitle' /><input type='hidden' name='proposal' value='$proposal_id' /><input id='input_fieldTitle' type='text' name='newtitle' value=\"". htmlspecialchars($title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "\" /><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldTitle\"); return false;'>don't edit</button></form></td></tr>\n";
-$html .= "<tr id='show_fieldTitle' class='show_info'> <th>Title <span class='fieldEditLink' onclick='showEditor(\"fieldTitle\");'>[edit]</span></th> <td>" . htmlspecialchars($title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "</td></tr>\n";
-
-$html .= "<tr><th>Festival</th><td>$festivalname</td></tr>\n";
-
-$html .= "<tr><th>Proposer</th><td><a href='user.php?id=$proposer_id'>$proposer_name</a>";
-if (hasPrivilege('scheduler'))
-    $html .= "&nbsp;&nbsp;&nbsp;(<a href=\"changeOwner.php?id=$proposal_id\">change proposer</a>)";
-$html .= "</td></tr>\n";
-$html .= "<tr><th>Festival contact</th><td><a href='card.php?id=$orgcontactinfo[id]'>$orgcontactinfo[name]</a> ($orgcontactinfo[email])</td></tr>\n";
-foreach ($info as $fieldnum=>$v)
-    {
-    $html .= "<tr id='edit_field$fieldnum' class='edit_info'>\n<th>$v[0]</th>\n";
-    $html .= "<td>" . beginApiCallHtml('changeProposalInfo', array('proposal'=>"$proposal_id", 'fieldnum'=>"$fieldnum"));
-    $html .= "<textarea id='input_field$fieldnum' name='newinfo' cols='80'";
-    if ($v[0] == 'Description for brochure')
-        $html .=  " class='brochure_description'";
-    $html .= ">$v[1]</textarea>\n<input type='submit' name='submit' value='save'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>don't edit</button>";
-    if ($v[0] == 'Description for brochure')
-        $html .= "<div class='brochure_description_warning'>(max 140 characters)</div>\n";
-    $html .= "</form></td></tr>\n";
-    $html .= "<tr id='show_field$fieldnum' class='show_info'>\n<th>$v[0] <span class='fieldEditLink' onclick='showEditor(\"field$fieldnum\");'>[edit]</span></th>\n<td>" . multiline($v[1]) . "</td></tr>\n";
-    }
-if (hasPrivilege('scheduler'))
-    {
-    $html .= "<tr id='edit_fieldNew' class='edit_info'><th>[add field]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='addProposalInfoField' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='text' name='fieldname'><input type='submit' name='submit' value='add'><button onclick='hideEditor(\"fieldNew\"); return false;'>don't add</button></form></td></tr>\n";
-    $html .= "<tr id='show_fieldNew' class='show_info' onclick='showEditor(\"fieldNew\");'><th style='background:#ff8'>[add field]</th><td>&nbsp;</td></tr>\n";
-    }
-$html .= "<tr><th>Availability</th><td>" . availTable($proposal_id,$availability) . "</td></tr>\n";
-$html .= '<tr><th>Submitted</th><td>' . $submitted . '</td></tr>';
-
-$html .= '</table>';
-
-echo $html;
-
-bifPagefooter();
-
-
-
-
-
-function availTable($proposal_id,$av)
-    {
-    global $festivalNumberOfDays;
-    $s = "<table>\n";
-    if (is_array($av))
-        {
-        for ($i=0; $i < $festivalNumberOfDays; $i++)
-            {
-            if (array_key_exists($i,$av))
-                {
-                $s .= "<tr id='edit_avail$i' class='edit_info'><th>" . dayToDateday($i) . "</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalAvail' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='hidden' name='daynum' value='$i' /><textarea id='input_avail$i' name='newinfo' cols='40'>" . $av[$i] . "</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"avail$i\"); return false;'>don't edit</button></td></form></tr>\n";
-                $s .= "<tr id='show_avail$i' class='show_info' onclick='showEditor(\"avail$i\");'><th>" . dayToDateday($i) . "</th><td>" . $av[$i] . "</td></tr>\n";
-//                $s .= "<tr><td>" . dayToDateday($i) . "</td><td>" . $av[$i] . "</td></tr>\n";
-                }
-            }
+        $out .= '</tr>';
         }
-    $s .= "</table>\n";
-    return $s;
+    $out .= "</table>\n";
+    $out .= "</div><!--END PERFORMERS-->\n";
+    return $out;
     }
-
-
 
 
 function calEntry($day)
@@ -311,11 +230,11 @@ function calEntry2($day)
     return '<input type="checkbox" name="' . dayToDate($day) . '" value="1" checked/>';
     }
 
-function HTML_schedulingTools($id)
+function proposalSchedulingDiv($id)
     {
     global $proposalList;
     $proposal = $proposalList[$id];
-    $out = '<br><div class="schedulebox">[scheduling]<br/>';
+    $out = '<div class="schedulebox">[scheduling]<br/>';
     $out .= '<a href="" id="scheduleEventAnchor" onclick="showScheduler(\'#scheduleEventForm\'); return false">performance</a>&nbsp;<a href="" id="scheduleInstallationAnchor" onclick="showScheduler(\'#scheduleInstallationForm\'); return false">installation</a>&nbsp;&nbsp;';
     if ($proposal->isgroupshow)
         {
@@ -326,14 +245,14 @@ function HTML_schedulingTools($id)
         }
     else
         $out .= '<a href="" id="scheduleGroupAnchor" onclick="showScheduler(\'#scheduleGroupForm\'); return false">group show</a>&nbsp;&nbsp;';
-
+ 
 /*
     $out .= '<a href="" id="scheduleMassdeleteAnchor" onclick="showScheduler(\'#scheduleMassdeleteForm\'); return false">mass-delete</a>&nbsp;&nbsp;';
 */
     $out .= scheduleEventForm('proposal.php?id=' . $id, 'calEntry', $id, 0);
-
+ 
     $out .= scheduleInstallationForm('proposal.php?id=' . $id, 'calEntry2', $id, 0);
-
+ 
     if ($proposal->isgroupshow)
         {
         $out .= "<div class='scheduleForm' id='schedulePerformerForm' style='display: none'>\n";
@@ -405,4 +324,110 @@ function HTML_schedulingTools($id)
     return $out;
     }
 
+
+function availTable($proposal_id,$av)
+    {
+    global $festivalNumberOfDays;
+    $s = "<table>\n";
+    if (is_array($av))
+        {
+        for ($i=0; $i < $festivalNumberOfDays; $i++)
+            {
+            if (array_key_exists($i,$av))
+                {
+                $s .= "<tr id='edit_avail$i' class='edit_info'><th>" . dayToDateday($i) . "</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalAvail' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='hidden' name='daynum' value='$i' /><textarea id='input_avail$i' name='newinfo' cols='40'>" . $av[$i] . "</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"avail$i\"); return false;'>don't edit</button></td></form></tr>\n";
+                $s .= "<tr id='show_avail$i' class='show_info'><th>" . dayToDateday($i) . "<span class='fieldEditLink' onclick='showEditor(\"avail$i\");'>[edit]</span></th><td>" . $av[$i] . "</td></tr>\n";
+//                $s .= "<tr><td>" . dayToDateday($i) . "</td><td>" . $av[$i] . "</td></tr>\n";
+                }
+            }
+        }
+    $s .= "</table>\n";
+    return $s;
+    }
+
+
+$stmt = dbPrepare('select `proposerid`, `proposal`.`festival`, `title`, `info`, `availability`, `forminfo`, `orgcontact`, `deleted`, `submitted`, `user`.`name`, `festival`.`name`, `proposal`.`access` from `proposal` join `user` on `proposerid`=`user`.`id` join `festival` on `proposal`.`festival`=`festival`.`id` where `proposal`.`id`=?');
+$stmt->bind_param('i',$proposal_id);
+$stmt->execute();
+$stmt->bind_result($proposer_id,$festival_id,$title,$info_ser,$availability_ser,$forminfo_ser,$orgcontact,$deleted,$submitted,$proposer_name, $festivalname, $access_ser);
+$stmt->fetch();
+$stmt->close();
+$info = unserialize($info_ser);
+$availability = unserialize($availability_ser);
+$forminfo = unserialize($forminfo_ser);
+$access = unserialize($access_ser);
+
+if (!hasPrivilege(array('scheduler','organizer')))
+    {
+    if ($proposer_id != $_SESSION['userid'])
+        {
+        header('Location: .');
+        die();
+        }
+    }
+
+$orgcontactinfo = dbQueryByID('select `name`,`card`.`id`,`card`.`email` from `user` join `card` on `user`.`id`=`card`.`userid` where `user`.`id`=?',$orgcontact);
+
+
+bifPageheader('proposal: ' . $title, proposalPageHeader());
+
+$canSeeSchedule = hasPrivilege(array('scheduler','organizer'));
+$canEditSchedule = hasPrivilege('scheduler');
+$proposal = $proposalList[$proposal_id];
+if ($canSeeSchedule)
+    echo proposalScheduleDiv($proposal_id,$proposal,$canEditSchedule);
+
+if ($proposal->isgroupshow)
+    echo proposalGroupShowPerformers($proposal,$canEditSchedule);
+
+if (hasPrivilege('scheduler'))
+    echo proposalSchedulingDiv($proposal_id);
+
+/*
+echo "<div><a href=\"imageUpload.php?id=$proposal_id\">upload image for web</a></div>\n";
+*/
+
+if (hasPrivilege('scheduler'))
+    echo proposalSideControlDiv($proposal_id, $deleted);
+
+$html = '';
+$html .= '<span>(<b>NOTE: when editing, you must save any changed field before going to edit another field</b>)</span>';
+$html .= '<table cellpadding="3">';
+
+$html .= "<tr id='edit_fieldTitle' class='edit_info'><th>Title</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalTitle' /><input type='hidden' name='proposal' value='$proposal_id' /><input id='input_fieldTitle' type='text' name='newtitle' value=\"". htmlspecialchars($title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "\" /><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldTitle\"); return false;'>don't edit</button></form></td></tr>\n";
+$html .= "<tr id='show_fieldTitle' class='show_info'> <th>Title <span class='fieldEditLink' onclick='showEditor(\"fieldTitle\");'>[edit]</span></th> <td>" . htmlspecialchars($title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "</td></tr>\n";
+
+$html .= "<tr><th>Festival</th><td>$festivalname</td></tr>\n";
+
+$html .= "<tr><th>Proposer</th><td><a href='user.php?id=$proposer_id'>$proposer_name</a>";
+if (hasPrivilege('scheduler'))
+    $html .= "&nbsp;&nbsp;&nbsp;(<a href=\"changeOwner.php?id=$proposal_id\">change proposer</a>)";
+$html .= "</td></tr>\n";
+$html .= "<tr><th>Festival contact</th><td><a href='card.php?id=$orgcontactinfo[id]'>$orgcontactinfo[name]</a> ($orgcontactinfo[email])</td></tr>\n";
+foreach ($info as $fieldnum=>$v)
+    {
+    $html .= "<tr id='edit_field$fieldnum' class='edit_info'>\n<th>$v[0]</th>\n";
+    $html .= "<td>" . beginApiCallHtml('changeProposalInfo', array('proposal'=>"$proposal_id", 'fieldnum'=>"$fieldnum"));
+    $html .= "<textarea id='input_field$fieldnum' name='newinfo' cols='80'";
+    if ($v[0] == 'Description for brochure')
+        $html .=  " class='brochure_description'";
+    $html .= ">$v[1]</textarea>\n<input type='submit' name='submit' value='save'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>don't edit</button>";
+    if ($v[0] == 'Description for brochure')
+        $html .= "<div class='brochure_description_warning'>(max 140 characters)</div>\n";
+    $html .= "</form></td></tr>\n";
+    $html .= "<tr id='show_field$fieldnum' class='show_info'>\n<th>$v[0] <span class='fieldEditLink' onclick='showEditor(\"field$fieldnum\");'>[edit]</span></th>\n<td>" . multiline($v[1]) . "</td></tr>\n";
+    }
+if (hasPrivilege('scheduler'))
+    {
+    $html .= "<tr id='edit_fieldNew' class='edit_info'><th>[add field]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='addProposalInfoField' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='text' name='fieldname'><input type='submit' name='submit' value='add'><button onclick='hideEditor(\"fieldNew\"); return false;'>don't add</button></form></td></tr>\n";
+    $html .= "<tr id='show_fieldNew' class='show_info' onclick='showEditor(\"fieldNew\");'><th style='background:#ff8'>[add field]</th><td>&nbsp;</td></tr>\n";
+    }
+$html .= "<tr><th>Availability</th><td>" . availTable($proposal_id,$availability) . "</td></tr>\n";
+$html .= '<tr><th>Submitted</th><td>' . $submitted . '</td></tr>';
+
+$html .= '</table>';
+
+echo $html;
+
+bifPagefooter();
 ?>
