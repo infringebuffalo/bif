@@ -38,3 +38,5 @@ maybe: add some sort of 'lock' feature to venues (& proposals?), to use on ones 
 
 when a show is deleted, all performances should be deleted (deleted, not cancelled).  when a group show is deleted, all performers should be removed.  probably should have a page asking for confirmation before this is done.
 
+add "revokeProposalAccess" command and corresponding button
+
