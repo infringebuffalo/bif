@@ -37,7 +37,16 @@ function newBatchMenu($name,$batchlist)
     }
 
 
-function proposalSideControlDiv($proposal_id,$deleted)
+function hasAccess($user, $mode, $access)
+    {
+    if (!$access)
+        return false;
+    if (!isset($access[$user]))
+        return false;
+    return in_array($mode,$access[$user]);
+    }
+
+function proposalSideControlDiv($proposal_id,$deleted,$proposer_id,$access)
     {
     $batchdiv = "<!--BEGIN SIDECONTROLDIV--><div style='float:right; width:20%'>\n";
     $batchlist = array();
@@ -56,6 +65,8 @@ function proposalSideControlDiv($proposal_id,$deleted)
         $batchdiv .= "<form method='POST' action='api.php'><input type='hidden' name='command' value='undeleteProposal' /><input type='hidden' name='id' value='$proposal_id' /><input type='submit' value='undelete project' /></form>\n";
     else
         $batchdiv .= "<form method='POST' action='api.php'><input type='hidden' name='command' value='deleteProposal' /><input type='hidden' name='id' value='$proposal_id' /><input type='submit' value='delete project' /></form>\n";
+    if (!hasAccess($proposer_id,'viewschedule',$access))
+        $batchdiv .= beginApiCallHtml('grantProposalAccess',array('proposal'=>$proposal_id,'user'=>$proposer_id,'mode'=>'viewschedule')) . endApiCallHtml('allow proposer to view schedule');
     $batchdiv .= "<br><a href=\"proposalForm.php?id=$proposal_id\">[original form]</a>\n";
     $batchdiv .= "<br><br>\n";
     $notes = getNotes($proposal_id);
@@ -371,7 +382,7 @@ $orgcontactinfo = dbQueryByID('select `name`,`card`.`id`,`card`.`email` from `us
 
 bifPageheader('proposal: ' . $title, proposalPageHeader());
 
-$canSeeSchedule = hasPrivilege(array('scheduler','organizer'));
+$canSeeSchedule = hasAccess($_SESSION['userid'],'viewschedule',$access) || hasPrivilege(array('scheduler','organizer'));
 $canEditSchedule = hasPrivilege('scheduler');
 $proposal = $proposalList[$proposal_id];
 if ($canSeeSchedule)
@@ -388,7 +399,7 @@ echo "<div><a href=\"imageUpload.php?id=$proposal_id\">upload image for web</a><
 */
 
 if (hasPrivilege('scheduler'))
-    echo proposalSideControlDiv($proposal_id, $deleted);
+    echo proposalSideControlDiv($proposal_id, $deleted, $proposer_id, $access);
 
 $html = '';
 $html .= '<span>(<b>NOTE: when editing, you must save any changed field before going to edit another field</b>)</span>';

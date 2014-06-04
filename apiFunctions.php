@@ -720,4 +720,26 @@ function batchAddInfoField($batchid,$fieldname)
         addProposalInfoField($p,$fieldname);
     }
 
+function grantProposalAccess($proposal,$user,$mode)
+    {
+    $row = dbQueryByID('select access from proposal where id=?',$proposal);
+    $access = unserialize($row['access']);
+    if (!$access)
+        $access = array();
+    if (!isset($access[$user]))
+        $access[$user] = array();
+    if (!in_array($mode,$access[$user]))
+        {
+        $access[$user][] = $mode;
+        $access_ser = serialize($access);
+        $stmt = dbPrepare('update proposal set access=? where id=?');
+        $stmt->bind_param('si',$access_ser,$proposal);
+        $stmt->execute();
+        $stmt->close();
+        log_message("granted user $user access '$mode' on proposal $proposal");
+        }
+    else
+        log_message("user $user already has access '$mode' on proposal $proposal");
+    }
+
 ?>
