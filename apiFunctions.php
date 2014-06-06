@@ -221,6 +221,7 @@ function removeFromBatch($proposal,$batch)
     $stmt->bind_param('ii',$proposal,$batch);
     $stmt->execute();
     $stmt->close();
+    log_message("removed proposal $proposal from batch $batch");
     }
 
 function getProposerID($proposal)

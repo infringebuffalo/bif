@@ -7,7 +7,7 @@ add "last updated" timestamp to proposals.  needs to be set only when info is ch
 
 on batch.php page - show a list on the side of all 'columns' (orgfields) that exist, and make it easy for one to show/hide them
 
-need a way to check for proposals that aren't in any batches
+need a way to check for proposals that aren't in any batches.  what you probably want is a way to identify a specific set of batches, and report all proposals that aren't in any of them - ie there are some 'primary' batches where every proposal should be in at least one, then there are some 'supplemental' batches like "LOUD" or "out of town"; membership in just a supplemental batch isn't enough to ensure that a proposal is being scheduled.
 
 MERGE createProposal.php and submitProposal.php --- "create proposal for other" apparently doesn't validate its input - allows one to create a proposal with no proposer also, it appears to use its own, outdated list of festival contacts
 
