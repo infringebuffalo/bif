@@ -1,4 +1,5 @@
 <?php
+$STARTTIME = microtime(TRUE);
 require_once 'init.php';
 connectDB();
 requirePrivilege(array('scheduler','organizer'));
@@ -61,7 +62,7 @@ echo $pageDescription;
 
 class propRow
     {
-    function __construct($id,$title,$proposer_id,$proposer_name,$orgfields,$submitted)
+    function __construct($id,$title,$proposer_id,$proposer_name,$orgfields,$submitted,$access_ser)
         {
         $this->id = $id;
         $this->title = $title;
@@ -69,6 +70,15 @@ class propRow
         $this->proposer_name = $proposer_name;
         $this->orgfields = $orgfields;
         $this->submitted = $submitted;
+        $this->lastedit = $submitted;
+        $access = unserialize($access_ser);
+        if ($access)
+            {
+            if (isset($access['lastedit'][$proposer_id]))
+                {
+                $this->lastedit = $access['lastedit'][$proposer_id];
+                }
+            }
         }
     function title()
         {
@@ -81,6 +91,10 @@ class propRow
     function submitted()
         {
         return $this->submitted;
+        }
+    function lastedit()
+        {
+        return $this->lastedit;
         }
     function summary($labels)
         {
@@ -113,26 +127,26 @@ function addSummaryLabels(&$labels,$orgfields)
 
 if ($id != 0)
     {
-    $stmt = dbPrepare('select proposal.id, proposerid, name, title, orgfields, submitted from proposal join user on proposerid=user.id join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=? and deleted=0 order by title');
+    $stmt = dbPrepare('select proposal.id, proposerid, name, title, orgfields, submitted, access from proposal join user on proposerid=user.id join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=? and deleted=0 order by title');
     $stmt->bind_param('i',$id);
     }
 else
     {
     $festival = GETvalue('festival',getFestivalID());
-    $stmt = dbPrepare('select `proposal`.`id`, `proposerid`, `name`, `title`, `orgfields`, `submitted` from `proposal` join `user` on `proposerid`=`user`.`id` where `deleted` = 0 and `festival` = ? order by `title`');
+    $stmt = dbPrepare('select `proposal`.`id`, `proposerid`, `name`, `title`, `orgfields`, `submitted`, `access` from `proposal` join `user` on `proposerid`=`user`.`id` where `deleted` = 0 and `festival` = ? order by `title`');
     $stmt->bind_param('i',$festival);
     }
 
 $rows = array();
 $labels = array();
 $stmt->execute();
-$stmt->bind_result($id,$proposer_id,$proposer_name,$title,$orgfields_ser,$submitted);
+$stmt->bind_result($id,$proposer_id,$proposer_name,$title,$orgfields_ser,$submitted,$access_ser);
 while ($stmt->fetch())
     {
     if ($title == '')
         $title = '!!NEEDS A TITLE!!';
     $orgfields = unserialize($orgfields_ser);
-    $rows[] = new propRow($id,$title,$proposer_id,$proposer_name,$orgfields,$submitted);
+    $rows[] = new propRow($id,$title,$proposer_id,$proposer_name,$orgfields,$submitted,$access_ser);
     addSummaryLabels($labels,$orgfields);
     }
 $stmt->close();
@@ -147,17 +161,20 @@ if (isset($_SESSION['preferences']['summaryFields']))
 sort($labels);
 
 echo "<table id=\"batchtable\" class=\"tablesorter\">\n";
-echo "<thead><tr><th>title</th><th>proposer</th><th>submitted</th>";
+echo "<thead><tr><th>title</th><th>proposer</th><th>submitted</th><th>edited by proposer</th>";
 foreach ($labels as $l)
     echo "<th>$l</th>";
 echo "</tr></thead>\n";
 echo "<tbody>\n";
 foreach ($rows as $r)
     {
-    echo '<tr><td>' . $r->title() . '</td><td>' . $r->proposer() . '</td><td>' . $r->submitted() . '</td>' . $r->summary($labels) . "</tr>\n";
+    echo '<tr><td>' . $r->title() . '</td><td>' . $r->proposer() . '</td><td>' . $r->submitted() . '</td><td>' . $r->lastedit() . '</td>' . $r->summary($labels) . "</tr>\n";
     }
 echo "</tbody>\n";
 echo "</table>\n";
 
+$ENDTIME = microtime(TRUE);
+$t = $ENDTIME - $STARTTIME;
+echo "<p style='font-size:75%'>This page took $t seconds</p>";
 bifPagefooter();
 ?>

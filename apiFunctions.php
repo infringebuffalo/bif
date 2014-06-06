@@ -229,20 +229,39 @@ function getProposerID($proposal)
     return $row['proposerid'];
     }
 
+function updateProposalLastedit($proposal,$user)
+    {
+    $row = dbQueryByID('select access from proposal where id=?',$proposal);
+    $access = unserialize($row['access']);
+    if (!$access)
+        $access = array();
+    if (!isset($access['lastedit']))
+        $access['lastedit'] = array();
+    $access['lastedit'][$user] = strftime('%F %T');
+    $access_ser = serialize($access);
+    $stmt = dbPrepare('update proposal set access=? where id=?');
+    $stmt->bind_param('si',$access_ser,$proposal);
+    $stmt->execute();
+    $stmt->close();
+    }
+
 function changeProposalTitle($proposal,$newtitle)
     {
-    if (!hasPrivilege('scheduler') && (getProposerID($proposal) != $_SESSION['userid']))
+    $isOwner = (getProposerID($proposal) == $_SESSION['userid']);
+    if (!hasPrivilege('scheduler') && (!$isOwner))
         return;
     $stmt = dbPrepare('update proposal set title=? where id=?');
     $stmt->bind_param('si',$newtitle,$proposal);
     $stmt->execute();
     $stmt->close();
+    updateProposalLastedit($proposal,$_SESSION['userid']);
     log_message("changed proposal $proposal title to '$newtitle'");
     }
 
 function changeProposalInfo($proposal,$fieldnum,$newinfo)
     {
-    if (!hasPrivilege('scheduler') && (getProposerID($proposal) != $_SESSION['userid']))
+    $isOwner = (getProposerID($proposal) == $_SESSION['userid']);
+    if (!hasPrivilege('scheduler') && (!$isOwner))
         return;
     $info_ser = dbQueryByID('select info from proposal where id=?',$proposal);
     if ($info_ser == NULL)
@@ -255,6 +274,7 @@ function changeProposalInfo($proposal,$fieldnum,$newinfo)
     $stmt->bind_param('si',$info_ser,$proposal);
     $stmt->execute();
     $stmt->close();
+    updateProposalLastedit($proposal,$_SESSION['userid']);
     log_message("changed proposal $proposal field $fieldnum from '$oldinfo' to '$newinfo'");
     }
 
@@ -291,6 +311,7 @@ function changeProposalAvail($proposal,$daynum,$newinfo)
     $stmt->bind_param('si',$info_ser,$proposal);
     $stmt->execute();
     $stmt->close();
+    updateProposalLastedit($proposal,$_SESSION['userid']);
     log_message("changed proposal $proposal availability $daynum from '$oldinfo' to '$newinfo'");
     }
 

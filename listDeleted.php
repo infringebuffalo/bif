@@ -12,7 +12,8 @@ $(document).ready(function() {
 </script>
 ENDSTRING;
 
-$stmt = dbPrepare('select `proposal`.`id`, `proposerid`, `name`, `title`, `orgfields` from `proposal` join `user` on `proposerid`=`user`.`id` where `deleted` = 1 order by `title`');
+$stmt = dbPrepare('select `proposal`.`id`, `proposerid`, `name`, `title`, `orgfields` from `proposal` join `user` on `proposerid`=`user`.`id` where `deleted` = 1 and `festival`=? order by `title`');
+$stmt->bind_param('i',getFestivalID());
 
 class propRow
     {
