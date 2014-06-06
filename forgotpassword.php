@@ -10,7 +10,7 @@ $username = $db->real_escape_string(htmlentities(POSTvalue('username'),ENT_COMPA
 $data = dbQueryByString('select id from user where email=?',$username);
 if ($data)
     {
-    $chars = array_merge(range('a', 'z'),range(0, 9));
+    $chars = array_merge(range('a', 'k'),array('m', 'n'),range('p','y'),range(3,9));
     $password = '';
     for ($i=0; $i < 8; $i++)
         $password .= $chars[mt_rand(0,count($chars)-1)];
