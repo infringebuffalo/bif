@@ -179,7 +179,8 @@ function getDatabase($festival=0)
     $stmt->close();
 
     $groupPerformerList = array();
-    $stmt = dbPrepare("select id,groupevent,performer,showorder,time,note,cancelled from groupPerformer order by groupevent,showorder,time");
+    $stmt = dbPrepare("select groupPerformer.id,groupevent,performer,showorder,time,note,cancelled from groupPerformer join proposal on groupPerformer.groupevent=proposal.id where proposal.festival=? order by groupevent,showorder,time");
+    $stmt->bind_param('i',$festival);
     $stmt->execute();
     $stmt->store_result();
     $stmt->bind_result($id,$groupevent,$performer,$showorder,$time,$note,$cancelled);
@@ -189,7 +190,8 @@ function getDatabase($festival=0)
     $stmt->close();
 
     $listingList = array();
-    $stmt = dbPrepare("select id,proposal,venue,venuenote,date,starttime,endtime,installation,cancelled,note from listing");
+    $stmt = dbPrepare("select listing.id,proposal,venue,venuenote,date,starttime,endtime,installation,cancelled,note from listing join proposal on listing.proposal=proposal.id where proposal.festival=?");
+    $stmt->bind_param('i',$festival);
     $stmt->execute();
     $stmt->store_result();
     $stmt->bind_result($id,$proposal,$venue,$venuenote,$date,$starttime,$endtime,$installation,$cancelled,$note);

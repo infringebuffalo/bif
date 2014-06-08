@@ -15,7 +15,7 @@ else
 
 function newBatchMenu($name,$batchlist)
     {
-    $retstr .= "<select name='$name'>\n";
+    $retstr = "<select name='$name'>\n";
     $festival = getFestivalID();
     $stmt = dbPrepare('select id,name from batch where festival=? order by name');
     $stmt->bind_param('i',$festival);
@@ -25,10 +25,7 @@ function newBatchMenu($name,$batchlist)
         {
         if (!array_key_exists($id,$batchlist))
             {
-            $retstr .= "<option value='$id'";
-            if ($id == $selected)
-                $retstr .= " selected";
-            $retstr .= ">" . stripslashes($name) . "</option>\n";
+            $retstr .= "<option value='$id'>" . stripslashes($name) . "</option>\n";
             }
         }
     $stmt->close();
@@ -96,6 +93,7 @@ function proposalPageHeader()
 var availability = {
 ENDSTRING;
 
+    global $festivalNumberOfDays, $availability;
     for ($i=0; $i < $festivalNumberOfDays; $i++)
         if (is_array($availability) && array_key_exists($i,$availability))
             $header .= " $i : '" . dayToDateday($i) . ': ' . jsSafe($availability[$i]) . "',";
