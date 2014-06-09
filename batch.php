@@ -9,9 +9,14 @@ $id = GETvalue('id',0);
 
 if ($id != 0)
     {
-    $row = dbQueryByID('select name,description from `batch` where id=?',$id);
-    $pageTitle = 'batch: ' . $row['name'];
-    $pageDescription = "<p>$row[description]</p>\n";
+    $stmt = dbPrepare('select name,description from `batch` where id=?');
+    $stmt->bind_param('i',$id);
+    $stmt->execute();
+    $stmt->bind_result($name,$description);
+    $stmt->fetch();
+    $stmt->close();
+    $pageTitle = 'batch: ' . $name;
+    $pageDescription = "<p>$description</p>\n";
     $pageDescription .= "<p>";
     $pageDescription .= "<a href='batchEmail.php?id=$id'>[email addresses]</a>\n";
     $pageDescription .= "<a href='batchCsv.php?id=$id'>[csv spreadsheet]</a>\n";
@@ -160,18 +165,41 @@ if (isset($_SESSION['preferences']['summaryFields']))
     }
 sort($labels);
 
-echo "<table id=\"batchtable\" class=\"tablesorter\">\n";
-echo "<thead><tr><th>title</th><th>proposer</th><th>submitted</th><th>edited by proposer</th>";
-foreach ($labels as $l)
-    echo "<th>$l</th>";
-echo "</tr></thead>\n";
-echo "<tbody>\n";
+$stmt = dbPrepare('select count(id) from listing where proposal=? and cancelled=0');
+$prop_id = 0;
+$stmt->bind_param('i',$prop_id);
+$stmt->bind_result($showcount);
 foreach ($rows as $r)
     {
-    echo '<tr><td>' . $r->title() . '</td><td>' . $r->proposer() . '</td><td>' . $r->submitted() . '</td><td>' . $r->lastedit() . '</td>' . $r->summary($labels) . "</tr>\n";
+    $prop_id = $r->id;
+    $stmt->execute();
+    $stmt->fetch();
+    $r->totalShows = $showcount;
     }
-echo "</tbody>\n";
-echo "</table>\n";
+$stmt->close();
+$stmt = dbPrepare('select count(listing.id) from listing join groupPerformer on listing.proposal = groupPerformer.groupevent where groupPerformer.performer = ? and listing.cancelled=0 and groupPerformer.cancelled=0');
+$stmt->bind_param('i',$prop_id);
+$stmt->bind_result($showcount);
+foreach ($rows as $r)
+    {
+    $prop_id = $r->id;
+    $stmt->execute();
+    $stmt->fetch();
+    $r->totalShows += $showcount;
+    }
+$stmt->close();
+
+$out = "<table id='batchtable' class='tablesorter'>\n<thead><tr><th>title</th><th>proposer</th><th>submitted</th><th>edited by proposer</th><td># of shows</th>";
+foreach ($labels as $l)
+    $out .= "<th>$l</th>";
+$out .= "</tr></thead>\n<tbody>\n";
+
+foreach ($rows as $r)
+    {
+    $out .= '<tr><td>' . $r->title() . '</td><td>' . $r->proposer() . '</td><td>' . $r->submitted() . '</td><td>' . $r->lastedit() . '</td><td>' . $r->totalShows . '</td>' . $r->summary($labels) . "</tr>\n";
+    }
+$out .= "</tbody>\n</table>\n";
+echo $out;
 
 $ENDTIME = microtime(TRUE);
 $t = $ENDTIME - $STARTTIME;
