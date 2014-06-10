@@ -104,8 +104,6 @@ function showEditor(name)
     {
     $('#show_' + name).hide();
     $('#edit_' + name).show();
-    $('#donteditButton_' + name).show();
-    $('#editButton_' + name).hide();
     }
 function hideEditor(name)
     {
@@ -113,11 +111,9 @@ function hideEditor(name)
     editnode = $('#edit_'+name);
     inputnode = $('#input_'+name);
     shownode.show();
-    origtext = shownode.html();
+    origtext = shownode.find("td").html();
     inputnode.val(origtext);
     editnode.hide();
-    $('#donteditButton_' + name).hide();
-    $('#editButton_' + name).show();
     }
 function showScheduler(name)
     {
@@ -407,10 +403,8 @@ $html = '';
 $html .= '<span>(<b>NOTE: when editing, you must save any changed field before going to edit another field</b>)</span>';
 $html .= '<table cellpadding="3">';
 
-$html .= "<tr>\n<th>Title <span class='fieldEditLink' id='editButton_fieldTitle' onclick='showEditor(\"fieldTitle\");'>[edit]</span><span class='fieldDontEditLink' id='donteditButton_fieldTitle' onclick='hideEditor(\"fieldTitle\");'>[don't edit]</span></th>\n<td>";
-$html .= "<div id='show_fieldTitle' class='show_info'>" . htmlspecialchars($title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "</div>\n";
-$html .= "<div id='edit_fieldTitle' class='edit_info'><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalTitle' /><input type='hidden' name='proposal' value='$proposal_id' /><input id='input_fieldTitle' type='text' name='newtitle' value=\"". htmlspecialchars($title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "\" /><input type='submit' name='submit' value='save'></form></div>\n";
-$html .= "</td>\n</tr>\n";
+$html .= "<tr id='edit_fieldTitle' class='edit_info'><th>Title</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalTitle' /><input type='hidden' name='proposal' value='$proposal_id' /><input id='input_fieldTitle' type='text' name='newtitle' value=\"". htmlspecialchars($title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "\" /><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldTitle\"); return false;'>don't edit</button></form></td></tr>\n";
+$html .= "<tr id='show_fieldTitle' class='show_info'> <th>Title <span class='fieldEditLink' onclick='showEditor(\"fieldTitle\");'>[edit]</span></th> <td>" . htmlspecialchars($title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "</td></tr>\n";
 
 $html .= "<tr><th>Festival</th><td>$festivalname</td></tr>\n";
 
