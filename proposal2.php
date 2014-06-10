@@ -100,6 +100,7 @@ ENDSTRING;
 
     $header .= <<<ENDSTRING
 };
+
 function showEditor(name)
     {
     $('#show_' + name).hide();
@@ -119,6 +120,29 @@ function hideEditor(name)
     $('#donteditButton_' + name).hide();
     $('#editButton_' + name).show();
     }
+
+function showMyEditor()
+    {
+    name = $(this).parent().attr('id');
+    $('#show_' + name).hide();
+    $('#edit_' + name).show();
+    $('#donteditButton_' + name).show();
+    $('#editButton_' + name).hide();
+    }
+function hideMyEditor()
+    {
+    name = $(this).parent().attr('id');
+    shownode = $('#show_'+name);
+    editnode = $('#edit_'+name);
+    inputnode = $('#input_'+name);
+    shownode.show();
+    origtext = shownode.html();
+    inputnode.val(origtext);
+    editnode.hide();
+    $('#donteditButton_' + name).hide();
+    $('#editButton_' + name).show();
+    }
+
 function showScheduler(name)
     {
     $('.scheduleForm').hide()
@@ -151,7 +175,20 @@ function limitChars(node, limit)
         }
      }
  
+function addEditButtons(index,element)
+    {
+    element = $(element);
+    name = element.attr('id');
+    editButton = $('<span class="fieldEditLink" id="editButton_' + name + '">[edit]</span>');
+    editButton.click(showMyEditor);
+    donteditButton = $('<span class="fieldDontEditLink" id="donteditButton_' + name + '">[don\'t edit]</span>');
+    donteditButton.click(hideMyEditor);
+    element.append(editButton);
+    element.append(donteditButton);
+    }
+
 $(document).ready(function() {
+    $('.editField').each(addEditButtons);
     $('.edit_info').hide();
     $('.calEntry').hover(hoverFunc,unhoverFunc);
 ENDSTRING;
@@ -348,9 +385,9 @@ function availTable($proposal_id,$av)
             {
             if (array_key_exists($i,$av))
                 {
-                $s .= "<tr id='edit_avail$i' class='edit_info'><th>" . dayToDateday($i) . "</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalAvail' /><input type='hidden' name='proposal' value='$proposal_id' /><input type='hidden' name='daynum' value='$i' /><textarea id='input_avail$i' name='newinfo' cols='40'>" . $av[$i] . "</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"avail$i\"); return false;'>don't edit</button></td></form></tr>\n";
-                $s .= "<tr id='show_avail$i' class='show_info'><th>" . dayToDateday($i) . "<span class='fieldEditLink' onclick='showEditor(\"avail$i\");'>[edit]</span></th><td>" . $av[$i] . "</td></tr>\n";
-//                $s .= "<tr><td>" . dayToDateday($i) . "</td><td>" . $av[$i] . "</td></tr>\n";
+                $s .= "<tr>\n<th class='editField' id='fieldAvail$i'>" . dayToDateday($i) . "</th>\n";
+                $s .= "<td>\n<div id='show_fieldAvail$i' class='show_info'>$av[$i]</div>\n";
+                $s .= "<div id='edit_fieldAvail$i' class='edit_info'>" . beginApiCallHtml('changeProposalAvail', array('proposal'=>$proposal_id,'daynum'=>$i)) . "<textarea id='input_fieldAvail$i' name='newinfo' cols='40'>" . $av[$i] . "</textarea>" . endApiCallHtml('save') . "</div>\n</td>\n</tr>\n";
                 }
             }
         }
@@ -407,9 +444,9 @@ $html = '';
 $html .= '<span>(<b>NOTE: when editing, you must save any changed field before going to edit another field</b>)</span>';
 $html .= '<table cellpadding="3">';
 
-$html .= "<tr>\n<th>Title <span class='fieldEditLink' id='editButton_fieldTitle' onclick='showEditor(\"fieldTitle\");'>[edit]</span><span class='fieldDontEditLink' id='donteditButton_fieldTitle' onclick='hideEditor(\"fieldTitle\");'>[don't edit]</span></th>\n<td>";
+$html .= "<tr>\n<th class='editField' id='fieldTitle'>Title</th>\n<td>\n";
 $html .= "<div id='show_fieldTitle' class='show_info'>" . htmlspecialchars($title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "</div>\n";
-$html .= "<div id='edit_fieldTitle' class='edit_info'><form method='POST' action='api.php'><input type='hidden' name='command' value='changeProposalTitle' /><input type='hidden' name='proposal' value='$proposal_id' /><input id='input_fieldTitle' type='text' name='newtitle' value=\"". htmlspecialchars($title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "\" /><input type='submit' name='submit' value='save'></form></div>\n";
+$html .= "<div id='edit_fieldTitle' class='edit_info'>" . beginApiCallHtml('changeProposalTitle',array('proposal'=>$proposal_id)) . "<input id='input_fieldTitle' type='text' name='newtitle' value=\"". htmlspecialchars($title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "\" />" . endApiCallHtml('save') . "</div>\n";
 $html .= "</td>\n</tr>\n";
 
 $html .= "<tr><th>Festival</th><td>$festivalname</td></tr>\n";
@@ -421,16 +458,17 @@ $html .= "</td></tr>\n";
 $html .= "<tr><th>Festival contact</th><td><a href='card.php?id=$orgcontactinfo[id]'>$orgcontactinfo[name]</a> ($orgcontactinfo[email])</td></tr>\n";
 foreach ($info as $fieldnum=>$v)
     {
-    $html .= "<tr id='edit_field$fieldnum' class='edit_info'>\n<th>$v[0]</th>\n";
-    $html .= "<td>" . beginApiCallHtml('changeProposalInfo', array('proposal'=>"$proposal_id", 'fieldnum'=>"$fieldnum"));
+    $html .= "<tr>\n<th class='editField' id='field$fieldnum'>$v[0]</th>\n<td>\n";
+    $html .= "<div id='show_field$fieldnum' class='show_info'>" . multiline($v[1]) . "</div>\n";
+    $html .= "<div id='edit_field$fieldnum' class='edit_info'>" . beginApiCallHtml('changeProposalInfo', array('proposal'=>"$proposal_id", 'fieldnum'=>"$fieldnum"));
     $html .= "<textarea id='input_field$fieldnum' name='newinfo' cols='80'";
     if ($v[0] == 'Description for brochure')
         $html .=  " class='brochure_description'";
-    $html .= ">$v[1]</textarea>\n<input type='submit' name='submit' value='save'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>don't edit</button>";
+    $html .= ">$v[1]</textarea>\n<input type='submit' name='submit' value='save'>";
     if ($v[0] == 'Description for brochure')
         $html .= "<div class='brochure_description_warning'>(max 140 characters)</div>\n";
-    $html .= "</form></td></tr>\n";
-    $html .= "<tr id='show_field$fieldnum' class='show_info'>\n<th>$v[0] <span class='fieldEditLink' onclick='showEditor(\"field$fieldnum\");'>[edit]</span></th>\n<td>" . multiline($v[1]) . "</td></tr>\n";
+    $html .= "</form></div>\n";
+    $html .= "</td>\n</tr>\n";
     }
 if (hasPrivilege('scheduler'))
     {

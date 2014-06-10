@@ -1,3 +1,5 @@
+***add button for artist to confirm that they've checked their schedule
+
 check character set used everywhere - make it utf-8 consistently.
 need to do proper htmlspecialchars etc on ALL variables being output
 
