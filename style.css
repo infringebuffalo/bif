@@ -29,3 +29,4 @@ span.fieldEditLink { font-size: 70%; float: right; color: #660 }
 span.fieldDontEditLink { font-size: 70%; float: right; color: #660; display: none }
 span.noteauthor { background: #aaa }
 div.note { border: 1px solid }
+div.artvoice { background: #efd }
