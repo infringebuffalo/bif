@@ -18,7 +18,7 @@ if ((array_key_exists('adminmessage',$_SESSION)) && ($_SESSION['adminmessage'] !
     }
 
 echo "<ul>\n";
-if (hasPrivilege('scheduler'))
+if (hasPrivilege(array('scheduler','organizer')))
     {
     echo <<<ENDSTRING
 <li><a href="listBatches.php">Batches</a></li>
@@ -30,6 +30,10 @@ if (hasPrivilege('scheduler'))
 <ul><li>(<a href="listVenues.php?festival=960">2013 venues</a>)</li></ul>
 </li>
 <li><a href="calendar.php">Calendar</a></li>
+ENDSTRING;
+    if (hasPrivilege('scheduler'))
+        {
+        echo <<<ENDSTRING
 <li><a href="listUsers.php">Users</a></li>
 <br>
 <li>Submit a proposal:
@@ -53,6 +57,7 @@ if (hasPrivilege('scheduler'))
 <li><a href="preferences.php">Preferences</a></li>
 <br>
 ENDSTRING;
+        }
     }
 else
     {

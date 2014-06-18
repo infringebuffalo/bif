@@ -1,7 +1,7 @@
 <?php
 require_once 'init.php';
 connectDB();
-requirePrivilege('scheduler');
+requirePrivilege(array('scheduler','organizer'));
 require_once 'util.php';
 
 $header = <<<ENDSTRING
