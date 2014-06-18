@@ -208,7 +208,9 @@ function getPrograminfoList($festival=0)
     {
     global $programinfoList;
     $programinfoList = array();
-    $stmt = dbPrepare("select id,title,info from proposal");
+    $stmt = dbPrepare("select id,title,info from proposal where deleted=0 and festival=?");
+    $festival = getFestivalID();
+    $stmt->bind_param('i',$festival);
     $stmt->execute();
     $stmt->store_result();
     $stmt->bind_result($id,$title,$info_ser);
