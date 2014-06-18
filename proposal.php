@@ -128,6 +128,7 @@ class ProposalData
         $this->deleted = $proposalList[$proposal_id]->deleted;
         $this->listings = $proposalList[$proposal_id]->listings;
         $this->isgroupshow = $proposalList[$proposal_id]->isgroupshow;
+        $this->performers = $proposalList[$proposal_id]->performers;
         }
     function fieldByLabel($label)
         {
