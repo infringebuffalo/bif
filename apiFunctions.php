@@ -637,8 +637,11 @@ function newBatchColumn($columnname,$fieldlabel,$defaultvalue,$batchid)
         $_SESSION['preferences'] = array();
     if (!isset($_SESSION['preferences']['summaryFields']))
         $_SESSION['preferences']['summaryFields'] = array();
-    $_SESSION['preferences']['summaryFields'][] = $columnname;
-    savePreferences();
+    if (!in_array($columnname, $_SESSION['preferences']['summaryFields']))
+        {
+        $_SESSION['preferences']['summaryFields'][] = $columnname;
+        savePreferences();
+        }
     global $returnurl;
     $returnurl = 'batch.php?id=' . $batchid;
     }
