@@ -1,3 +1,6 @@
+system to automatically e-mail artists - "You have a performance of "show' tomorrow at time T venue V".  also generate list of addresses and perhaps message text, for those who want to do the mailing personally
+
+
 ***add button for artist to confirm that they've checked their schedule
 
 check character set used everywhere - make it utf-8 consistently.
