@@ -333,17 +333,25 @@ ENDSTRING;
     }
 
 
+function timeDateSortingKey($listing)
+    {
+    return '<!--' . $listing->date . ' ' . $listing->starttime . '-->';
+    }
+
 function proposalScheduleDiv($proposal,$canEditSchedule)
     {
-    $schedulediv = "<!--BEGIN SCHEDULE--><div class='schedule'>\n";
-    $schedulediv .= "<table>\n";
+    $list = array();
     foreach ($proposal->listings as $listing)
         {
         if (($listing->proposalid == $proposal->id) && ($canEditSchedule))
-            $schedulediv .= editableListingRow($listing->id,1,1,1,0,0);
+            $list[] = timeDateSortingKey($listing) . editableListingRow($listing->id,1,1,1,0,0);
         else
-            $schedulediv .= listingRow($listing->id,1,1,1,1,1);
+            $list[] = timeDateSortingKey($listing) . listingRow($listing->id,1,1,1,1,1);
         }
+    sort($list);
+    $schedulediv = "<!--BEGIN SCHEDULE--><div class='schedule'>\n";
+    $schedulediv .= "<table>\n";
+    $schedulediv .= implode($list);
     $schedulediv .= "</table>\n";
     $schedulediv .= "</div><!--END SCHEDULE-->\n";
     return $schedulediv;
