@@ -50,7 +50,12 @@ function proposalArtvoiceText($proposal)
         $html .= "<em>" . htmlspecialchars($s,ENT_COMPAT | ENT_HTML5, "UTF-8") . "</em><br>\n";
     $s = $proposal->fieldByLabel('Description for brochure');
     if ($s != '')
-        $html .= htmlspecialchars($s,ENT_COMPAT | ENT_HTML5, "UTF-8") . "<br>\n";
+        {
+        $s = htmlspecialchars($s,ENT_COMPAT | ENT_HTML5, "UTF-8");
+        $html .= substr($s,0,140) . "<span style='color:red'>" . substr($s,140) . "</span><br>\n";
+        if (strlen($s) > 140)
+            $html .= "<br>[text in red is over the 140 character limit, and will be DELETED automatically when creating the brochure]<br>\n";
+        }
     $html .= "</div>\n";
     return $html;
     }
