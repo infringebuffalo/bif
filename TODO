@@ -43,3 +43,4 @@ when a show is deleted, all performances should be deleted (deleted, not cancell
 
 add "revokeProposalAccess" command and corresponding button
 
+note: the code that marks brochure text > 140 characters in red (proposal.php) should really do the splitting BEFORE htmlspecialchars, or text with something like quotation marks will be marked incorrectly
