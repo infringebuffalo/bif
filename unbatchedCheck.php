@@ -27,8 +27,6 @@ $stmt->bind_result($batch_id,$batch_name);
 $count = 0;
 while ($stmt->fetch())
     {
-    if ($name == '')
-        $name = '!!NEEDS A NAME!!';
     if ($count % 3 == 0)
         echo "<tr>\n";
     echo "<td><input type='checkbox' name='batch[]' value='$batch_id'";
