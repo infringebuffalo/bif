@@ -84,7 +84,12 @@ function proposalMainInfo($proposal)
             $html .=  " class='brochure_description'";
         $html .= ">$v[1]</textarea>\n<input type='submit' name='submit' value='save'>";
         if ($v[0] == 'Description for brochure')
-            $html .= "<div class='brochure_description_warning'>(max 140 characters)</div>\n";
+            {
+            $html .= "<div class='brochure_description_warning'>(max 140 characters)";
+            if (hasPrivilege('scheduler'))
+                $html .= " <a class='brochure_len_enforcer' onclick='$(\".brochure_description\").keyup(function(){ limitChars($(this), 140) });'>(enforce for me)</a>";
+            $html .= "</div>\n";
+            }
         $html .= "</form></div>\n";
         $html .= "</td>\n</tr>\n";
         }
@@ -323,7 +328,9 @@ $(document).ready(function() {
 ENDSTRING;
 
     if (!hasPrivilege('scheduler'))
+        {
         $header .= "$('.brochure_description').keyup(function(){ limitChars($(this), 140) });\n";
+        }
 
     $header .= <<<ENDSTRING
  });
