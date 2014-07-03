@@ -7,7 +7,7 @@ require_once 'scheduler.php';
 getDatabase();
 getPrograminfoList();
 
-$headings = array('theatre'=>'theatre', 'literary'=>'literary', 'dance'=>'dance', 'music'=>'music', 'film'=>'film & video', 'visualart'=>'visual art', 'groupmusic'=>'music group shows', 'groupmedia'=>'movie nights', 'group'=>'group shows');
+$headings = array('theatre'=>'theatre', 'literary'=>'literary', 'dance'=>'dance', 'music'=>'music', 'street'=>'street', 'film'=>'film & video', 'visualart'=>'visual art', 'groupmusic'=>'music group shows', 'groupmedia'=>'movie nights', 'group'=>'group shows');
 $list = array();
 foreach (array_keys($headings) as $h)
     $list[$h] = array();
