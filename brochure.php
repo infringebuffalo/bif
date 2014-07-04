@@ -4,6 +4,8 @@ connectDB();
 requireLogin();
 require_once 'scheduler.php';
 
+$trimLength = GETvalue('trim',1000000);
+
 getDatabase();
 getPrograminfoList();
 
@@ -57,13 +59,27 @@ class instDates
         }
     }
 
+function trimText($s)
+    {
+    global $trimLength;
+    $s = strip_tags($s);
+    if (strlen($s) < $trimLength)
+        return $s;
+    $i = $trimLength;
+    while (($i > 0) && (ctype_alpha(substr($s,$i,1))) && (ctype_alpha(substr($s,$i+1,1))))
+        {
+        $i--;
+        }
+    return substr($s,0,$i);
+    }
+
 foreach ($programinfoList as $p)
   {
   if (!$proposalList[$p->id]->deleted)
     {
     $s = sortingKey($p->title);
     $s .= '<b>' . $p->title . '</b><br/>';
-    $s .= '<pre>' . strip_tags($p->brochure_description) . '</pre>';
+    $s .= '<pre>' . trimText($p->brochure_description) . '</pre>';
     if ($proposalList[$p->id]->isgroupshow)
         {
         $sp = '';
