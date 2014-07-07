@@ -94,11 +94,12 @@ class groupPerformerInfo
 
 class programInfo
     {
-    function __construct($id,$title,$type,$brochure_description)
+    function __construct($id,$title,$type,$brochure_description,$website)
         {
         $this->id = $id;
         $this->title = stripslashes($title);
         $this->type = $type;
+        $this->website = $website;
         $this->brochure_description = stripslashes($brochure_description);
         }
     function text()
@@ -218,16 +219,19 @@ function getPrograminfoList($festival=0)
         {
         $description = '';
         $type = '';
+        $website = '';
         $info = unserialize($info_ser);
         foreach ($info as $i)
             if (is_array($i) && array_key_exists(0,$i))
                 {
                 if ($i[0] == 'Description for brochure')
                     $description = $i[1];
+                else if ($i[0] == 'Website')
+                    $website = $i[1];
                 else if ($i[0] == 'Type')
                     $type = $i[1];
                 }
-        $programinfoList[$id] = new programInfo($id,$title,$type,$description);
+        $programinfoList[$id] = new programInfo($id,$title,$type,$description,$website);
         }
     $stmt->free_result();
     $stmt->close();

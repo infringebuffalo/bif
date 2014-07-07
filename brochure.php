@@ -79,7 +79,7 @@ foreach ($programinfoList as $p)
     {
     $s = sortingKey($p->title);
     $s .= '<b>' . $p->title . '</b><br/>';
-    $s .= '<pre>' . trimText($p->brochure_description) . '</pre>';
+    $s .= '<pre>' . $p->website . "\n" . trimText($p->brochure_description) . '</pre>';
     if ($proposalList[$p->id]->isgroupshow)
         {
         $sp = '';
