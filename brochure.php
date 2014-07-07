@@ -94,7 +94,7 @@ foreach ($programinfoList as $p)
         }
     $a = array();
     foreach ($proposalList[$p->id]->listings as $l)
-        if ((!$l->installation) && ($l->proposal->id == $p->id))
+        if ((!$l->installation) && ($l->proposal->id == $p->id) && (!$l->cancelled))
             {
             $s2 = sortingKey($l->date . $l->starttime) . dateToString($l->date) . ' ' . timeToString($l->starttime) . '-' . timeToString($l->endtime) . ' ' . $l->venue->name;
             if ($l->venuenote != '')
@@ -104,7 +104,7 @@ foreach ($programinfoList as $p)
     foreach ($proposalList[$p->id]->groupshows as $g)
         {
         foreach ($g->groupevent->listings as $l)
-            if (!$l->installation)
+            if ((!$l->installation) && (!$l->cancelled))
                 {
                 if ($g->groupevent->grouplistmode > 0)
                     $s2 = sortingKey($l->date . $g->time) . dateToString($l->date) . ' ' . timeToString($g->time);
@@ -121,7 +121,7 @@ foreach ($programinfoList as $p)
         }
     $a = array();
     foreach ($proposalList[$p->id]->listings as $l)
-        if ($l->installation)
+        if (($l->installation) && (!$l->cancelled))
             {
             if (!isset($a[$l->venueid])) $a[$l->venueid] = new instDates($l->venue);
             $a[$l->venueid]->dates[] = $l->date;
@@ -178,7 +178,7 @@ for ($i = 0; $i < $festivalNumberOfDays; $i++)
 
 <br/><br/><br/><hr/><br/>
 <em>--ongoing throughout the festival--</em>
-<br/><em>(those without dates are full festival, Jul 25 - Aug 4)</em>
+<br/><em>(those without dates are full festival)</em>
 <br/><br/>
 
 <?php
@@ -236,11 +236,11 @@ foreach ($venueList as $v)
     $idates = new instDates2();
     foreach ($p->listings as $l)
         {
-        if (($l->installation) && ($l->venueid == $v->id))
+        if (($l->installation) && ($l->venueid == $v->id) && (!$l->cancelled))
             $idates->dates[] = $l->date;
         } 
     $is = $idates->output();
-    if ($is == 'Jul 25 - Aug 4')
+    if ($is == 'Jul 24 - Aug 3')
         $vlist[] = sortingKey($p->title) . $p->title . '<br/>';
     else if ($is != '')
         $vlist[] = sortingKey($p->title) . $p->title . ' (' . $is . ')<br/>';
