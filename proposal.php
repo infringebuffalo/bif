@@ -304,6 +304,7 @@ function unhoverFunc()
 function limitChars(node, limit)
     {
     var text = node.val();
+    $('.brochure_description_warning').html(text.length + ' characters, of ' + limit + ' max');
     if (text.length > limit)
         {
         node.val(text.substr(0,limit));
