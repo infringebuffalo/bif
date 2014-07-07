@@ -94,22 +94,33 @@ class groupPerformerInfo
 
 class programInfo
     {
-    function __construct($id,$title,$type,$brochure_description,$website)
+    function __construct($id,$title,$info)
         {
         $this->id = $id;
         $this->title = stripslashes($title);
-        $this->type = $type;
-        $this->website = $website;
-        $this->brochure_description = stripslashes($brochure_description);
+        $this->brochure_description = '';
+        $this->type = '';
+        $this->website = '';
+        $this->organization = '';
+        foreach ($info as $i)
+            if (is_array($i) && array_key_exists(0,$i))
+                {
+                if ($i[0] == 'Description for brochure')
+                    $this->brochure_description = stripslashes($i[1]);
+                else if ($i[0] == 'Website')
+                    $this->website = $i[1];
+                else if ($i[0] == 'Type')
+                    $this->type = $i[1];
+                else if ($i[0] == 'Organization')
+                    $this->organization = $i[1];
+                }
         }
     function text()
         {
         $s = '';
         if ($this->organization != '') $s .= '<em>Presented by ' . $this->organization . '</em><br/>';
         if ($this->website != '') $s .= '<em>' . $this->website . '</em><br/>';
-        if ($this->brochure_genre != '') $s .= 'Genre: ' . $this->brochure_genre . '<br/>';
         if ($this->brochure_description != '') $s .= $this->brochure_description . '<br/>';
-        if ($this->admission != '') $s .= 'Admission: ' . $this->admission . '<br/>';
         return $s;
         }
     }
@@ -217,21 +228,9 @@ function getPrograminfoList($festival=0)
     $stmt->bind_result($id,$title,$info_ser);
     while ($stmt->fetch())
         {
-        $description = '';
-        $type = '';
-        $website = '';
         $info = unserialize($info_ser);
-        foreach ($info as $i)
-            if (is_array($i) && array_key_exists(0,$i))
-                {
-                if ($i[0] == 'Description for brochure')
-                    $description = $i[1];
-                else if ($i[0] == 'Website')
-                    $website = $i[1];
-                else if ($i[0] == 'Type')
-                    $type = $i[1];
-                }
-        $programinfoList[$id] = new programInfo($id,$title,$type,$description,$website);
+
+        $programinfoList[$id] = new programInfo($id,$title,$info);
         }
     $stmt->free_result();
     $stmt->close();
