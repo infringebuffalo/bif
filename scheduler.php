@@ -310,7 +310,6 @@ function timeMenu($startHour, $endHour, $name, $default='1900')
     {
     if ($default == '') $default='1900';
     $retstr = '<select name="' . $name . '">';
-    $times = array('1100','1130','1200','1230','1300','1330','1400','1430','1500','1530','1600','1630','1700','1730','1800','1830','1900','1930','2000','2030','2100','2130','2200','2230','2300','2330','2400','2430','2500','2530','2600','2630','2700','2730','2800');
     for ($hour = $startHour; $hour < $endHour; $hour++)
         {
         for ($minute = 0; $minute < 60; $minute += 15)
@@ -509,8 +508,8 @@ function scheduleEventForm($returnurl,$calEntryFunc,$proposalid,$venueid)
     if ($venueid==0)
         $s .= venueMenu('venue');
     $s .= '<br/>Venue detail:<input type="text" name="venuenote" value="" size="20"/></td>';
-    $s .= '<td> Start time: ' . timeMenu(11,28,'starttime');
-    $s .= '<br/> End time: ' . timeMenu(11,28,'endtime') . '</td>';
+    $s .= '<td> Start time: ' . timeMenu(10,28,'starttime');
+    $s .= '<br/> End time: ' . timeMenu(10,28,'endtime') . '</td>';
     $s .= '<td>Note:<input type="text" name="note" value="" size="10"/></td>';
     $s .= '<td> <input type="submit" value="Add"> </td>';
     $s .= '</tr>';
@@ -646,7 +645,7 @@ function editableListingRow($id,$showdate,$showtime,$showvenue,$showproposal,$sh
         if ($l->installation)
             $s .= '<input type="hidden" name="installation" value="1" /><td>installation</td>';
         else
-            $s .= '<td>' . timeMenu(11,28,'starttime',$l->starttime) . ' - ' . timeMenu(11,28,'endtime',$l->endtime) . '</td>';
+            $s .= '<td>' . timeMenu(10,28,'starttime',$l->starttime) . ' - ' . timeMenu(10,28,'endtime',$l->endtime) . '</td>';
         }
     else
         $s .= sprintf('<input type="hidden" name="starttime" value="%s" /><input type="hidden" name="endtime" value="%s" />',$l->starttime,$l->endtime);
