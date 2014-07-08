@@ -2,6 +2,7 @@
 require_once 'init.php';
 requireLogin();
 connectDB();
+require_once 'util.php';
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +14,9 @@ connectDB();
 <h2>Venues</h2>
 
 <?php
-$stmt = dbPrepare('select name,info from venue where deleted=0 order by name');
+$festival = GETvalue('festival',getFestivalID());
+$stmt = dbPrepare('select name,info from venue where deleted=0 and festival=? order by name');
+$stmt->bind_param('i',$festival);
 $stmt->execute();
 $stmt->bind_result($name,$info_ser);
 while ($stmt->fetch())
