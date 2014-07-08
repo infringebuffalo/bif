@@ -63,9 +63,14 @@ for ($i=0; $i < 11; $i++)
     $dayshows[dayToDate($i)] = array();
 foreach ($v->listings as $l)
     {
-    if ((!$l->installation) && (!$l->cancelled))
+    if (!$l->installation)
         {
-        $dayshows[$l->date][] = sortingKey($l->starttime) . signlistingRow($l->id) . '<tr><td></td><td><div style="margin-left: 2em">' . $programinfoList[$l->proposal->id]->text() . '</div></td></tr>';
+        $s = sortingKey($l->starttime) . signlistingRow($l->id) . '<tr><td></td>';
+        if (!$l->cancelled)
+            $s .= '<td><div style="margin-left: 2em">' . $programinfoList[$l->proposal->id]->text() . '</div></td></tr>';
+        else
+            $s .= '<td></td></tr>';
+        $dayshows[$l->date][] = $s;
         }
     }
 
