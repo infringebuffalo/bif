@@ -194,15 +194,18 @@ foreach ($labels as $l)
     $out .= "<th>$l</th>";
 $out .= "</tr></thead>\n<tbody>\n";
 
+$count = 0;
+
 foreach ($rows as $r)
     {
     $out .= '<tr><td>' . $r->title() . '</td><td>' . $r->proposer() . '</td><td>' . $r->submitted() . '</td><td>' . $r->lastedit() . '</td><td>' . $r->totalShows . '</td>' . $r->summary($labels) . "</tr>\n";
+    $count += 1;
     }
 $out .= "</tbody>\n</table>\n";
 echo $out;
 
 $ENDTIME = microtime(TRUE);
 $t = $ENDTIME - $STARTTIME;
-echo "<p style='font-size:75%'>This page took $t seconds</p>";
+echo "<p style='font-size:75%'>$count shows; page took $t seconds</p>";
 bifPagefooter();
 ?>
