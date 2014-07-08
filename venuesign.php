@@ -80,7 +80,7 @@ for ($i=0; $i < 11; $i++)
     if (count($dayshows[$date]) > 0)
         {
         $s .= '<h1>Infringement Festival at ' . $v->name . '<br/>' . date('l, F j',strtotime($date)) . '</h1>';
-        $s .= '<div class="rfloat"><img src="/2014_frontpage_poster.jpg" width="180"></div>';
+        $s .= '<div class="rfloat"><img src="/2014_poster.jpg" width="180"></div>';
         sort ($dayshows[$date]);
         $s .= '<table cellpadding="5">';
         foreach ($dayshows[$date] as $row)
