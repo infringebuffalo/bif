@@ -57,7 +57,6 @@ function signlistingRow($id)
 
 $v = $venueList[$id];
 $s = '';
-
 $dayshows = array();
 for ($i=0; $i < 11; $i++)
     $dayshows[dayToDate($i)] = array();
@@ -74,20 +73,21 @@ foreach ($v->listings as $l)
         }
     }
 
+$sign = '';
 for ($i=0; $i < 11; $i++)
     {
     $date = dayToDate($i);
     if (count($dayshows[$date]) > 0)
         {
-        $s .= '<h1>Infringement Festival at ' . $v->name . '<br/>' . date('l, F j',strtotime($date)) . '</h1>';
-        $s .= '<div class="rfloat"><img src="/2014_poster.jpg" width="180"></div>';
+        $sign .= '<h1>Infringement Festival at ' . $v->name . '<br/>' . date('l, F j',strtotime($date)) . '</h1>';
+        $sign .= '<div class="rfloat"><img src="/2014_poster.jpg" width="180"></div>';
         sort ($dayshows[$date]);
-        $s .= '<table cellpadding="5">';
+        $sign .= '<table cellpadding="5">';
         foreach ($dayshows[$date] as $row)
-                $s .= $row . "\n";
-        $s .= '</table>';
-        $s .= '<br clear="all" /><br/><br/><br/>Visit WWW.INFRINGEBUFFALO.ORG for the complete schedule of over 700 events at over 80 venues';
-        $s .= '<br clear="all" style="page-break-after: always" />' . "\n\n";
+                $sign .= $row . "\n";
+        $sign .= '</table>';
+        $sign .= '<br clear="all" /><br/><br/><br/>Visit WWW.INFRINGEBUFFALO.ORG for the complete schedule of over 700 events at over 80 venues';
+        $sign .= '<br clear="all" style="page-break-after: always" />' . "\n\n";
         }
     }
 ?>
@@ -103,7 +103,7 @@ for ($i=0; $i < 11; $i++)
 </head>
 <body>
 <?php
-echo $s;
+echo $sign;
 ?>
 </body>
 </html>
