@@ -26,9 +26,9 @@ while ($stmt->fetch())
     $website = '';
     foreach ($info as $i)
         {
-        if ($i[0] == 'address')
+        if (strcasecmp($i[0],'address') == 0)
             $address = $i[1];
-        else if ($i[0] == 'website')
+        else if (strcasecmp($i[0],'website') == 0)
             $website = $i[1];
         }
     echo stripslashes($name) . '<br/>';
