@@ -194,7 +194,7 @@ function proposalSideControlDiv($proposal)
     while ($stmt->fetch())
         {
         $batchlist[$batch_id] = $batch_name;
-        $batchdiv .= "<span style='white-space:nowrap'><a href='batchMove.php?id=$batch_id&cur=" . $proposal->id . "&dir=-1'>&lt;-</a><a href='batch.php?id=$batch_id'>$batch_name</a><a href='batchMove.php?id=$batch_id&cur=" . $proposal->id . "&dir=1'>-&gt;</a>&nbsp;&nbsp;&nbsp;<form method='POST' action='api.php' style='display:inline'><input type='hidden' name='command' value='removeFromBatch' /><input type='hidden' name='proposal' value='" . $proposal->id . "' /><input type='hidden' name='batch' value='$batch_id'><input type='submit' name='submit' value='x' style='border:0px; padding:0; background: yellow'/></form></span><br>\n";
+        $batchdiv .= "<span style='white-space:nowrap'><a href='batchMove.php?id=$batch_id&cur=" . $proposal->id . "&dir=-1'>&lt;-</a><a href='batch.php?id=$batch_id'>$batch_name</a><a href='batchMove.php?id=$batch_id&cur=" . $proposal->id . "&dir=1'>-&gt;</a>&nbsp;&nbsp;&nbsp;<form method='POST' action='api.php' onsubmit='return confirmRemoveFromBatch(\"$batch_name\")' style='display:inline'><input type='hidden' name='command' value='removeFromBatch' /><input type='hidden' name='proposal' value='" . $proposal->id . "' /><input type='hidden' name='batch' value='$batch_id'><input type='submit' name='submit' value='x' style='font-size:80%' /></form></span><br>\n";
         }
     $stmt->close();
     $batchdiv .= "<form method='POST' action='api.php' style='white-space:nowrap'><input type='hidden' name='command' value='addToBatch' /><input type='hidden' name='proposal' value='" . $proposal->id . "' /><input type='submit' name='submit' value='add to'/>" . newBatchMenu('batch',$batchlist) . "</form>\n";
@@ -328,6 +328,14 @@ function addEditButtons(index,element)
     element.append(donteditButton);
     }
 
+function confirmRemoveFromBatch(batchname)
+    {
+    if (confirm("Remove from batch '" + batchname + "'?"))
+        return true;
+    else
+        return false;
+    }
+
 $(document).ready(function() {
     $('.editField').each(addEditButtons);
     $('.edit_info').hide();
@@ -401,7 +409,7 @@ function proposalGroupShowPerformers($proposal,$canEditSchedule)
             $out .= '<td><a href="proposal.php?id=' . $perf->performerid . '">' . $perf->performer->title . '</a></td>';
             $out .= '<td colspan="3">' . beginApiCallHtml('changeGroupPerformer',array('groupperformerid'=>$perf->id));
             $out .= '<input type="text" name="showorder" size="2" value="' . $perf->showorder . '" />';
-            $out .= timeMenu(10,28,'time',$perf->time);
+            $out .= timeMenu(11,28,'time',$perf->time);
             $out .= '<input type="text" name="note" value="' . $perf->note . '" />';
             $out .= '<input type="submit" value="Save" />';
             $out .= '</form></td>';
@@ -462,7 +470,7 @@ function proposalSchedulingDiv($proposal)
         $out .= "<table>\n";
         $out .= "<tr>\n";
         $out .= "<td> " . showMenu('performerid',getProposalInfo($proposal->id,'batch')) . " </td>\n";
-        $out .= "<td> Time " . timeMenu(10,28,'time') . " </td>\n";
+        $out .= "<td> Time " . timeMenu(11,28,'time') . " </td>\n";
         $out .= "<td> Order <input type='text' name='order' value='0' size='3'/> </td>\n";
         $out .= "<td> Note <input type='text' name='note' value='' size='12'/> </td>\n";
         $out .= "<td><input type='submit' name='submit' value='Add' /></td>\n";
@@ -499,7 +507,7 @@ function proposalSchedulingDiv($proposal)
         $out .= "<table>\n";
         $out .= "<tr>\n";
         $out .= "<td> " . groupShowMenu('groupeventid') . " </td>\n";
-        $out .= "<td> Time " . timeMenu(10,28,'time') . " </td>\n";
+        $out .= "<td> Time " . timeMenu(11,28,'time') . " </td>\n";
         $out .= "<td> Order <input type='text' name='order' value='0' size='3'/> </td>\n";
         $out .= "<td> Note <input type='text' name='note' value='' size='12'/> </td>\n";
         $out .= "<td><input type='submit' name='submit' value='Add'></td>\n";
