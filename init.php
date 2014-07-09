@@ -180,7 +180,6 @@ echo <<<ENDSTRING
 <head>
 <meta charset="utf-8">
 <link type="text/css" rel="stylesheet" href="style.css" />
-<link type="text/css" rel="stylesheet" href="style2.css" />
 <title>$titleprefix Buffalo Infringement Festival</title>
 ENDSTRING;
 echo $headerExtras;

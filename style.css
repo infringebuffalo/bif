@@ -1,13 +1,20 @@
-body { margin: 1em 1em 2em 2em; font-family: sans-serif; color: black; background: white; }
+body { margin: 1em 1em 2em 2em; font-size: 10pt; font-family: helvetica,arial,sans-serif; color: black; background: white; }
 th { background: #d0d0e0 }
-tr.evenrow { background: #e0e0e0; }
-tr.oddrow { background: #ffffff; }
+img { border: 0; display:inline }
+h3 { margin: 1em 0em 0em 1em }
+a:link { text-decoration:none }
+a:visited { text-decoration:none }
+a:hover { text-decoration:underline ; color: black; background: white; }
 table.colorized tr:nth-child(even) {background: #e0e0e0; }
 table.colorized tr:nth-child(odd) { background: #ffffff; }
+tr.evenrow { background: #e0e0e0; }
+tr.oddrow { background: #ffffff; }
+td.red { background: red }
+td.green { background: green }
+td.cancelled { text-decoration: line-through; color: #444 }
 div.title { border:solid; border-width:thin; background:#e0ffe0; padding:0em; width:790px; }
 div.header { border: none; font-size: 80%; width: 100%; padding: 0em; background: #ccc }
 div.notebox { border:solid; border-width:thin; background:#ffe0c0; padding:0.5em; width:790px }
-table.header { margin-left: auto; margin-right: auto; }
 div.contact {  background: #ffffc0 }
 div.projectForm {  background: #d0d0d0 }
 div.otherQuestions {  background: #c0d0ff }
@@ -15,18 +22,16 @@ div.helptext { position: absolute; display: none; background: #ffb0b0 }
 div.title { width: 770px }
 div.editbox { margin-top: 0.5em; padding: 5px; border: solid; border-width: thin; background: #ffffd0; float:right; }
 div.schedulebox {  margin-top: 0em; padding: 5px; border: solid; border-width: thin; background: #d0ffff }
-div.infobox { }
 div.showhidealt { display: none }
-h3 { margin: 1em 0em 0em 1em }
-a:link { text-decoration:none }
-a:visited { text-decoration:none }
-a:hover { text-decoration:underline }
-td.red { background: red }
-td.green { background: green }
-td.cancelled { text-decoration: line-through; color: #444 }
 span.cancelled { text-decoration: line-through; color: #444 }
 span.fieldEditLink { font-size: 70%; float: right; color: #660 }
 span.fieldDontEditLink { font-size: 70%; float: right; color: #660; display: none }
 span.noteauthor { background: #aaa }
 div.note { border: 1px solid }
 div.artvoice { background: #efd }
+table.menubar { text-align: center; }
+div.menubar { background-color: #ccc; border-radius: 2em }
+td.good { background: #8f8; }
+td.cancelled { text-decoration: line-through; color: #444 }
+span.cancelled { text-decoration: line-through; color: #444 }
+
