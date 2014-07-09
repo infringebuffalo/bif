@@ -98,6 +98,8 @@ while ($stmt->fetch())
     }
 if (!$first)
     echo "</ul>\n";
+else
+    echo "<li>You have not submitted any proposals\n<br>\n";
 $stmt->close();
 
 /*
