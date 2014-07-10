@@ -14,7 +14,6 @@ function newVenue($name,$shortname)
                          array('Best performances',''),
                          array('Performance space',''),
                          array('Wall space',''),
-                         array('maphtml',''),
                          array('Infringement contact',''),
                          array('Capacity',''),
                          array('Stage',''),
@@ -32,7 +31,10 @@ function newVenue($name,$shortname)
                          array('Parking',''),
                          array('Performer load-in',''),
                          array('Wheelchair accessible',''),
-                         array('Regular business hours',''));
+                         array('Regular business hours',''),
+                         array('latitude',''),
+                         array('longitude','')
+                        );
     $venueid = newEntityID('venue');
     $festival = getFestivalID();
     $stmt = dbPrepare('insert into `venue` (`id`, `name`, `shortname`, `festival`, `info`) values (?,?,?,?,?)');
