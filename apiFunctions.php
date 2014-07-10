@@ -32,6 +32,7 @@ function newVenue($name,$shortname)
                          array('Performer load-in',''),
                          array('Wheelchair accessible',''),
                          array('Regular business hours',''),
+                         array('Description for web',''),
                          array('latitude',''),
                          array('longitude','')
                         );
