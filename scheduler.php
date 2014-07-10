@@ -328,9 +328,9 @@ function timeMenu($startHour, $endHour, $name, $default='1900')
     return $retstr;
     }
 
-function venueMenu($name,$selected='')
+function venueMenu($menuname,$selected='')
     {
-    $retstr = "<select name='" . $name . "'>\n";
+    $venues = array();
     $stmt = dbPrepare('select id,name,shortname from venue where deleted=0 and festival=? order by shortname');
     $festival = getFestivalID();
     $stmt->bind_param('i',$festival);
@@ -338,14 +338,20 @@ function venueMenu($name,$selected='')
     $stmt->bind_result($id,$name,$shortname);
     while ($stmt->fetch())
         {
-        $retstr .= '<option value="' . $id . '"';
-        if ($id == $selected) $retstr .= ' selected';
         if ($shortname != '')
-            $retstr .= '>' . substr(stripslashes($shortname),0,32) . '</option>';
+            $venues[$id] = substr(stripslashes($shortname),0,32);
         else
-            $retstr .= '>' . substr(stripslashes($name),0,32) . '</option>';
+            $venues[$id] = substr(stripslashes($name),0,32);
         }
     $stmt->close();
+    $retstr = "<select name='$menuname'>\n";
+    asort($venues);
+    foreach ($venues as $vid=>$vname)
+        {
+        $retstr .= "<option value='$vid'";
+        if ($vid == $selected) $retstr .= ' selected';
+        $retstr .= ">$vname</option>\n";
+        }
     $retstr .= "</select>\n";
     return $retstr;
     }
