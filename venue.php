@@ -145,6 +145,42 @@ function venueInfoDiv($id,$venueinfo)
     return $html;
     }
 
+function venueMapDiv($id,$venueinfo)
+    {
+    $info = unserialize($venueinfo['info']);
+    $maphtml = getInfo($info,'maphtml');
+    $html = "<div class='rfloat'>\n";
+    if (trim($maphtml) != '')
+        $html .= $maphtml;
+    else
+        {
+        $lat = getInfo($info,'latitude');
+        $lon = getInfo($info,'longitude');
+        if (($lat != '') && ($lon != ''))
+            {
+            $lat = (float) $lat;
+            $lon = (float) $lon;
+            $left = $lon - 0.0015;
+            $right = $lon + 0.0015;
+            $bottom = $lat - 0.0016;
+            $top = $lat + 0.0016;
+            $biglat = $lat;
+            $biglon = $lon;
+            $html .= '<iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://www.openstreetmap.org/export/embed.html?bbox=' . $left . ',' . $bottom . ',' . $right . ',' . $top . '&amp;layer=mapnik&amp;marker=' . $lat . ',' . $lon . '" style="border: 1px solid black"></iframe><br /><small><a href="http://www.openstreetmap.org/?lat=' . $biglat . '&amp;lon=' . $biglon . '&amp;zoom=17&amp;layers=M&amp;mlat=' . $lat . '&amp;mlon=' . $lon . '">View Larger Map</a></small>';
+            }
+        }
+    $html .= "</div>\n";
+    return $html;
+    }
+
+function getInfo($info,$field)
+    {
+    foreach ($info as $i)
+        if (is_array($i) && array_key_exists(0,$i) && ($i[0] == $field))
+            return $i[1];
+    return '';
+    }
+
 
 if (!isset($_GET['id']))
     die('no venue id given');
@@ -187,9 +223,11 @@ $toolsdiv = venueToolsDiv($id,$venueinfo);
 $schedulingdiv = venueSchedulingDiv($id,$venueinfo);
 $schedulediv = venueScheduleDiv($id,$venueinfo);
 $infodiv = venueInfoDiv($id,$venueinfo);
+$mapdiv = venueMapDiv($id,$venueinfo);
 
 bifPageheader('venue: ' . $venueinfo['name'],$header);
 echo "<p>Venue for $venueinfo[festivalname]</p>\n";
+echo $mapdiv;
 echo $schedulingdiv;
 echo $schedulediv;
 echo $toolsdiv;
