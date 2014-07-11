@@ -23,13 +23,15 @@ function main()
     $canEditSchedule = hasPrivilege('scheduler');
 
     bifPageheader('proposal: ' . $proposal->title, proposalPageHeader($proposal->availability));
+    echo proposalArtvoiceText($proposal);
     if ($canSeeSchedule)
         echo proposalScheduleDiv($proposal,$canEditSchedule);
+    echo "<br>\n";
     if ($proposal->isgroupshow)
         echo proposalGroupShowPerformers($proposal,$canEditSchedule);
     if (hasPrivilege('scheduler'))
         echo proposalSchedulingDiv($proposal);
-    echo proposalArtvoiceText($proposal);
+    echo "<br><hr>\n";
 /*
     echo "<div><a href=\"imageUpload.php?id=$proposal_id\">upload image for web</a></div>\n";
 */
