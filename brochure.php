@@ -165,7 +165,7 @@ for ($i = 0; $i < $festivalNumberOfDays; $i++)
     $list = array();
     foreach ($listingList as $l)
         {
-        if ((!$l->installation) && ($l->date == $date))
+        if ((!$l->installation) && ($l->date == $date) && (!$l->cancelled))
             {
             $list[] = sortingKey($l->starttime . $l->endtime . $l->venue->name) . '<b>' . $l->proposal->title . '</b><br/>' . $l->venue->name . ' / ' . timeRangeToString($l->starttime,$l->endtime) . '<br/>';
             }
