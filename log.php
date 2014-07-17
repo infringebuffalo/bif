@@ -2,7 +2,7 @@
 require_once 'init.php';
 require_once 'util.php';
 connectDB();
-requirePrivilege('admin');
+requirePrivilege('admin',"view log");
 
 bifPageheader('log');
 ?>

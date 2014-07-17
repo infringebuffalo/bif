@@ -124,14 +124,14 @@ function requireLogin()
         }
     }
 
-function requirePrivilege($priv)
+function requirePrivilege($priv,$reason='')
     {
     if (hasPrivilege($priv))
         return;
     if (is_array($priv))
-        log_message('lacks ' . $priv[0] . ' (or other) privilege - ' . $_SERVER['HTTP_REFERER']);
+        log_message("lacks $priv[0] (or other) privilege - $reason $_SERVER[HTTP_REFERER]");
     else
-        log_message('lacks ' . $priv . ' privilege - ' . $_SERVER['HTTP_REFERER']);
+        log_message("lacks $priv privilege - $reason $_SERVER[HTTP_REFERER]");
     header('Location: .');
     die();
     }

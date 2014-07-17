@@ -18,9 +18,9 @@ class apiFunction
     function call()
         {
         if ($this->adminPriv)
-            requirePrivilege('admin');
+            requirePrivilege('admin',"for api call '$this->name'");
         if ($this->schedulerPriv)
-            requirePrivilege('scheduler');
+            requirePrivilege('scheduler',"for api call '$this->name'");
         $args = array();
         foreach ($this->params as $param)
             $args[] = POSTvalue($param->name);
