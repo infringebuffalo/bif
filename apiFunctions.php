@@ -371,7 +371,7 @@ function changeVenueInfo($venue,$fieldnum,$newinfo)
     log_message("changed venue $venue field $fieldnum from '$oldinfo' to '$newinfo'");
     }
 
-function setLatLon($venue,$latlon)
+function setVenueLatLon($venue,$latlon)
     {
     $info_ser = dbQueryByID('select info from venue where id=?',$venue);
     if ($info_ser == NULL)

@@ -38,7 +38,7 @@ while ($stmt->fetch())
     echo "<td>$lat, $lon</td>\n";
     echo "<td><a target='_blank' href='https://www.google.com/maps/place/" . urlencode($addr) . "/'>$addr</a></td>\n";
     echo "<td>";
-    echo beginApiCallHtml('setLatLon', array('venue'=>$id));
+    echo beginApiCallHtml('setVenueLatLon', array('venue'=>$id));
     echo "<input type='text' size='20' name='latlon'>";
     echo endApiCallHtml('submit');
     echo "</td>\n";
