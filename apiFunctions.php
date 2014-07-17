@@ -371,6 +371,31 @@ function changeVenueInfo($venue,$fieldnum,$newinfo)
     log_message("changed venue $venue field $fieldnum from '$oldinfo' to '$newinfo'");
     }
 
+function setLatLon($venue,$latlon)
+    {
+    $info_ser = dbQueryByID('select info from venue where id=?',$venue);
+    if ($info_ser == NULL)
+        return;
+    $info = unserialize($info_ser['info']);
+    $pos = explode(',',$latlon);
+    $count = 0;
+    foreach ($info as $data)
+        {
+        if ($data[0] == 'latitude')
+            $data[1] = $pos[0];
+        else if ($data[0] == 'longitude')
+            $data[1] = $pos[1];
+        $info[$count] = $data;
+        $count++;
+        }
+    $info_ser = serialize($info);
+    $stmt = dbPrepare('update venue set info=? where id=?');
+    $stmt->bind_param('si',$info_ser,$venue);
+    $stmt->execute();
+    $stmt->close();
+    log_message("changed venue $venue latitude/longitude to $latlon");
+    }
+
 function changeVenueName($venue,$newinfo)
     {
     $stmt = dbPrepare('update venue set name=? where id=?');
