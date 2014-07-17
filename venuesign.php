@@ -1,5 +1,6 @@
 <?php
 require_once 'init.php';
+ini_set('display_errors','1');
 connectDB();
 require_once 'scheduler.php';
 getDatabase();
@@ -10,46 +11,57 @@ if ((array_key_exists('id',$_GET)) && ($_GET['id']) && (is_numeric($_GET['id']))
 else
     die();
 
+function qrcode($id)
+    {
+    $query = urlencode("qrcode http://infringebuffalo.org/show.php?id=$id");
+    $ddg = "http://api.duckduckgo.com/?q=$query&format=json";
+    $json = file_get_contents($ddg);
+    $data = json_decode($json);
+    preg_match('/<img.*>/U',$data->Answer,$matches);
+    return $matches[0];
+    }
+
 function signlistingRow($id)
     {
     global $listingList;
     global $proposalList;
+    global $programinfoList;
     $l = $listingList[$id];
     $cancelled = false;
     if ($l->cancelled) $cancelled = true;
     if ($cancelled) $tdtags = ' style="text-decoration: line-through; color:#444"';
     else $tdtags='';
+    $img = qrcode($id);
     $s = '<tr>';
-    if (1)
+    $s .= '<td' . $tdtags . '><span style="font-size:150%; font-style: italic">';
+    $s .= str_replace(' ',' ',timeRangeToString($l->starttime,$l->endtime));
+    $s .= '</span></td>';
+    $p = $l->proposal;
+    $s .= "<td $tdtags><span style='font-size:200%'>" . $p->title . "</span>\n";
+    if ($l->venuenote != '')
+        $s .= '<br><em>(' . $l->venuenote . ")</em>\n";
+    if (!$l->cancelled)
+        $s .= "<br>\n<div style='margin-left: 2em'>\n" . $programinfoList[$p->id]->text() . "</div>\n";
+    if ($p->isgroupshow)
         {
-        $s .= '<td' . $tdtags . '><span style="font-size:150%; font-style: italic">';
-        $s .= str_replace(' ',' ',timeRangeToString($l->starttime,$l->endtime));
-        $s .= '</span></td>';
-        }
-    if (1)
-        {
-        $p = $l->proposal;
-        $s .= '<td' . $tdtags . '><span style="font-size:200%">' . $p->title . '</span>';
-        if ($l->venuenote != '')
-            $s .= '<br/><em>(' . $l->venuenote . ')</em>';
-        if ($p->isgroupshow)
+        $s .= '<br/><div style="line-height: 1.25em">featuring:';
+        foreach ($p->performers as $perf)
             {
-            $s .= '<br/><div style="line-height: 1.25em">featuring:';
-            foreach ($p->performers as $perf)
-                {
-                if ($perf->cancelled) $ptags = ' style="text-decoration: line-through; color:#444"';
-                else $ptags = '';
-                $s .= '<br/>&nbsp;&nbsp;<span' . $ptags . '>';
-                $s .= timeToString($perf->time);
-                $s .= '&nbsp;&nbsp;&nbsp;' . $perf->performer->title;
-                $s .= '</span>';
-                if ($perf->cancelled) $s .= ' (cancelled)';
-                }
-            $s .= '</div>';
+            if ($perf->cancelled) $ptags = ' style="text-decoration: line-through; color:#444"';
+            else $ptags = '';
+            $s .= '<br/>&nbsp;&nbsp;<span' . $ptags . '>';
+            $s .= timeToString($perf->time);
+            $s .= '&nbsp;&nbsp;&nbsp;' . $perf->performer->title;
+            $s .= '</span>';
+            if ($perf->cancelled) $s .= ' (cancelled)';
             }
-        $s .= '</td>';
+        $s .= '</div>';
         }
-    if ($l->cancelled) $s .= '<td><em>cancelled</em></td>';
+    $s .= "</td>\n";
+    if ($l->cancelled)
+        $s .= "<td><em>cancelled</em></td>\n";
+    else
+        $s .= "<td>$img</td>\n";
     $s .= "</tr>\n";
     return $s;
     }
@@ -64,11 +76,7 @@ foreach ($v->listings as $l)
     {
     if (!$l->installation)
         {
-        $s = sortingKey($l->starttime) . signlistingRow($l->id) . '<tr><td></td>';
-        if (!$l->cancelled)
-            $s .= '<td><div style="margin-left: 2em">' . $programinfoList[$l->proposal->id]->text() . '</div></td></tr>';
-        else
-            $s .= '<td></td></tr>';
+        $s = sortingKey($l->starttime) . signlistingRow($l->id);
         $dayshows[$l->date][] = $s;
         }
     }
@@ -79,15 +87,15 @@ for ($i=0; $i < 11; $i++)
     $date = dayToDate($i);
     if (count($dayshows[$date]) > 0)
         {
-        $sign .= '<h1>Infringement Festival at ' . $v->name . '<br/>' . date('l, F j',strtotime($date)) . '</h1>';
-        $sign .= '<div class="rfloat"><img src="/2014_poster.jpg" width="180"></div>';
+        $sign .= '<h1>Infringement at ' . $v->name . '<br/>' . date('l, F j',strtotime($date)) . "</h1>\n";
+/*        $sign .= '<div class="rfloat"><img src="/2014_poster.jpg" width="180"></div>'; */
         sort ($dayshows[$date]);
-        $sign .= '<table cellpadding="5">';
+        $sign .= "<table cellpadding='5'>\n";
         foreach ($dayshows[$date] as $row)
                 $sign .= $row . "\n";
-        $sign .= '</table>';
-        $sign .= '<br clear="all" /><br/><br/><br/>Visit WWW.INFRINGEBUFFALO.ORG for the complete schedule of over 700 events at over 80 venues';
-        $sign .= '<br clear="all" style="page-break-after: always" />' . "\n\n";
+        $sign .= "</table>\n";
+        $sign .= '<br clear="all" /><br/><br/><br/>Visit WWW.INFRINGEBUFFALO.ORG for the complete schedule of over 700 events at over 90 venues';
+        $sign .= "<br clear='all' style='page-break-after: always' />\n\n";
         }
     }
 ?>
