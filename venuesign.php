@@ -31,12 +31,12 @@ function signlistingRow($id)
     if ($l->cancelled) $cancelled = true;
     if ($cancelled) $tdtags = ' style="text-decoration: line-through; color:#444"';
     else $tdtags='';
-    $img = qrcode($id);
+    $p = $l->proposal;
+    $img = qrcode($p->id);
     $s = '<tr>';
     $s .= '<td' . $tdtags . '><span style="font-size:150%; font-style: italic">';
     $s .= str_replace(' ',' ',timeRangeToString($l->starttime,$l->endtime));
     $s .= '</span></td>';
-    $p = $l->proposal;
     $s .= "<td $tdtags><span style='font-size:200%'>" . $p->title . "</span>\n";
     if ($l->venuenote != '')
         $s .= '<br><em>(' . $l->venuenote . ")</em>\n";
