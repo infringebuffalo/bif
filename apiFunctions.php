@@ -813,7 +813,7 @@ function getIconFromURL($proposal,$url)
     $iconfile = 'uploads/file' . $imageid . '.jpg';
     file_put_contents($fullsizefile,$imagedata);
     log_message("saved $url as $fullsizefile for $proposal");
-    exec("convert $fullsizefile -thumbnail 300x300 -unsharp 0x.5 $iconfile");
+    exec("convert $fullsizefile -thumbnail 400x400 -unsharp 0x.5 $iconfile");
     $description = "image for show $proposalid ('$title')";
     $stmt = dbPrepare('insert into image (id,filename,origFilename,description) values (?,?,?,?)');
     $stmt->bind_param('isss',$imageid,$filename,$origFilename,$description);

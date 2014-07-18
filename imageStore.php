@@ -33,12 +33,12 @@ if ($_FILES)
     if (($f['type'] == 'image/jpeg') || ($f['type'] == 'image/pjpeg'))
       {
       if ($f['size'] > 10000000)
-         $error = 'Uploaded file must be 10 megabytes or less.  Please scale your image down to 300 pixels across before uploading.';
+         $error = 'Uploaded file must be 10 megabytes or less.  Please scale your image down to 400 pixels across before uploading.';
       else
         {
         $imageid = newEntityID('image');
         $filename = 'uploads/file' . $imageid . '.jpg';
-        exec('convert ' . $f['tmp_name'] . ' -thumbnail 300x300 -unsharp 0x.5 ' . $filename);
+        exec('convert ' . $f['tmp_name'] . ' -thumbnail 400x400 -unsharp 0x.5 ' . $filename);
         $origFilename = $db->real_escape_string(htmlentities($f['name'],ENT_COMPAT | ENT_HTML5, "UTF-8"));
         $description = "image for show $proposalid ('$title')";
         $stmt = dbPrepare('insert into image (id,filename,origFilename,description) values (?,?,?,?)');

@@ -33,7 +33,7 @@ bifPageheader('image upload');
 <h2>Upload web icon image for <i><?php echo $title;?></i></h2>
 
 <p>
-All show listings on the festival website will include a single image associated with that show.  Please upload your image here.  Note that the image will be scaled to 300 pixels on its largest side.
+All show listings on the festival website will include a single image associated with that show.  Please upload your image here.  Note that the image will be scaled to 400 pixels on its largest side.
 </p>
 <form method="POST" enctype="multipart/form-data" action="imageStore.php">
 <input type="hidden" name="proposalid" value="<?php echo $proposal_id ?>" />
