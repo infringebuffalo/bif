@@ -708,7 +708,7 @@ function setProposalInfo($id,$field,$value)
     $info = unserialize($row['info']);
     $found = false;
     foreach ($info as &$i)
-        if (is_array($i) && array_key_exists(0,$i) && ($i[0] == $field))
+        if (is_array($i) && array_key_exists(0,$i) && (strcasecmp($i[0],$field)==0))
             {
             $i[1] = $value;
             $found = true;
