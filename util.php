@@ -143,11 +143,11 @@ function savePreferences()
     log_message('saved preferences');
     }
 
-function getInfo($info,$field)
+function getInfo($info,$field,$default='')
     {
     foreach ($info as $i)
         if (is_array($i) && array_key_exists(0,$i) && (strcasecmp($i[0],$field)==0))
             return $i[1];
-    return '';
+    return $default;
     }
 ?>
