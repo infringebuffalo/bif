@@ -173,14 +173,6 @@ function venueMapDiv($id,$venueinfo)
     return $html;
     }
 
-function getInfo($info,$field)
-    {
-    foreach ($info as $i)
-        if (is_array($i) && array_key_exists(0,$i) && ($i[0] == $field))
-            return $i[1];
-    return '';
-    }
-
 
 if (!isset($_GET['id']))
     die('no venue id given');

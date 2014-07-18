@@ -11,15 +11,6 @@ bifPageheader('venue locations');
 <table>
 <tr><th width='10%'>name</th><th>lat/lon</th><th width='20%'>address</th><th>new lat/lon</th></tr>
 <?php
-function getInfo($info,$field)
-    {
-    foreach ($info as $i)
-        if (is_array($i) && array_key_exists(0,$i) && (strcasecmp($i[0],$field)==0))
-            return $i[1];
-    return '';
-    }
-
-
 $festival = GETvalue('festival',getFestivalID());
 $stmt = dbPrepare('select `id`, `name`, info from `venue` where `festival`=? and deleted=0 order by name');
 $stmt->bind_param('i',$festival);

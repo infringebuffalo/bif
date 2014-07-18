@@ -34,12 +34,4 @@ while ($stmt->fetch())
     fputcsv($STDOUT,array($title,$url,$contact,$help,$volunteer),',','"');
     }
 fclose($STDOUT);
-
-function getInfo($info,$field)
-    {
-    foreach ($info as $i)
-        if (is_array($i) && array_key_exists(0,$i) && ($i[0] == $field))
-            return $i[1];
-    return '';
-    }
 ?>
