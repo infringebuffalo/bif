@@ -797,10 +797,10 @@ function grantProposalAccess($proposal,$user,$mode)
 
 function getIconFromURL($proposal,$url)
     {
-    $stmt = dbPrepare('select `proposerid`,`title` from `proposal` where `id`=?');
+    $stmt = dbPrepare('select title from proposal where id=?');
     $stmt->bind_param('i',$proposal);
     $stmt->execute();
-    $stmt->bind_result($proposer_id,$title);
+    $stmt->bind_result($title);
     if (!$stmt->fetch())
         {
         $stmt->close();
@@ -811,14 +811,16 @@ function getIconFromURL($proposal,$url)
     $imageid = newEntityID('image');
     $fullsizefile = 'uploads/file' . $imageid . '_full.jpg';
     $iconfile = 'uploads/file' . $imageid . '.jpg';
+    file_put_contents($fullsizefile,$imagedata);
+    log_message("saved $url as $fullsizefile for $proposal");
     exec("convert $fullsizefile -thumbnail 300x300 -unsharp 0x.5 $iconfile");
     $description = "image for show $proposalid ('$title')";
     $stmt = dbPrepare('insert into image (id,filename,origFilename,description) values (?,?,?,?)');
     $stmt->bind_param('isss',$imageid,$filename,$origFilename,$description);
     $stmt->execute();
     $stmt->close();
-    setProposalInfo($proposalid, 'icon', $imageid);
-    log_message("saved icon $imageid for proposal $proposalid");
+    setProposalInfo($proposal, 'icon', $imageid);
+    log_message("saved icon $imageid for proposal $proposal");
     }
 
 
