@@ -77,6 +77,7 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('batchAddInfoField',1,0),
             new apiFunction('grantProposalAccess',1,0),
             new apiFunction('setVenueLatLon',1,0),
+            new apiFunction('getIconFromURL',1,0)
             );
 
 $command = POSTvalue('command');

@@ -795,4 +795,31 @@ function grantProposalAccess($proposal,$user,$mode)
         log_message("user $user already has access '$mode' on proposal $proposal");
     }
 
+function getIconFromURL($proposal,$url)
+    {
+    $stmt = dbPrepare('select `proposerid`,`title` from `proposal` where `id`=?');
+    $stmt->bind_param('i',$proposal);
+    $stmt->execute();
+    $stmt->bind_result($proposer_id,$title);
+    if (!$stmt->fetch())
+        {
+        $stmt->close();
+        die('no such proposal - id ' . $proposal);
+        }
+    $stmt->close();
+    $imagedata = file_get_contents($url);
+    $imageid = newEntityID('image');
+    $fullsizefile = 'uploads/file' . $imageid . '_full.jpg';
+    $iconfile = 'uploads/file' . $imageid . '.jpg';
+    exec("convert $fullsizefile -thumbnail 300x300 -unsharp 0x.5 $iconfile");
+    $description = "image for show $proposalid ('$title')";
+    $stmt = dbPrepare('insert into image (id,filename,origFilename,description) values (?,?,?,?)');
+    $stmt->bind_param('isss',$imageid,$filename,$origFilename,$description);
+    $stmt->execute();
+    $stmt->close();
+    setProposalInfo($proposalid, 'icon', $imageid);
+    log_message("saved icon $imageid for proposal $proposalid");
+    }
+
+
 ?>
