@@ -119,6 +119,7 @@ function requireLogin()
     {
     if (!loggedIn())
         {
+        $_SESSION['LOGIN_RETURN_PAGE'] = currentURL();
         header('Location: .');
         die();
         }
@@ -132,6 +133,7 @@ function requirePrivilege($priv,$reason='')
         log_message("lacks $priv[0] (or other) privilege - $reason $_SERVER[HTTP_REFERER]");
     else
         log_message("lacks $priv privilege - $reason $_SERVER[HTTP_REFERER]");
+    $_SESSION['LOGIN_RETURN_PAGE'] = currentURL();
     header('Location: .');
     die();
     }
@@ -165,6 +167,20 @@ function hasPrivilege($priv)
                 return true;
         }
     return false;
+    }
+
+
+function currentURL()
+    {
+    if ($_SERVER['HTTPS'] == 'on')
+        $pageURL = 'https://';
+    else
+        $pageURL = 'http://';
+    $pageURL .= $_SERVER['SERVER_NAME'];
+    if ($_SERVER['SERVER_PORT'] != '80')
+        $pageURL .= ':' . $_SERVER['SERVER_PORT'];
+    $pageURL .= $_SERVER['REQUEST_URI'] . '?' . $_SERVER['QUERY_STRING'];
+    return $pageURL;
     }
 
 

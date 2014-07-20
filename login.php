@@ -55,5 +55,8 @@ if ($password != $newpassword)
     $stmt->close();
     }
 
-header('Location: index.php');
+if (array_key_exists('LOGIN_RETURN_PAGE', $_SESSION))
+    header('Location: ' . $_SESSION['LOGIN_RETURN_PAGE']);
+else
+    header('Location: index.php');
 ?>
