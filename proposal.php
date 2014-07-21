@@ -23,7 +23,8 @@ function main()
     $canEditSchedule = hasPrivilege('scheduler');
 
     bifPageheader('proposal: ' . $proposal->title, proposalPageHeader($proposal->availability));
-    echo proposalArtvoiceText($proposal);
+//    echo proposalArtvoiceText($proposal);
+    echo proposalWebText($proposal);
     if ($canSeeSchedule)
         echo proposalScheduleDiv($proposal,$canEditSchedule);
     echo "<br>\n";
@@ -41,6 +42,31 @@ function main()
     bifPagefooter();
     }
 
+
+
+function proposalWebText($proposal)
+    {
+    $html = "<div class='webtext'>\n<p>Festival website text (to correct this, edit the &quot;Title&quot;, &quot;Website&quot;, or &quot;Description for website&quot; below):</p>\n";
+    $icon = $proposal->fieldByLabel('icon');
+    $image = $proposal->fieldByLabel('Image link');
+    $web_description = $proposal->fieldByLabel('Description for web');
+    $website = $proposal->fieldByLabel('Website');
+    $brochure_description = $proposal->fieldByLabel('Description for brochure');
+    if ($icon != '')
+        $html .= '<img align="right" src="/db2/uploads/file' . $icon . '.jpg">';
+    else if (strlen($image) > 7)
+        $html .= '<img align="right" width=300 src="' . $image . '">';
+    $html .= '<p>';
+    if (strlen($web_description) > 2)
+        $html .= str_replace("\n", "<br>\n", $web_description);
+    else if ($brochure_description != '')
+        $html .= $brochure_description;
+    $html .= '</p>';
+    if ($website != '')
+        $html .= '<p><b>Website:</b> ' . linkedURL($website) . '</p>';
+    $html .= "</div>\n";
+    return $html;
+    }
 
 
 function proposalArtvoiceText($proposal)
@@ -148,7 +174,7 @@ class ProposalData
         {
         foreach ($this->info as $fieldnum=>$v)
             {
-            if ($v[0] == $label)
+            if (strcasecmp($v[0],$label)==0)
                 return $v[1];
             }
         return '';
