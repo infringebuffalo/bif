@@ -27,8 +27,8 @@ if ((array_key_exists('loginError',$_SESSION)) && ($_SESSION['loginError'] != ''
 <form method="post" action="login.php">
 <table cellspacing="1">
 <tr>
-<td colspan="2">Log in to edit your proposal:<br/>
-(All logins from past years should still work)</td>
+<td colspan="2">Log in to edit your proposal:
+</td>
 </tr>
 <tr>
 <td>E-mail address</td>
