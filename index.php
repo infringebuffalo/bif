@@ -49,6 +49,7 @@ ENDSTRING;
 <li><a href="newProposal.php">New proposal (for someone else)</a></li>
 <li><a href="newGroupshow.php">New group show</a></li>
 <li><a href="newBatch.php">New batch</a></li>
+<li><a href="newCategory.php">New category</a></li>
 <li><a href="newVenue.php">New venue</a></li>
 <li><a href="newBatchColumn.php">New batch column</a></li>
 <li><a href="newCard.php">New card (public contact)</a></li>
