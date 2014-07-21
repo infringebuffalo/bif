@@ -86,6 +86,17 @@ function newBatch($name,$description)
     log_message('newBatch ' . $batchid . ' : ' . $name);
     }
 
+function newCategory($name,$description)
+    {
+    $categoryid = newEntityID('category');
+    $festival = getFestivalID();
+    $stmt = dbPrepare('insert into `category` (`id`, `name`, `description`) values (?,?,?)');
+    $stmt->bind_param('iss',$categoryid,$name,$description);
+    $stmt->execute();
+    $stmt->close();
+    log_message('newCategory {ID:' . $categoryid . '} : ' . $name);
+    }
+
 function newGroupshow($title,$description,$batch)
     {
     $showid = newEntityID('proposal');
@@ -116,14 +127,14 @@ function scheduleEvent()
     $endtime = POSTvalue('endtime',0);
     $installation = POSTvalue('installation',0);
     $note = POSTvalue('note');
-    log_message('scheduleEvent ' . $proposal);
+    log_message("scheduleEvent {ID:$proposal}");
     for ($d=0; $d < $festivalNumberOfDays; $d++)
         {
         $date = dayToDate($d);
         if ($_POST[$date] == '1')
             {
             $listingid = newEntityID('listing');
-            log_message("scheduling proposal $proposal at venue $venue on $date");
+            log_message("scheduling proposal {ID:$proposal} at venue {ID:$venue} on $date");
             $stmt = dbPrepare("insert into listing (id,date,proposal,venue,venuenote,starttime,endtime,installation,note) values (?,?,?,?,?,?,?,?,?)");
             $stmt->bind_param('isiisiiis',$listingid,$date,$proposal,$venue,$venuenote,$starttime,$endtime,$installation,$note);
             if (!$stmt->execute())
@@ -820,7 +831,7 @@ function getIconFromURL($proposal,$url)
     $stmt->execute();
     $stmt->close();
     setProposalInfo($proposal, 'icon', $imageid);
-    log_message("saved icon $imageid for proposal $proposal");
+    log_message("saved icon $imageid for proposal {ID:$proposal}");
     }
 
 
