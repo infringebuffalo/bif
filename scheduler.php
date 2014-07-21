@@ -775,9 +775,11 @@ function noteDiv($note,$entity_id)
     }
 
 
-function beginApiCallHtml($command, $parameters=array(), $inline=false)
+function beginApiCallHtml($command, $parameters=array(), $inline=false, $formname='')
     {
     $html = "<form method='POST' action='api.php'";
+    if ($formname != '')
+        $html .= " name='$formname'";
     if ($inline)
         $html .= " style='display:inline'";
     $html .= ">\n<input type='hidden' name='command' value='$command' />\n";

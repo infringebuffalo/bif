@@ -8,7 +8,28 @@ require_once 'scheduler.php';
 
 $batchid = GETvalue('id',0);
 
-bifPageheader("icons for proposals");
+$header = <<<ENDSTRING
+<script src="jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+function ajaxReturn(data)
+    {
+    window.location.reload();
+    }
+
+function ajaxUpload(id)
+    {
+    var f = document.forms["upload"+id];
+    var url = f["url"].value;
+    $.post("api.php", {command:"getIconFromURL", proposal:id, url:url}, ajaxReturn);
+    return false;
+    }
+
+$(document).ready(function() {
+ });
+</script>
+ENDSTRING;
+
+bifPageheader("icons for proposals",$header);
 ?>
 <table class="colorized">
 <thead>
@@ -55,7 +76,8 @@ while ($stmt->fetch())
         $imagelink = "<a href='$imageurl'>$imageurl</a>";
         }
     echo "<tr>\n<td><a href='proposal.php?id=$id'>$title</a></td>\n";
-    echo "<td>" . beginApiCallHtml('getIconFromURL',array('proposal'=>$id)) . "<input type='text' name='url' value='$imageurl'>" . endApiCallHtml('upload') . "</td>\n";
+    echo "<td>" . beginApiCallHtml('getIconFromURL',array('proposal'=>$id),false,"upload$id") . "<input type='text' name='url' value='$imageurl'>\n<input type='button' id='submit' value='Upload' onclick='return ajaxUpload($id)'/>\n</form>\n";
+    echo "</td>\n";
     echo "<td><p>$iconlink</p></td>\n<td>$imagelink</td>\n";
     echo "</tr>\n";
     }
