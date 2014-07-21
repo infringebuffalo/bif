@@ -38,6 +38,7 @@ while ($stmt->fetch())
     $s .= '<td><a href="user.php?id=' . $userid . '">' . $username . "</a></td>\n";
     $s .= '<td>' . $ip . "</td>\n";
     $s .= '<td><a href="proposal.php?id=' . $proposal . '">' . $title . "</a></td>\n";
+    $message = preg_replace('/\{ID:(.*)\}/U','<a href="id.php?id=$1">$1</a>',$message);
     $s .= '<td>' . $message . "</td>\n";
     $s .= "</tr>\n";
     $lines[] = $s;
