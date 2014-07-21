@@ -4,6 +4,9 @@ connectDB();
 
 bifPageheader('new category');
 ?>
+<p>
+This will create a new category for grouping shows on the public web schedule.
+</p>
 <form method="POST" action="api.php">
 <input type="hidden" name="command" value="newCategory" />
 <input type="hidden" name="returnurl" value="listCategories.php" />
