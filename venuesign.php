@@ -11,9 +11,9 @@ if ((array_key_exists('id',$_GET)) && ($_GET['id']) && (is_numeric($_GET['id']))
 else
     die();
 
-function qrcode($id)
+function qrcode($url)
     {
-    $query = urlencode("qrcode http://infringebuffalo.org/show.php?id=$id");
+    $query = urlencode("qrcode $url");
     $ddg = "http://api.duckduckgo.com/?q=$query&format=json";
     $json = file_get_contents($ddg);
     $data = json_decode($json);
@@ -32,7 +32,7 @@ function signlistingRow($id)
     if ($cancelled) $tdtags = ' style="text-decoration: line-through; color:#444"';
     else $tdtags='';
     $p = $l->proposal;
-    $img = qrcode($p->id);
+    $img = qrcode('http://infringebuffalo.org/show.php?id=' . $p->id);
     $s = '<tr>';
     $s .= '<td' . $tdtags . '><span style="font-size:150%; font-style: italic">';
     $s .= str_replace(' ',' ',timeRangeToString($l->starttime,$l->endtime));
@@ -98,6 +98,24 @@ for ($i=0; $i < 11; $i++)
         $sign .= "<br clear='all' style='page-break-after: always' />\n\n";
         }
     }
+
+
+$sign .= "<div style='text-align:center'>\n";
+$sign .= "<h1>Buffalo Infringement Festival</h1>\n<br><br><br>\n";
+$sign .= "<p>Scan this QR code to find out what shows are happening nearby soon:</p>\n";
+$sign .= str_replace('<img','<img width="300"',qrcode("http://infringebuffalo.org/near.php?venue=$id"));
+$stmt = dbPrepare('select info from venue where id=?');
+$stmt->bind_param('i',$id);
+$stmt->execute();
+$stmt->bind_result($info_ser);
+$stmt->fetch();
+$stmt->close();
+$info = unserialize($info_ser);
+$nearurl = getInfo($info,"near shows url");
+if ($nearurl != '')
+    $sign .= "<br><br>\n<p>Or visit<br> $nearurl</p>\n";
+$sign .= "</div>\n";
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
