@@ -43,7 +43,7 @@ function newVenue($name,$shortname)
     $stmt->bind_param('issis',$venueid,$name,$shortname,$festival,$info);
     $stmt->execute();
     $stmt->close();
-    log_message('newVenue ' . $venueid . ' : ' . $name);
+    log_message("newVenue {ID:$venueid} : $name");
     global $returnurl;
     $returnurl = 'venue.php?id=' . $venueid;
     }
@@ -60,7 +60,7 @@ function copyVenue($id)
     $stmt->bind_param('issis',$newvenueid,$name,$shortname,$festival,$info);
     $stmt->execute();
     $stmt->close();
-    log_message('copyVenue ' . $id . ' (' . $name . ') to ' . $newvenueid);
+    log_message("copyVenue {ID:$id} ($name) to {ID:$newvenueid}");
     global $returnurl;
     $returnurl = 'venue.php?id=' . $newvenueid;
     }
@@ -72,7 +72,7 @@ function newCard($userid,$role,$email,$phone,$snailmail)
     $stmt->bind_param('iissss',$cardid,$userid,$role,$email,$phone,$snailmail);
     $stmt->execute();
     $stmt->close();
-    log_message('newCard ' . $cardid . ' : ' . $role . ' / ' . $email);
+    log_message("newCard {ID:$cardid} : $role / $email");
     }
 
 function newBatch($name,$description)
@@ -83,7 +83,7 @@ function newBatch($name,$description)
     $stmt->bind_param('isis',$batchid,$name,$festival,$description);
     $stmt->execute();
     $stmt->close();
-    log_message('newBatch ' . $batchid . ' : ' . $name);
+    log_message("newBatch {ID:$batchid} : $name");
     }
 
 function newCategory($name,$description)
@@ -94,7 +94,7 @@ function newCategory($name,$description)
     $stmt->bind_param('iss',$categoryid,$name,$description);
     $stmt->execute();
     $stmt->close();
-    log_message('newCategory {ID:' . $categoryid . '} : ' . $name);
+    log_message("newCategory {ID:$categoryid} : $name");
     }
 
 function newGroupshow($title,$description,$batch)
@@ -109,7 +109,7 @@ function newGroupshow($title,$description,$batch)
     $stmt->bind_param('iiissi',$showid,$proposerid,$festival,$title,$info_ser,$orgcontact);
     $stmt->execute();
     $stmt->close();
-    log_message('newGroupshow ' . $showid . ' : ' . $title);
+    log_message("newGroupshow {ID:$showid} : $title");
     $groupbatchid = getBatch('group',getFestivalID(),true,'All group shows');
     addToBatch($showid,$groupbatchid);
     global $returnurl;
@@ -163,7 +163,7 @@ function updateContact()
     $id=POSTvalue('id');
     if (($id != $_SESSION['userid']) && (!hasPrivilege('scheduler')))
         {
-        log_message("tried to change contact info for userid $id");
+        log_message("tried to change contact info for userid {ID:$id}");
         header('Location: .');
         die();
         }
@@ -209,7 +209,7 @@ function changeBatchDescription($id,$name,$description)
     $stmt->bind_param('ssi',$name,$description,$id);
     $stmt->execute();
     $stmt->close();
-    log_message("changed description of batch $id");
+    log_message("changed description of batch {ID:$id}");
     }
 
 function changeBatchMembers()
@@ -226,7 +226,7 @@ function changeBatchMembers()
         $stmt->execute();
         $stmt->close();
         }
-    log_message("changed membership of batch $batchid");
+    log_message("changed membership of batch {ID:$batchid}");
     }
 
 function changeCategoryDescription($id,$name,$description)
@@ -244,7 +244,7 @@ function removeFromBatch($proposal,$batch)
     $stmt->bind_param('ii',$proposal,$batch);
     $stmt->execute();
     $stmt->close();
-    log_message("removed proposal $proposal from batch $batch");
+    log_message("removed proposal {ID:$proposal} from batch {ID:$batch}");
     }
 
 function removeFromCategory($proposal,$category)
@@ -288,7 +288,7 @@ function changeProposalTitle($proposal,$newtitle)
     $stmt->execute();
     $stmt->close();
     updateProposalLastedit($proposal,$_SESSION['userid']);
-    log_message("changed proposal $proposal title to '$newtitle'");
+    log_message("changed proposal {ID:$proposal} title to '$newtitle'");
     }
 
 function changeProposalInfo($proposal,$fieldnum,$newinfo)
@@ -308,7 +308,7 @@ function changeProposalInfo($proposal,$fieldnum,$newinfo)
     $stmt->execute();
     $stmt->close();
     updateProposalLastedit($proposal,$_SESSION['userid']);
-    log_message("changed proposal $proposal field $fieldnum from '$oldinfo' to '$newinfo'");
+    log_message("changed proposal {ID:$proposal} field $fieldnum from '$oldinfo' to '$newinfo'");
     }
 
 function changeProposalOrgfield($proposal,$fieldlabel,$newinfo)
@@ -326,7 +326,7 @@ function changeProposalOrgfield($proposal,$fieldlabel,$newinfo)
     $stmt->bind_param('si',$orgfields_ser,$proposal);
     $stmt->execute();
     $stmt->close();
-    log_message("changed proposal $proposal field $fieldlabel from '$oldinfo' to '$newinfo'");
+    log_message("changed proposal {ID:$proposal} field $fieldlabel from '$oldinfo' to '$newinfo'");
     }
 
 function changeProposalAvail($proposal,$daynum,$newinfo)
@@ -345,7 +345,7 @@ function changeProposalAvail($proposal,$daynum,$newinfo)
     $stmt->execute();
     $stmt->close();
     updateProposalLastedit($proposal,$_SESSION['userid']);
-    log_message("changed proposal $proposal availability $daynum from '$oldinfo' to '$newinfo'");
+    log_message("changed proposal {ID:$proposal} availability $daynum from '$oldinfo' to '$newinfo'");
     }
 
 function deleteProposal($id)
@@ -354,7 +354,7 @@ function deleteProposal($id)
     $stmt->bind_param('i',$id);
     $stmt->execute();
     $stmt->close();
-    log_message("deleted proposal $id");
+    log_message("deleted proposal {ID:$id}");
     }
 
 function undeleteProposal($id)
@@ -363,7 +363,7 @@ function undeleteProposal($id)
     $stmt->bind_param('i',$id);
     $stmt->execute();
     $stmt->close();
-    log_message("undeleted proposal $id");
+    log_message("undeleted proposal {ID:$id}");
     }
 
 function deleteVenue($id)
@@ -372,7 +372,7 @@ function deleteVenue($id)
     $stmt->bind_param('i',$id);
     $stmt->execute();
     $stmt->close();
-    log_message("deleted venue $id");
+    log_message("deleted venue {ID:$id}");
     }
 
 function undeleteVenue($id)
@@ -381,7 +381,7 @@ function undeleteVenue($id)
     $stmt->bind_param('i',$id);
     $stmt->execute();
     $stmt->close();
-    log_message("undeleted venue $id");
+    log_message("undeleted venue {ID:$id}");
     }
 
 function changeVenueInfo($venue,$fieldnum,$newinfo)
@@ -397,7 +397,7 @@ function changeVenueInfo($venue,$fieldnum,$newinfo)
     $stmt->bind_param('si',$info_ser,$venue);
     $stmt->execute();
     $stmt->close();
-    log_message("changed venue $venue field $fieldnum from '$oldinfo' to '$newinfo'");
+    log_message("changed venue {ID:$venue} field $fieldnum from '$oldinfo' to '$newinfo'");
     }
 
 function setVenueLatLon($venue,$latlon)
@@ -422,7 +422,7 @@ function setVenueLatLon($venue,$latlon)
     $stmt->bind_param('si',$info_ser,$venue);
     $stmt->execute();
     $stmt->close();
-    log_message("changed venue $venue latitude/longitude to $latlon");
+    log_message("changed venue {ID:$venue} latitude/longitude to $latlon");
     }
 
 function changeVenueName($venue,$newinfo)
@@ -431,7 +431,7 @@ function changeVenueName($venue,$newinfo)
     $stmt->bind_param('si',$newinfo,$venue);
     $stmt->execute();
     $stmt->close();
-    log_message("changed venue $venue name to '$newinfo'");
+    log_message("changed venue {ID:$venue} name to '$newinfo'");
     }
 
 function changeVenueShortname($venue,$newinfo)
@@ -440,7 +440,7 @@ function changeVenueShortname($venue,$newinfo)
     $stmt->bind_param('si',$newinfo,$venue);
     $stmt->execute();
     $stmt->close();
-    log_message("changed venue $venue shortname to '$newinfo'");
+    log_message("changed venue {ID:$venue} shortname to '$newinfo'");
     }
 
 function addVenueInfoField($venue,$fieldname)
@@ -455,7 +455,7 @@ function addVenueInfoField($venue,$fieldname)
     $stmt->bind_param('si',$info_ser,$venue);
     $stmt->execute();
     $stmt->close();
-    log_message("added field '$fieldname' to venue $venue");
+    log_message("added field '$fieldname' to venue {ID:$venue}");
     }
 
 function deleteVenueInfoField($venue,$fieldnum)
@@ -470,7 +470,7 @@ function deleteVenueInfoField($venue,$fieldnum)
     $stmt->bind_param('si',$info_ser,$venue);
     $stmt->execute();
     $stmt->close();
-    log_message("deleted field $fieldnum from venue $venue");
+    log_message("deleted field $fieldnum from venue {ID:$venue}");
     }
 
 function changeListing($listingid,$venue,$venuenote,$date,$starttime,$endtime,$note)
@@ -481,7 +481,7 @@ function changeListing($listingid,$venue,$venuenote,$date,$starttime,$endtime,$n
     if (!$stmt->execute())
         log_message($stmt->error);
     $stmt->close();
-    log_message("change listing $listingid to venue $venue ($venuenote) / date $date / start $starttime / end $endtime / install $installation / note $note");
+    log_message("change listing {ID:$listingid} to venue {ID:$venue} ($venuenote) / date $date / start $starttime / end $endtime / install $installation / note $note");
     }
 
 function cancelListing($listingid)
@@ -490,7 +490,7 @@ function cancelListing($listingid)
     $stmt->bind_param('i',$listingid);
     $stmt->execute();
     $stmt->close();
-    log_message("cancel listing $listingid");
+    log_message("cancel listing {ID:$listingid}");
     }
 
 function uncancelListing($listingid)
@@ -499,7 +499,7 @@ function uncancelListing($listingid)
     $stmt->bind_param('i',$listingid);
     $stmt->execute();
     $stmt->close();
-    log_message("uncancel listing $listingid");
+    log_message("uncancel listing {ID:$listingid}");
     }
 
 function deleteListing($listingid)
@@ -542,7 +542,7 @@ function addPrivilege($userid,$privilege)
         $stmt->bind_param('si',$privlist,$userid);
         $stmt->execute();
         $stmt->close();
-        log_message("added privilege $privilege for user $userid");
+        log_message("added privilege $privilege for user {ID:$userid}");
         }
     }
 
@@ -558,7 +558,7 @@ function removePrivilege($userid,$privilege)
         $stmt->bind_param('si',$privlist,$userid);
         $stmt->execute();
         $stmt->close();
-        log_message("removed privilege $privilege from user $userid");
+        log_message("removed privilege $privilege from user {ID:$userid}");
         }
     }
 
@@ -579,7 +579,7 @@ function batchChangeContact($batchid,$newcontact)
         $stmt->execute();
         $stmt->close();
         }
-    log_message("changed contact for batch $batchid to $newcontact");
+    log_message("changed contact for batch {ID:$batchid} to {ID:$newcontact}");
     $_SESSION['adminmessage'] .= '<p>changed contact for <a href="batch.php?id=' . $batchid . '">batch</a></p>';
     }
 
@@ -595,7 +595,7 @@ function addProposalInfoField($proposal,$fieldname)
     $stmt->bind_param('si',$info_ser,$proposal);
     $stmt->execute();
     $stmt->close();
-    log_message("added field '$fieldname' to proposal $proposal");
+    log_message("added field '$fieldname' to proposal {ID:$proposal}");
     }
 
 function prefsSummaryFields()
@@ -618,7 +618,7 @@ function changeGroupPerformer($showorder,$time,$note,$groupperformerid)
     $stmt->bind_param('iisi',$showorder,$time,$note,$groupperformerid);
     $stmt->execute();
     $stmt->close();
-    log_message("changeGroupPerformer $groupperformerid to $showorder $time '$note'");
+    log_message("changeGroupPerformer {ID:$groupperformerid} to $showorder $time '$note'");
     }
 
 function cancelGroupPerformer($groupperformerid)
@@ -627,7 +627,7 @@ function cancelGroupPerformer($groupperformerid)
     $stmt->bind_param('i',$groupperformerid);
     $stmt->execute();
     $stmt->close();
-    log_message('cancelGroupPerformer ' . $groupperformerid);
+    log_message("cancelGroupPerformer {ID:$groupperformerid}");
     }
 
 function uncancelGroupPerformer($groupperformerid)
@@ -636,7 +636,7 @@ function uncancelGroupPerformer($groupperformerid)
     $stmt->bind_param('i',$groupperformerid);
     $stmt->execute();
     $stmt->close();
-    log_message('uncancelGroupPerformer ' . $groupperformerid);
+    log_message("uncancelGroupPerformer {ID:$groupperformerid}");
     }
 
 function deleteGroupPerformer($groupperformerid)
@@ -645,7 +645,7 @@ function deleteGroupPerformer($groupperformerid)
     $stmt->bind_param('i',$groupperformerid);
     $stmt->execute();
     $stmt->close();
-    log_message('deleteGroupPerformer ' . $groupperformerid);
+    log_message("deleteGroupPerformer $groupperformerid");
     }
 
 function newBatchColumn($columnname,$fieldlabel,$defaultvalue,$batchid)
@@ -741,7 +741,7 @@ function autobatch($newbatchid,$fieldlabel,$exactlabel,$value,$exactvalue,$fromb
         {
         addToBatch($id,$newbatchid);
         }
-    log_message("autobatch from $frombatchid to $newbatchid (field '$fieldlabel'($exactlabel), value '$value'($exactvalue))");
+    log_message("autobatch from {ID:$frombatchid} to {ID:$newbatchid} (field '$fieldlabel'($exactlabel), value '$value'($exactvalue))");
     global $returnurl;
     $returnurl = 'batch.php?id=' . $newbatchid;
     }
@@ -806,7 +806,7 @@ function addNote($entity,$note)
     $stmt->bind_param('ii',$noteid,$entity);
     $stmt->execute();
     $stmt->close();
-    log_message("added note $noteid '$note' to $entity");
+    log_message("added note {ID:$noteid} '$note' to {ID:$entity}");
     }
 
 function changeNote($noteid,$note)
@@ -815,7 +815,7 @@ function changeNote($noteid,$note)
     $stmt->bind_param('si',$note,$noteid);
     $stmt->execute();
     $stmt->close();
-    log_message("changed note $noteid to '$note'");
+    log_message("changed note {ID:$noteid} to '$note'");
     }
 
 function linkNote($noteid,$entityid)
@@ -824,7 +824,7 @@ function linkNote($noteid,$entityid)
     $stmt->bind_param('ii',$noteid,$entityid);
     $stmt->execute();
     $stmt->close();
-    log_message("linked note $noteid to $entityid");
+    log_message("linked note {ID:$noteid} to $entityid");
     }
 
 function unlinkNote($noteid,$entityid)
@@ -833,7 +833,7 @@ function unlinkNote($noteid,$entityid)
     $stmt->bind_param('ii',$noteid,$entityid);
     $stmt->execute();
     $stmt->close();
-    log_message("removed note $noteid from $entityid");
+    log_message("removed note {ID:$noteid} from {ID:$entityid}");
     }
 
 function batchAddInfoField($batchid,$fieldname)
@@ -866,10 +866,10 @@ function grantProposalAccess($proposal,$user,$mode)
         $stmt->bind_param('si',$access_ser,$proposal);
         $stmt->execute();
         $stmt->close();
-        log_message("granted user $user access '$mode' on proposal $proposal");
+        log_message("granted user {ID:$user} access '$mode' on proposal {ID:$proposal}");
         }
     else
-        log_message("user $user already has access '$mode' on proposal $proposal");
+        log_message("user {ID:$user} already has access '$mode' on proposal {ID:$proposal}");
     }
 
 function getIconFromURL($proposal,$url)
@@ -889,7 +889,7 @@ function getIconFromURL($proposal,$url)
     $fullsizefile = 'uploads/file' . $imageid . '_full.jpg';
     $iconfile = 'uploads/file' . $imageid . '.jpg';
     file_put_contents($fullsizefile,$imagedata);
-    log_message("saved $url as $fullsizefile for $proposal");
+    log_message("saved $url as $fullsizefile for {ID:$proposal}");
     exec("convert $fullsizefile -thumbnail 400x400 -unsharp 0x.5 $iconfile");
     $description = "image for show $proposalid ('$title')";
     $stmt = dbPrepare('insert into image (id,filename,origFilename,description) values (?,?,?,?)');
@@ -897,7 +897,7 @@ function getIconFromURL($proposal,$url)
     $stmt->execute();
     $stmt->close();
     setProposalInfo($proposal, 'icon', $imageid);
-    log_message("saved icon $imageid for proposal {ID:$proposal}");
+    log_message("saved icon {ID:$imageid} for proposal {ID:$proposal}");
     }
 
 
