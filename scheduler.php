@@ -378,6 +378,24 @@ function batchMenu($name,$includeAllShows=true,$selected=0)
     return $retstr;
     }
 
+function categoryMenu($name,$selected=0)
+    {
+    $retstr = "<select name='$name'>\n";
+    $stmt = dbPrepare('select id,name from category order by name');
+    $stmt->execute();
+    $stmt->bind_result($id,$name);
+    while ($stmt->fetch())
+        {
+        $retstr .= "<option value='$id'";
+        if ($id == $selected)
+            $retstr .= " selected";
+        $retstr .= ">" . stripslashes($name) . "</option>\n";
+        }
+    $stmt->close();
+    $retstr .= "</select>\n";
+    return $retstr;
+    }
+
 function showMenu($name,$batchid=0,$includeNone=false,$selected=0)
     {
     global $db;
@@ -739,6 +757,24 @@ function addToBatch($proposal,$batch)
     $stmt->execute();
     $stmt->close();
     log_message("Added proposal $proposal to batch $batch");
+    }
+
+function addToCategory($proposal,$category)
+    {
+    $stmt = dbPrepare('select count(*) from proposalCategory where proposal_id=? and category_id=?');
+    $stmt->bind_param('ii',$proposal,$category);
+    $stmt->execute();
+    $count = 0;
+    $stmt->bind_result($count);
+    $stmt->fetch();
+    $stmt->close();
+    if ($count > 0)
+        return;
+    $stmt = dbPrepare('insert into proposalCategory (proposal_id,category_id) values (?,?)');
+    $stmt->bind_param('ii',$proposal,$category);
+    $stmt->execute();
+    $stmt->close();
+    log_message("Added proposal {ID:$proposal} to category {ID:$category}");
     }
 
 function getNotes($entity)

@@ -27,17 +27,18 @@ function main()
     echo proposalWebText($proposal);
     if ($canSeeSchedule)
         echo proposalScheduleDiv($proposal,$canEditSchedule);
-    echo "<br>\n";
+    echo "<br clear='all'>\n";
     if ($proposal->isgroupshow)
         echo proposalGroupShowPerformers($proposal,$canEditSchedule);
-    if (hasPrivilege('scheduler'))
-        echo proposalSchedulingDiv($proposal);
-    echo "<br><hr>\n";
 /*
     echo "<div><a href=\"imageUpload.php?id=$proposal_id\">upload image for web</a></div>\n";
 */
     if (hasPrivilege('scheduler'))
+        {
+        echo proposalSchedulingDiv($proposal);
         echo proposalSideControlDiv($proposal);
+        echo proposalCategoryDiv($proposal);
+        }
     echo proposalMainInfo($proposal);
     bifPagefooter();
     }
@@ -64,6 +65,16 @@ function proposalWebText($proposal)
     $html .= '</p>';
     if ($website != '')
         $html .= '<p><b>Website:</b> ' . linkedURL($website) . '</p>';
+    $stmt = dbPrepare('select name from category join proposalCategory on proposalCategory.category_id=category.id where proposal_id=?');
+    $stmt->bind_param('i',$proposal->id);
+    $stmt->execute();
+    $stmt->bind_result($catname);
+    $cats = '';
+    while ($stmt->fetch())
+        $cats .= "$catname ";
+    $stmt->close();
+    if ($cats != '')
+        $html .= "<p><b>Categories:</b> $cats</p>\n";
     $html .= "</div>\n";
     return $html;
     }
@@ -211,9 +222,48 @@ function hasAccess($user, $mode, $access)
     return in_array($mode,$access[$user]);
     }
 
+
+function proposalCategoryDiv($proposal)
+    {
+    $html = "<div class='catbox'>\nCategories:<br>";
+    $categorylist = array();
+    $stmt = dbPrepare('select category_id,name from proposalCategory join category on category_id=category.id where proposal_id=?');
+    $stmt->bind_param('i',$proposal->id);
+    $stmt->execute();
+    $stmt->bind_result($category_id,$category_name);
+    while ($stmt->fetch())
+        {
+        $categorylist[$category_id] = $category_name;
+        $html .= "<span style='white-space:nowrap'><a href='category.php?id=$category_id'>$category_name</a>&nbsp;&nbsp;&nbsp;<form method='POST' action='api.php' onsubmit='return confirmRemoveFromCategory(\"$category_name\")' style='display:inline'><input type='hidden' name='command' value='removeFromCategory' /><input type='hidden' name='proposal' value='" . $proposal->id . "' /><input type='hidden' name='category' value='$category_id'><input type='submit' name='submit' value='x' style='font-size:80%' /></form></span><br>\n";
+        }
+    $stmt->close();
+    $html .= "<form method='POST' action='api.php' style='white-space:nowrap'><input type='hidden' name='command' value='addToCategory' /><input type='hidden' name='proposal' value='" . $proposal->id . "' /><input type='submit' name='submit' value='add to'/>" . newCategoryMenu('category',$categorylist) . "</form>\n";
+    $html .= "</div>\n";
+    return $html;
+    }
+
+function newCategoryMenu($name,$categorylist)
+    {
+    $retstr = "<select name='$name'>\n";
+    $stmt = dbPrepare('select id,name from category order by name');
+    $stmt->execute();
+    $stmt->bind_result($id,$name);
+    while ($stmt->fetch())
+        {
+        if (!array_key_exists($id,$categorylist))
+            {
+            $retstr .= "<option value='$id'>" . stripslashes($name) . "</option>\n";
+            }
+        }
+    $stmt->close();
+    $retstr .= "</select>\n";
+    return $retstr;
+    }
+
+
 function proposalSideControlDiv($proposal)
     {
-    $batchdiv = "<!--BEGIN SIDECONTROLDIV--><div style='float:right; width:20%'>\n";
+    $batchdiv = "<div style='float:right; width:20%'>\n";
     $batchlist = array();
     $stmt = dbPrepare('select batch_id,name from proposalBatch join batch on batch_id=batch.id where proposal_id=?');
     $stmt->bind_param('i',$proposal->id);
@@ -240,7 +290,7 @@ function proposalSideControlDiv($proposal)
         $batchdiv .= noteDiv($n,$proposal->id);
         }
     $batchdiv .= "<form method='POST' action='api.php'><input type='hidden' name='command' value='addNote' /><input type='hidden' name='entity' value='" . $proposal->id . "' /><textarea name='note' rows='2' cols='30'></textarea><br><input type='submit' name='submit' value='add note'/></form>\n";
-    $batchdiv .= "</div><!--END SIDECONTROLDIV-->\n";
+    $batchdiv .= "</div>\n";
     return $batchdiv;
     }
 

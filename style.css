@@ -21,7 +21,8 @@ div.otherQuestions {  background: #c0d0ff }
 div.helptext { position: absolute; display: none; background: #ffb0b0 }
 div.title { width: 770px }
 div.editbox { margin-top: 0.5em; padding: 5px; border: solid; border-width: thin; background: #ffffd0; float:right; }
-div.schedulebox {  margin-top: 0em; padding: 5px; border: solid; border-width: thin; background: #d0ffff }
+div.schedulebox {  margin-top: 0em; padding: 5px;  background: #d0ffff }
+div.catbox { margin-top: 0em; padding: 5px; background: #f0f0f0; width: 60% }
 div.showhidealt { display: none }
 span.cancelled { text-decoration: line-through; color: #444 }
 span.fieldEditLink { font-size: 70%; float: right; color: #660 }

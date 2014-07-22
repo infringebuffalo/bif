@@ -229,6 +229,15 @@ function changeBatchMembers()
     log_message("changed membership of batch $batchid");
     }
 
+function changeCategoryDescription($id,$name,$description)
+    {
+    $stmt = dbPrepare('update category set name=?,description=? where id=?');
+    $stmt->bind_param('ssi',$name,$description,$id);
+    $stmt->execute();
+    $stmt->close();
+    log_message("changed description of category {ID:$id}");
+    }
+
 function removeFromBatch($proposal,$batch)
     {
     $stmt = dbPrepare('delete from proposalBatch where proposal_id=? and batch_id=?');
@@ -236,6 +245,15 @@ function removeFromBatch($proposal,$batch)
     $stmt->execute();
     $stmt->close();
     log_message("removed proposal $proposal from batch $batch");
+    }
+
+function removeFromCategory($proposal,$category)
+    {
+    $stmt = dbPrepare('delete from proposalCategory where proposal_id=? and category_id=?');
+    $stmt->bind_param('ii',$proposal,$category);
+    $stmt->execute();
+    $stmt->close();
+    log_message("removed proposal {ID:$proposal} from category {ID:$category}");
     }
 
 function getProposerID($proposal)
@@ -726,6 +744,54 @@ function autobatch($newbatchid,$fieldlabel,$exactlabel,$value,$exactvalue,$fromb
     log_message("autobatch from $frombatchid to $newbatchid (field '$fieldlabel'($exactlabel), value '$value'($exactvalue))");
     global $returnurl;
     $returnurl = 'batch.php?id=' . $newbatchid;
+    }
+
+function autoCategory($newcategoryid,$fieldlabel,$exactlabel,$value,$exactvalue,$frombatchid,$addall)
+    {
+    $festival = getFestivalID();
+    if ($frombatchid == 0)
+        {
+        $stmt = dbPrepare('select id, info from proposal where festival=? and deleted=0');
+        $stmt->bind_param('i',$festival);
+        }
+    else
+        {
+        $stmt = dbPrepare('select id, info from proposal join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=? and festival=? and deleted=0');
+        $stmt->bind_param('ii',$frombatchid,$festival);
+        }
+    $stmt->execute();
+    $stmt->bind_result($id,$info_ser);
+    $prop = array();
+    while ($stmt->fetch())
+        {
+        $info = unserialize($info_ser);
+        if ($addall)
+            $prop[] = $id;
+        else
+            {
+            foreach ($info as $formrow)
+                {
+                if ((($exactlabel==1) && (strcasecmp($formrow[0],$fieldlabel) == 0)) ||
+                    (($exactlabel=='') && (stripos($formrow[0],$fieldlabel) !== FALSE)))
+                    {
+                    if ((($exactvalue==1) && (strcasecmp($formrow[1],$value) == 0)) ||
+                        (($exactvalue=='') && (stripos($formrow[1],$value) !== FALSE)))
+                        {
+                        $prop[] = $id;
+                        break;
+                        }
+                    }
+                }
+            }
+        }
+    $stmt->close();
+    foreach ($prop as $id)
+        {
+        addToCategory($id,$newcategoryid);
+        }
+    log_message("autoCategory from {ID:$frombatchid} to {ID:$newcategoryid} (field '$fieldlabel'($exactlabel), value '$value'($exactvalue))");
+    global $returnurl;
+    $returnurl = 'category.php?id=' . $newcategoryid;
     }
 
 function addNote($entity,$note)
