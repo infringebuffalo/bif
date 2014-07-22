@@ -136,7 +136,7 @@ function venueInfoDiv($id,$venueinfo)
 
     if (hasPrivilege('scheduler'))
         {
-        $html .= "<tr id='edit_fieldNew' class='edit_info'><th>[add field]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='addVenueInfoField' /><input type='hidden' name='venue' value='$id' /><input type='text' name='fieldname'><input type='submit' name='submit' value='add'><button onclick='hideEditor(\"fieldNew\"); return false;'>don't add</button></td></form></tr>\n";
+        $html .= "<tr id='edit_fieldNew' class='edit_info'><th>[add field]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='addVenueInfoField' /><input type='hidden' name='venue' value='$id' />Name:<input type='text' size='30' name='fieldname'> Value:<input type='text' name='fieldvalue'><input type='submit' name='submit' value='add'><button onclick='hideEditor(\"fieldNew\"); return false;'>don't add</button></td></form></tr>\n";
         $html .= "<tr id='show_fieldNew' class='show_info' onclick='showEditor(\"fieldNew\");'><th style='background:#ff8'>[add field]</th><td>&nbsp;</td></tr>\n";
         }
 

@@ -443,13 +443,13 @@ function changeVenueShortname($venue,$newinfo)
     log_message("changed venue {ID:$venue} shortname to '$newinfo'");
     }
 
-function addVenueInfoField($venue,$fieldname)
+function addVenueInfoField($venue,$fieldname,$fieldvalue)
     {
     $info_ser = dbQueryByID('select info from venue where id=?',$venue);
     if ($info_ser == NULL)
         return;
     $info = unserialize($info_ser['info']);
-    $info[] = array($fieldname,'');
+    $info[] = array($fieldname,$fieldvalue);
     $info_ser = serialize($info);
     $stmt = dbPrepare('update venue set info=? where id=?');
     $stmt->bind_param('si',$info_ser,$venue);
