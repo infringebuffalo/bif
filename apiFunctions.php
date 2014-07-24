@@ -888,9 +888,11 @@ function getIconFromURL($proposal,$url)
     $imageid = newEntityID('image');
     $fullsizefile = 'uploads/file' . $imageid . '_full.jpg';
     $iconfile = 'uploads/file' . $imageid . '.jpg';
+    $smalliconfile = 'uploads/file' . $imageid . '_100px.jpg';
     file_put_contents($fullsizefile,$imagedata);
     log_message("saved $url as $fullsizefile for {ID:$proposal}");
     exec("convert $fullsizefile -thumbnail 400x400 -unsharp 0x.5 $iconfile");
+    exec("convert $fullsizefile -thumbnail 100x100 -unsharp 0x.5 $smalliconfile");
     $description = "image for show $proposalid ('$title')";
     $stmt = dbPrepare('insert into image (id,filename,origFilename,description) values (?,?,?,?)');
     $stmt->bind_param('isss',$imageid,$filename,$origFilename,$description);
