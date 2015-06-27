@@ -102,7 +102,7 @@ for ($i=0; $i < 11; $i++)
 
 $sign .= "<div style='text-align:center'>\n";
 $sign .= "<h1>Buffalo Infringement Festival</h1>\n<br><br><br>\n";
-$sign .= "<p>Scan this QR code to find out what shows are happening nearby soon:</p>\n";
+$sign .= "<p style='font-size:x-large'>Scan code to see what's happening nearby NOW!:</p>\n";
 $sign .= str_replace('<img','<img width="300"',qrcode("http://infringebuffalo.org/near.php?venue=$id&qr=1"));
 $stmt = dbPrepare('select info from venue where id=?');
 $stmt->bind_param('i',$id);
