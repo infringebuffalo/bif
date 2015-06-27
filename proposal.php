@@ -20,10 +20,11 @@ function main()
             die();
             }
     $canSeeSchedule = hasAccess($_SESSION['userid'],'viewschedule',$proposal->access) || hasPrivilege(array('scheduler','organizer'));
+    $canSeeSchedule = true;
     $canEditSchedule = hasPrivilege('scheduler');
 
     bifPageheader('proposal: ' . $proposal->title, proposalPageHeader($proposal->availability));
-//    echo proposalArtvoiceText($proposal);
+    echo proposalBrochureText($proposal);
     echo proposalWebText($proposal);
     if ($canSeeSchedule)
         echo proposalScheduleDiv($proposal,$canEditSchedule);
@@ -80,9 +81,9 @@ function proposalWebText($proposal)
     }
 
 
-function proposalArtvoiceText($proposal)
+function proposalBrochureText($proposal)
     {
-    $html = "<div class='artvoice'>\n<p>Artvoice text (to correct this, edit the &quot;Title&quot;, &quot;Website&quot;, or &quot;Description for brochure&quot; below):</p>";
+    $html = "<div class='brochure'>\n<p>Brochure text (to correct this, edit the &quot;Title&quot;, &quot;Website&quot;, or &quot;Description for brochure&quot; below):</p>";
     $html .= "<p>\n<b>" .  htmlspecialchars($proposal->title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "</b><br>\n";
     $s = $proposal->fieldByLabel('Website');
     if ($s != '')

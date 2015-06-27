@@ -116,7 +116,7 @@ function festivalAgreement($other='')
     $s .= '<ul>
 <li>Communication is important.  <b>Keep in touch with your genre organizer and venue contact.</b> If you need to cancel a performance, you must notify them in advance. You must check your e-mail and voicemail regularly, and respond to requests from your genre organizer. </li>
 <li>We ask that you conduct yourself in a courteous, professional manner.  <b>Treat your venue with the utmost care</b> - no littering or destroying.  Leave it in the same condition as when you arrived.</li>
-<li><b>You are responsible for promoting your own performances.</b> Other than the festival website and the schedule printed in the Artvoice, all promotion is up to you, including--but not limited to: press releases, fliers, business cards, Facebook event pages, etc. If you do not tell people about your shows, they probably won\'t show up. PLEASE include the festival name or logo on any printed or online material you produce.</li>
+<li><b>You are responsible for promoting your own performances.</b> Other than the festival website and the printed schedule, all promotion is up to you, including--but not limited to: press releases, fliers, business cards, Facebook event pages, etc. If you do not tell people about your shows, they probably won\'t show up. PLEASE include the festival name or logo on any printed or online material you produce.</li>
 <li>You must <b>attend at least one planning/informational meeting</b> before the festival. We will inform you of when these meetings are scheduled.  If you live outside of Western New York or your schedule does not allow you to attend the regular meeting, you are responsible for contacting your genre organizer to schedule a one-on-one meeting.</li>
 <li>You may have to <b>be flexible</b> with your schedule and your performances leading up to and during the festival.  With a festival of this size, put together entirely by volunteers, there are bound to be some scheduling mishaps, etc. We need you to "roll with the punches" so to speak, and make the best of whatever happens during the festival. The Infringement must go on!</li> ';
     $s .= $other;
@@ -291,7 +291,7 @@ function proposalFormDescriptionBrochure()
     {
     return <<<ENDSTRING
 <tr>
-<th class="proposalTH">Short description of your project for the Artvoice schedule
+<th class="proposalTH">Short description of your project for the printed schedule
 <img src="questionmark.png" class="questionmark" />
 <div class="helptext">
 140 Character description. Only 140 characters will be printed so count carefully. Make it catchy!
