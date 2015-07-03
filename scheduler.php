@@ -109,7 +109,7 @@ class programInfo
                     $this->brochure_description = stripslashes($i[1]);
                 else if ($i[0] == 'Website')
                     $this->website = $i[1];
-                else if ($i[0] == 'Type')
+                else if (($i[0] == 'Type') || ($i[0] == 'Proposal_Type'))
                     $this->type = $i[1];
                 else if ($i[0] == 'Organization')
                     $this->organization = $i[1];
