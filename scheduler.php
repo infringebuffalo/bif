@@ -107,7 +107,11 @@ class programInfo
                 {
                 if ($i[0] == 'Description for brochure')
                     $this->brochure_description = stripslashes($i[1]);
+                else if (($i[0] == 'Short_Description') && ($this->brochure_description == ''))
+                    $this->brochure_description = stripslashes($i[1]);
                 else if ($i[0] == 'Website')
+                    $this->website = $i[1];
+                else if (($i[0] == 'Primary_Website') && ($this->website == ''))
                     $this->website = $i[1];
                 else if (($i[0] == 'Type') || ($i[0] == 'Proposal_Type'))
                     $this->type = $i[1];

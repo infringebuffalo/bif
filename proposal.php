@@ -52,8 +52,14 @@ function proposalWebText($proposal)
     $icon = $proposal->fieldByLabel('icon');
     $image = $proposal->fieldByLabel('Image link');
     $web_description = $proposal->fieldByLabel('Description for web');
+    if ($web_description == '')
+        $web_description = $proposal->fieldByLabel('Long_Description');
     $website = $proposal->fieldByLabel('Website');
+    if ($website == '')
+        $website = $proposal->fieldByLabel('Primary_Website');
     $brochure_description = $proposal->fieldByLabel('Description for brochure');
+    if ($brochure_description == '')
+        $brochure_description = $proposal->fieldByLabel('Short_Description');
     if ($icon != '')
         $html .= '<img align="right" src="/db2/uploads/file' . $icon . '.jpg">';
     else if (strlen($image) > 7)
@@ -86,13 +92,17 @@ function proposalBrochureText($proposal)
     $html = "<div class='brochure'>\n<p>Brochure text (to correct this, edit the &quot;Title&quot;, &quot;Website&quot;, or &quot;Description for brochure&quot; below):</p>";
     $html .= "<p>\n<b>" .  htmlspecialchars($proposal->title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "</b><br>\n";
     $s = $proposal->fieldByLabel('Website');
+    if ($s == '')
+        $s = $proposal->fieldByLabel('Primary_Website');
     if ($s != '')
         $html .= "<em>" . htmlspecialchars($s,ENT_COMPAT | ENT_HTML5, "UTF-8") . "</em><br>\n";
     $s = $proposal->fieldByLabel('Description for brochure');
+    if ($s == '')
+        $s = $proposal->fieldByLabel('Short_Description');
     if ($s != '')
         {
-	$s1 = htmlspecialchars(substr($s,0,140),ENT_COMPAT | ENT_HTML5, "UTF-8");
-	$s2 = htmlspecialchars(substr($s,140),ENT_COMPAT | ENT_HTML5, "UTF-8");
+        $s1 = htmlspecialchars(substr($s,0,140),ENT_COMPAT | ENT_HTML5, "UTF-8");
+        $s2 = htmlspecialchars(substr($s,140),ENT_COMPAT | ENT_HTML5, "UTF-8");
         $html .= $s1 . "<span style='color:red'>" . $s2 . "</span><br>\n";
         if (strlen($s) > 140)
             $html .= "<br>[text in red is over the 140 character limit, and will be DELETED automatically when creating the brochure]<br>\n";
