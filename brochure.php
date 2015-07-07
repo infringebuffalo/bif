@@ -79,27 +79,25 @@ function trimText($s)
     return substr($s,0,$i);
     }
 
-foreach ($programinfoList as $p)
-  {
-  if (!$proposalList[$p->id]->deleted)
+function groupshowPerformerList($p)
     {
-    $s = sortingKey($p->title);
-    $s .= '<b>' . $p->title . '</b><br/>';
-    $s .= '<pre>' . $p->website . "\n" . trimText($p->brochure_description) . '</pre>';
-    if ($proposalList[$p->id]->isgroupshow)
+    $performerlist = '';
+    $comma = '';
+    foreach ($p->performers as $perf)
         {
-        $sp = '';
-        $comma = '';
-        foreach ($proposalList[$p->id]->performers as $perf)
-            {
-            $sp .= $comma . $perf->performer->title;
-            $comma = ',';
-            }
-        if ($sp != '')
-            $s .= '(' . $sp . ')<br/>';
+        $performerlist .= $comma . $perf->performer->title;
+        $comma = ', ';
         }
+    if ($performerlist != '')
+        return ' (' . $performerlist . ')<br/>';
+    else
+        return '';
+    }
+
+function performanceSchedule($p)
+    {
     $a = array();
-    foreach ($proposalList[$p->id]->listings as $l)
+    foreach ($p->listings as $l)
         if ((!$l->installation) && ($l->proposal->id == $p->id) && (!$l->cancelled))
             {
             $s2 = sortingKey($l->date . $l->starttime) . dateToString($l->date) . ' ' . timeToString($l->starttime) . '-' . timeToString($l->endtime) . ' ' . $l->venue->name;
@@ -107,7 +105,7 @@ foreach ($programinfoList as $p)
                 $s2 .= ' (' . $l->venuenote . ')';
             $a[] = $s2;
             }
-    foreach ($proposalList[$p->id]->groupshows as $g)
+    foreach ($p->groupshows as $g)
         {
         foreach ($g->groupevent->listings as $l)
             if ((!$l->installation) && (!$l->cancelled))
@@ -123,17 +121,39 @@ foreach ($programinfoList as $p)
     if (count($a) > 0)
         {
         sort($a);
-        $s .= implode('<br/>',$a) . '<br/>';
+        return implode('<br/>',$a) . '<br/>';
         }
+    else
+        return '';
+    }
+
+function installationSchedule($p)
+    {
     $a = array();
-    foreach ($proposalList[$p->id]->listings as $l)
+    foreach ($p->listings as $l)
         if (($l->installation) && (!$l->cancelled))
             {
-            if (!isset($a[$l->venueid])) $a[$l->venueid] = new instDates($l->venue);
+            if (!isset($a[$l->venueid]))
+                $a[$l->venueid] = new instDates($l->venue);
             $a[$l->venueid]->dates[] = $l->date;
             }
+    $s = '';
     foreach ($a as $line)
         $s .= $line->output() . '<br/>';
+    return $s;
+    }
+
+foreach ($programinfoList as $p)
+  {
+  if (!$proposalList[$p->id]->deleted)
+    {
+    $s = sortingKey($p->title);
+    $s .= '<b>' . $p->title . '</b><br/>';
+    $s .= '<pre>' . $p->website . "\n" . trimText($p->brochure_description) . '</pre>';
+    if ($proposalList[$p->id]->isgroupshow)
+        $s .= groupshowPerformerList($proposalList[$p->id]);
+    $s .= performanceSchedule($proposalList[$p->id]);
+    $s .= installationSchedule($proposalList[$p->id]);
     $list[$p->type][] = $s;
     }
   }

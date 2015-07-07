@@ -146,7 +146,7 @@ function getDatabase($festival=0)
     $stmt->execute();
     $stmt->store_result();
     $stmt->bind_result($id,$title,$isgroupshow,$deleted);
-    $grouplistmode = 0;
+    $grouplistmode = 1;
     while ($stmt->fetch())
         {
         $proposalList[$id] = new proposalInfo($id,stripslashes($title),$festival,$grouplistmode,$isgroupshow,$deleted);
