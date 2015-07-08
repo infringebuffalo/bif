@@ -498,7 +498,7 @@ function proposalGroupShowPerformers($proposal,$canEditSchedule)
             $out .= '<td><a href="proposal.php?id=' . $perf->performerid . '">' . $perf->performer->title . '</a></td>';
             $out .= '<td colspan="3">' . beginApiCallHtml('changeGroupPerformer',array('groupperformerid'=>$perf->id));
             $out .= '<input type="text" name="showorder" size="2" value="' . $perf->showorder . '" />';
-            $out .= timeMenu(11,28,'time',$perf->time);
+            $out .= timeMenu(6,28,'time',$perf->time);
             $out .= '<input type="text" name="note" value="' . $perf->note . '" />';
             $out .= '<input type="submit" value="Save" />';
             $out .= '</form></td>';
@@ -559,7 +559,7 @@ function proposalSchedulingDiv($proposal)
         $out .= "<table>\n";
         $out .= "<tr>\n";
         $out .= "<td> " . showMenu('performerid',getProposalInfo($proposal->id,'batch')) . " </td>\n";
-        $out .= "<td> Time " . timeMenu(11,28,'time') . " </td>\n";
+        $out .= "<td> Time " . timeMenu(6,28,'time') . " </td>\n";
         $out .= "<td> Order <input type='text' name='order' value='0' size='3'/> </td>\n";
         $out .= "<td> Note <input type='text' name='note' value='' size='12'/> </td>\n";
         $out .= "<td><input type='submit' name='submit' value='Add' /></td>\n";
@@ -596,7 +596,7 @@ function proposalSchedulingDiv($proposal)
         $out .= "<table>\n";
         $out .= "<tr>\n";
         $out .= "<td> " . groupShowMenu('groupeventid') . " </td>\n";
-        $out .= "<td> Time " . timeMenu(11,28,'time') . " </td>\n";
+        $out .= "<td> Time " . timeMenu(6,28,'time') . " </td>\n";
         $out .= "<td> Order <input type='text' name='order' value='0' size='3'/> </td>\n";
         $out .= "<td> Note <input type='text' name='note' value='' size='12'/> </td>\n";
         $out .= "<td><input type='submit' name='submit' value='Add'></td>\n";
