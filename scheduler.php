@@ -760,7 +760,7 @@ function addToBatch($proposal,$batch)
     $stmt->bind_param('ii',$proposal,$batch);
     $stmt->execute();
     $stmt->close();
-    log_message("Added proposal $proposal to batch $batch");
+    log_message("Added proposal {ID:$proposal} to batch {ID:$batch}");
     }
 
 function addToCategory($proposal,$category)
