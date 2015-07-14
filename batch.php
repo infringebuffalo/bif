@@ -76,12 +76,23 @@ class propRow
         $this->orgfields = $orgfields;
         $this->submitted = $submitted;
         $this->lastedit = $submitted;
+        $this->lasteditByProposer = $submitted;
         $access = unserialize($access_ser);
         if ($access)
             {
             if (isset($access['lastedit'][$proposer_id]))
                 {
-                $this->lastedit = $access['lastedit'][$proposer_id];
+                $this->lasteditByProposer = $access['lastedit'][$proposer_id];
+                }
+            $max = 0;
+            foreach ($access['lastedit'] as $ds)
+                {
+                $d = strtotime($ds);
+                if ($d > $max)
+                    {
+                    $this->lastedit = $ds;
+                    $max = $d;
+                    }
                 }
             }
         }
@@ -100,6 +111,10 @@ class propRow
     function lastedit()
         {
         return $this->lastedit;
+        }
+    function lasteditByProposer()
+        {
+        return $this->lasteditByProposer;
         }
     function summary($labels)
         {
@@ -189,7 +204,7 @@ foreach ($rows as $r)
     }
 $stmt->close();
 
-$out = "<table id='batchtable' class='tablesorter'>\n<thead><tr><th>title</th><th>proposer</th><th>submitted</th><th>edited by proposer</th><td># of shows</th>";
+$out = "<table id='batchtable' class='tablesorter'>\n<thead><tr><th>title</th><th>proposer</th><th>submitted</th><th>edited by proposer</th><th>edited</th><th># of shows</th>";
 foreach ($labels as $l)
     $out .= "<th>$l</th>";
 $out .= "</tr></thead>\n<tbody>\n";
@@ -198,7 +213,7 @@ $count = 0;
 
 foreach ($rows as $r)
     {
-    $out .= '<tr><td>' . $r->title() . '</td><td>' . $r->proposer() . '</td><td>' . $r->submitted() . '</td><td>' . $r->lastedit() . '</td><td>' . $r->totalShows . '</td>' . $r->summary($labels) . "</tr>\n";
+    $out .= '<tr><td>' . $r->title() . '</td><td>' . $r->proposer() . '</td><td>' . $r->submitted() . '</td><td>' . $r->lasteditByProposer() . '</td><td>' . $r->lastedit . '</td><td>' . $r->totalShows . '</td>' . $r->summary($labels) . "</tr>\n";
     $count += 1;
     }
 $out .= "</tbody>\n</table>\n";
