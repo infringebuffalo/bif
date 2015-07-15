@@ -536,8 +536,8 @@ function scheduleEventForm($returnurl,$calEntryFunc,$proposalid,$venueid)
     if ($venueid==0)
         $s .= venueMenu('venue');
     $s .= '<br/>Venue detail:<input type="text" name="venuenote" value="" size="20"/></td>';
-    $s .= '<td> Start time: ' . timeMenu(10,28,'starttime');
-    $s .= '<br/> End time: ' . timeMenu(10,28,'endtime') . '</td>';
+    $s .= '<td> Start time: ' . timeMenu(6,28,'starttime');
+    $s .= '<br/> End time: ' . timeMenu(6,28,'endtime') . '</td>';
     $s .= '<td>Note:<input type="text" name="note" value="" size="10"/></td>';
     $s .= '<td> <input type="submit" value="Add"> </td>';
     $s .= '</tr>';
@@ -673,7 +673,7 @@ function editableListingRow($id,$showdate,$showtime,$showvenue,$showproposal,$sh
         if ($l->installation)
             $s .= '<input type="hidden" name="installation" value="1" /><td>installation</td>';
         else
-            $s .= '<td>' . timeMenu(10,28,'starttime',$l->starttime) . ' - ' . timeMenu(10,28,'endtime',$l->endtime) . '</td>';
+            $s .= '<td>' . timeMenu(6,28,'starttime',$l->starttime) . ' - ' . timeMenu(6,28,'endtime',$l->endtime) . '</td>';
         }
     else
         $s .= sprintf('<input type="hidden" name="starttime" value="%s" /><input type="hidden" name="endtime" value="%s" />',$l->starttime,$l->endtime);
