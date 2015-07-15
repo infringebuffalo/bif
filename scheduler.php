@@ -102,7 +102,8 @@ class programInfo
         $this->type = '';
         $this->website = '';
         $this->organization = '';
-        foreach ($info as $i)
+        if (is_array($info))
+          foreach ($info as $i)
             if (is_array($i) && array_key_exists(0,$i))
                 {
                 if ($i[0] == 'Description for brochure')
