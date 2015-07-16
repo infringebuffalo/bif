@@ -85,8 +85,11 @@ function groupshowPerformerList($p)
     $comma = '';
     foreach ($p->performers as $perf)
         {
-        $performerlist .= $comma . $perf->performer->title;
-        $comma = ', ';
+        if (!$perf->cancelled)
+            {
+            $performerlist .= $comma . $perf->performer->title;
+            $comma = ', ';
+            }
         }
     if ($performerlist != '')
         return ' (' . $performerlist . ')<br/>';
@@ -107,7 +110,9 @@ function performanceSchedule($p)
             }
     foreach ($p->groupshows as $g)
         {
-        foreach ($g->groupevent->listings as $l)
+        if (!$g->cancelled)
+          {
+          foreach ($g->groupevent->listings as $l)
             if ((!$l->installation) && (!$l->cancelled))
                 {
                 if ($g->groupevent->grouplistmode > 0)
@@ -117,6 +122,7 @@ function performanceSchedule($p)
                 $s2 .= ' ' . $l->venue->name . ' [' . $g->groupevent->title . ']';
                 $a[] = $s2;
                 }
+          }
         }
     if (count($a) > 0)
         {
