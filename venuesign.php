@@ -41,7 +41,10 @@ function signlistingRow($id)
     if ($l->venuenote != '')
         $s .= '<br><em>(' . $l->venuenote . ")</em>\n";
     if (!$l->cancelled)
-        $s .= "<br>\n<div style='margin-left: 2em'>\n" . $programinfoList[$p->id]->text() . "</div>\n";
+        {
+        if (array_key_exists($p->id,$programinfoList))
+            $s .= "<br>\n<div style='margin-left: 2em'>\n" . $programinfoList[$p->id]->text() . "</div>\n";
+        }
     if ($p->isgroupshow)
         {
         $s .= '<br/><div style="line-height: 1.25em">featuring:';
@@ -66,6 +69,7 @@ function signlistingRow($id)
     return $s;
     }
 
+$sign = '';
 
 $v = $venueList[$id];
 $s = '';
@@ -81,14 +85,13 @@ foreach ($v->listings as $l)
         }
     }
 
-$sign = '';
 for ($i=0; $i < 11; $i++)
     {
     $date = dayToDate($i);
     if (count($dayshows[$date]) > 0)
         {
         $sign .= '<h1>Infringement at ' . $v->name . '<br/>' . date('l, F j',strtotime($date)) . "</h1>\n";
-/*        $sign .= '<div class="rfloat"><img src="/2014_poster.jpg" width="180"></div>'; */
+//        $sign .= '<div class="rfloat"><img src="/2014_poster.jpg" width="180"></div>';
         sort ($dayshows[$date]);
         $sign .= "<table cellpadding='5'>\n";
         foreach ($dayshows[$date] as $row)
@@ -98,7 +101,6 @@ for ($i=0; $i < 11; $i++)
         $sign .= "<br clear='all' style='page-break-after: always' />\n\n";
         }
     }
-
 
 $sign .= "<div style='text-align:center'>\n";
 $sign .= "<h1>Buffalo Infringement Festival</h1>\n<br><br><br>\n";
