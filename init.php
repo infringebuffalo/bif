@@ -5,7 +5,7 @@ $db = false;
 date_default_timezone_set('America/New_York');
 
 /* THIS MUST BE FIXED SOME DAY!!!! */
-$festivalStartDate = mktime(0,0,0, 7, 24, 2014);
+$festivalStartDate = mktime(0,0,0, 7, 28, 2016);
 $festivalNumberOfDays = 11;
 
 function POSTvalue($field,$default='')
