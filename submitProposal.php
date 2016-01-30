@@ -34,8 +34,8 @@ else
 ?>
 <p>
 Congratulations!<br>
-You have successfully submitted a proposal for the 2014 Buffalo
-Infringement Festival that runs from July 24 - August 3, 2014!<br>
+You have successfully submitted a proposal for the 2016 Buffalo
+Infringement Festival that runs from July 28 - August 7, 2016!<br>
 Remember - all proposals are accepted.  As soon as you hear back from
 your genre organizer, you're in!<br>
 You can alter your proposal at any time by logging into our site.<br>

@@ -8,7 +8,7 @@ bifPageheader('new dance proposal',proposalFormHeader());
 ?>
 
 <p>
-Welcome to the application for the Dance (and Movements Arts) genre of the Buffalo Infringement Festival. In the past years, we have had an awesomely diverse offering of dance, including: theatrical, burlesque, contact improv, bellydance, fire, hula hooping, contortion, salsa, swing, modern, interpretive, arial, ballet, breakdancing, ethnic and cultral dance, street dance, and dance that could not be labeled. Our "definition" of dance is somewhat limitless and very open minded. What kind of dance do YOU plan to bring to Infringement 2014? We can't wait to see!
+Welcome to the application for the Dance (and Movements Arts) genre of the Buffalo Infringement Festival. In the past years, we have had an awesomely diverse offering of dance, including: theatrical, burlesque, contact improv, bellydance, fire, hula hooping, contortion, salsa, swing, modern, interpretive, arial, ballet, breakdancing, ethnic and cultral dance, street dance, and dance that could not be labeled. Our "definition" of dance is somewhat limitless and very open minded. What kind of dance do YOU plan to bring to Infringement 2016? We can't wait to see!
 </p>
 <p>
 It is important to be as detailed as possible to help us place you in the proper venue. We will try our best to accommodate all requests and needs, but please understand that it may not be possible. All spaces are donated and we will do the best we can. Please check your emails regularly and provide a phone number where you can be reached. If we cannot get in touch with you, we will assume you do not want to take part in this year's festival and your proposal will be deleted.
