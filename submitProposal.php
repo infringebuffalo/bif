@@ -14,7 +14,7 @@ $orgcontact = orgContact($proposaltype);
 $title = POSTvalue('title');
 if (trim($title) == '') $title = 'NEEDS A TITLE';
 $proposerid = $_SESSION['userid'];
-log_message("createProposal \"$title\", type \"$formtype\"");
+log_message("createProposal \"$title\", type \"$formtype\" / \"$proposaltype\"");
 
 if ($formtype == 'music')
     createMusicProposal($title,$proposerid,$festival,$batchid,$orgcontact);
@@ -33,7 +33,10 @@ else if ($formtype == 'street')
 else if ($formtype == 'universal')
     createUniversalProposal($title,$proposerid,$festival,$batchid,$orgcontact);
 else
+    {
+    log_message("createProposal failed - unknown type \"$formtype\"");
     die('ERROR: UNKNOWN PROPOSAL TYPE');
+    }
 ?>
 <p>
 Congratulations!<br>
@@ -59,11 +62,11 @@ If you have any questions, ask away:
 <ul>
 <li>General/PR: pr@infringebuffalo.org / info@infringebuffalo.org
 <li>Music: Curt, steelcrazybooking@gmail.com
-<li>Theater: Laura, lauralon@buffalo.edu
+<li>Theater: Jessica, jessicaknoerl@gmail.com
 <li>Poetry/Literary: Marek, b00bflo@gmail.com
 <li>Dance: Leslie, danceundertheradar@gmail.com
-<li>Film: Aaron, rubygroove@aol.com
-<li>Street performance: Dave, dga8787@aol.com
+<li>Film: Tom, tms@kitefishlabs.com
+<li>Street performance: David, dga8787@aol.com
 <li>Visual Arts: Cat/Amy, visualinfringement@live.com
 </ul>
 
@@ -92,9 +95,9 @@ function orgContact($proposaltype)
     else if ($proposaltype == 'Dance')
         return userInfo('danceundertheradar@gmail.com');
     else if ($proposaltype == 'Theatre')
-        return userInfo('Laura15178@gmail.com');
+        return userInfo('jessicaknoerl@gmail.com');
     else if ($proposaltype == 'Film/Video')
-        return userInfo('rubygroove@aol.com');
+        return userInfo('tms@kitefishlabs.com');
     else if ($proposaltype == 'Visual_Art')
         return userInfo('visualinfringement@live.com');
     else if ($proposaltype == 'Literary')
@@ -458,9 +461,11 @@ function emailProposal($formtext,$proposerid,$orgcontact)
     {
     $body = "The following proposal has been submitted for the Buffalo Infringement Festival:\r\n\r\n" . $formtext;
     $row = dbQueryByID("select email from user where id=?",$proposerid);
-    $addr = $row['email']. ', ' . $orgcontact['email'];
+    $addr = $row['email'];
+    $orgaddr = $orgcontact['email'];
     $subject = "Buffalo Infringement proposal";
     loggedMail($addr, $subject, $body);
+    loggedMail($orgaddr, $subject, "(Copy of mail sent to $addr)\r\n\r\n" . $body);
     }
 
 ?>
