@@ -36,6 +36,10 @@ if (hasPrivilege(array('scheduler','organizer')))
 </li>
 <li><a href="calendar.php">Calendar</a></li>
 ENDSTRING;
+    if (hasPrivilege('admin'))
+        {
+        echo "<li><a href='log.php'>View log</a></li>\n";
+        }
     if (hasPrivilege('scheduler'))
         {
         echo <<<ENDSTRING
