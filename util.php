@@ -150,4 +150,13 @@ function getInfo($info,$field,$default='')
             return $i[1];
     return $default;
     }
+
+function dumpData($info, $data)
+    {
+    $stmt = dbPrepare('insert into `dump` (`info`, `data`) values (?,?)');
+    $stmt->bind_param('ss',$info,$data);
+    $stmt->execute();
+    $stmt->close();
+    log_message("dumped data for '$info'");
+    }
 ?>

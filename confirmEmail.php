@@ -16,7 +16,7 @@ if ($row)
         {
         log_message("email confirmed for $row[email]");
         addPrivilege($userid,'confirmed');
-        echo '<p>Thank you.  Your e-mail address is confirmed. You are now able to submit proposals for the Infringement Festival. We look forward to hearing from you.</p>';
+        echo '<p>Thank you.  Your e-mail address is confirmed. You are now able to submit proposals for the Infringement Festival.<br>While you are at it why not <a href="http://infringebuffalo.org/forum/" target="_blank">join our Infringement Forum!</a>  While there you can ask questions to our orginizers, collaborate with fellow artists, and generally become more involved with Infringement!  We look forward to hearing from you.</p>';
         }
     else
         {

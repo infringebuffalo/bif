@@ -1,4 +1,9 @@
 <?php
+/**** This script was used in 2013 to import spreadsheets of applications -
+   we were using Google forms for the submission process that year.
+   No longer used in any form.
+*****/
+
 require_once 'init.php';
 connectDB();
 

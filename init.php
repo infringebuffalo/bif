@@ -1,4 +1,5 @@
 <?php
+ini_set('session.gc_maxlifetime', 864000);
 session_start();
 
 $db = false;
@@ -130,9 +131,9 @@ function requirePrivilege($priv,$reason='')
     if (hasPrivilege($priv))
         return;
     if (is_array($priv))
-        log_message("lacks $priv[0] (or other) privilege - $reason $_SERVER[HTTP_REFERER]");
+        log_message("lacks $priv[0] (or other) privilege - $reason - url " . currentURL() . "; referer $_SERVER[HTTP_REFERER]");
     else
-        log_message("lacks $priv privilege - $reason $_SERVER[HTTP_REFERER]");
+        log_message("lacks $priv privilege - $reason - url " . currentURL() . "; referer $_SERVER[HTTP_REFERER]");
     $_SESSION['LOGIN_RETURN_PAGE'] = currentURL();
     header('Location: .');
     die();

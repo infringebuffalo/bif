@@ -36,6 +36,10 @@ if (hasPrivilege(array('scheduler','organizer')))
 </li>
 <li><a href="calendar.php">Calendar</a></li>
 ENDSTRING;
+    if (hasPrivilege('admin'))
+        {
+        echo "<li><a href='log.php'>View log</a></li>\n";
+        }
     if (hasPrivilege('scheduler'))
         {
         echo <<<ENDSTRING
@@ -53,17 +57,17 @@ ENDSTRING;
 else
     {
     
-    //echo "Proposal submissions are now open!";
+    echo "Proposal submissions are now open!";
 
-    //if (hasPrivilege('confirmed'))
-    //    {
-    //    echo '<br><br>
-    //      <li><a href="Infringement_Proposal.php">Submit a proposal</a></li>
-    //      <br>';
-    //    }
-    //else
-    //    echo '<li>Your e-mail address must be verified before you can submit a proposal: <a href="verifyEmail.php">send verification message</a></li><br>' . "\n";
-    //
+    if (hasPrivilege('confirmed'))
+        {
+        echo '<br><br>
+          <li><a href="Infringement_Proposal.php">Submit a proposal</a></li>
+          <br>';
+        }
+    else
+        echo '<li>Your e-mail address must be verified before you can submit a proposal: <a href="verifyEmail.php">send verification message</a></li><br>' . "\n";
+    
     }
     
 

@@ -1,19 +1,24 @@
 <?php
 require_once 'init.php';
 connectDB();
-requirePrivilege(array('scheduler','confirmed'));
+$post_ser = serialize($_POST);
+dumpData('submitProposal POST',$post_ser);
+$get_ser = serialize($_GET);
+dumpData('submitProposal GET',$get_ser);
+requirePrivilege(array('scheduler','confirmed'),'submitting proposal');
 require_once 'util.php';
 require_once 'scheduler.php';
 
 bifPageheader('proposal submitted');
 $formtype = POSTvalue('formtype');
+$proposaltype = POSTvalue('Proposal_Type');
 $festival = getFestivalID();
 $batchid = getBatch($formtype,$festival);
-$orgcontact = orgContact($formtype);
+$orgcontact = orgContact($proposaltype);
 $title = POSTvalue('title');
 if (trim($title) == '') $title = 'NEEDS A TITLE';
 $proposerid = $_SESSION['userid'];
-log_message("createProposal \"$title\", type \"$formtype\"");
+log_message("createProposal \"$title\", type \"$formtype\" / \"$proposaltype\"");
 
 if ($formtype == 'music')
     createMusicProposal($title,$proposerid,$festival,$batchid,$orgcontact);
@@ -29,13 +34,20 @@ else if ($formtype == 'literary')
     createLiteraryProposal($title,$proposerid,$festival,$batchid,$orgcontact);
 else if ($formtype == 'street')
     createStreetProposal($title,$proposerid,$festival,$batchid,$orgcontact);
+else if ($formtype == 'universal')
+    createUniversalProposal($title,$proposerid,$festival,$batchid,$orgcontact);
 else
+    {
+    log_message("createProposal failed - unknown type \"$formtype\"");
     die('ERROR: UNKNOWN PROPOSAL TYPE');
+    }
 ?>
 <p>
 Congratulations!<br>
 You have successfully submitted a proposal for the 2016 Buffalo
 Infringement Festival that runs from July 28 - August 7, 2016!<br>
+Be sure to check out your proposal which should now be displayed prominently on the home page!
+<br>
 Remember - all proposals are accepted.  As soon as you hear back from
 your genre organizer, you're in!<br>
 You can alter your proposal at any time by logging into our site.<br>
@@ -44,6 +56,9 @@ promptly (please check your spam folder, in case our messages end up
 there).<br>
 Expect an influx of correspondence after May 1.
 </p>
+<p>
+Be sure to <a href="http://infringebuffalo.org/forum/" target="_blank">join our Infringement Forum!</a>  It's a great place to ask questions, collaborate with other artist and get more involved with Infringement in general.
+</p>
 
 <p>
 If you have any questions, ask away:
@@ -51,11 +66,11 @@ If you have any questions, ask away:
 <ul>
 <li>General/PR: pr@infringebuffalo.org / info@infringebuffalo.org
 <li>Music: Curt, steelcrazybooking@gmail.com
-<li>Theater: Vanessa, vanessaw@buffalo.edu
-<li>Poetry/Literary: Marek, marekp@roadrunner.com
+<li>Theater: Jessica, jessicaknoerl@gmail.com
+<li>Poetry/Literary: Marek, b00bflo@gmail.com
 <li>Dance: Leslie, danceundertheradar@gmail.com
-<li>Film: Aaron, rubygroove@aol.com
-<li>Street performance: Dave, dga8787@aol.com
+<li>Film: Tom, tms@kitefishlabs.com
+<li>Street performance: David, dga8787@aol.com
 <li>Visual Arts: Cat/Amy, visualinfringement@live.com
 </ul>
 
@@ -77,23 +92,21 @@ function userInfo($email)
     return dbQueryByString('select id,email,name,phone from user where email=?', $email);
     }
 
-function orgContact($formtype)
+function orgContact($proposaltype)
     {
-    if ($formtype == 'music')
+    if ($proposaltype == 'Music')
         return userInfo('steelcrazybooking@gmail.com');
-    else if ($formtype == 'dance')
+    else if ($proposaltype == 'Dance')
         return userInfo('danceundertheradar@gmail.com');
-    else if ($formtype == 'theatre')
-        return userInfo('vanessaw@buffalo.edu');
-    else if ($formtype == 'film')
-        return userInfo('rubygroove@aol.com');
-    else if ($formtype == 'visualart')
+    else if ($proposaltype == 'Theatre')
+        return userInfo('jessicaknoerl@gmail.com');
+    else if ($proposaltype == 'Film/Video')
+        return userInfo('tms@kitefishlabs.com');
+    else if ($proposaltype == 'Visual_Art')
         return userInfo('visualinfringement@live.com');
-    else if ($formtype == 'literary')
+    else if ($proposaltype == 'Literary')
         return userInfo('marekp@roadrunner.com');
-    else if ($formtype == 'street')
-        return userInfo('dga8787@aol.com');
-    else
+    else 
         return userInfo('depape@buffalo.edu');
     }
 
@@ -116,7 +129,21 @@ function secondContactInfo()
     $contact2address = POSTvalue('secondcontactaddress');
     return "$contact2name\nE-mail: $contact2email\nPhone: $contact2phone\nAddress: $contact2address";
     }
-
+	
+function createUniversalProposal($title,$proposerid,$festival,$batchid,$orgcontact)
+    {
+    global $festivalNumberOfDays;
+    $info = array();
+    addInfo($info,'Contact info',contactInfo());
+    addInfo($info,'Secondary contact info', secondContactInfo());
+	foreach ($_POST as $param_name => $param_val){
+	  if ($param_name !== 'contactname' || $param_name !== 'contactemail' || $param_name !== 'contactphone' || $param_name !== 'contactaddress' || $param_name !== 'contactfacebook' || $param_name !== 'bestcontactmethod' || $param_name !== 'secondcontactname' || $param_name !== 'secondcontactphone' || $param_name !== 'secondcontactaddress' || $param_name !== 'secondcontactemail'){
+	  addInfo($info,$param_name, $param_val);
+	  }
+	}
+    insertProposal($info,$availability,$proposerid,$festival,$title,$orgcontact,$batchid);
+    }
+	
 function createTheatreProposal($title,$proposerid,$festival,$batchid,$orgcontact)
     {
     global $festivalNumberOfDays;
@@ -438,9 +465,11 @@ function emailProposal($formtext,$proposerid,$orgcontact)
     {
     $body = "The following proposal has been submitted for the Buffalo Infringement Festival:\r\n\r\n" . $formtext;
     $row = dbQueryByID("select email from user where id=?",$proposerid);
-    $addr = $row['email']. ', ' . $orgcontact['email'];
+    $addr = $row['email'];
+    $orgaddr = $orgcontact['email'];
     $subject = "Buffalo Infringement proposal";
     loggedMail($addr, $subject, $body);
+    loggedMail($orgaddr, $subject, "(Copy of mail sent to $addr)\r\n\r\n" . $body);
     }
 
 ?>

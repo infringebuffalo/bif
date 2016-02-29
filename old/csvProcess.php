@@ -1,4 +1,8 @@
 <?php
+/**** This script was used in 2013 to import spreadsheets of applications -
+   we were using Google forms for the submission process that year.
+   No longer used in any form.
+*****/
 die('disabled');
 /****** DO NOT USE THIS AS-IS - the 'info' field has changed structure, this script
   will produce incorrect data ('info' must now be an ordered list of arrays,
