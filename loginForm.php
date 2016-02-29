@@ -16,7 +16,7 @@ $(document).ready(function() {
 </script>
 ENDSTRING;
 
-bifPageheader('proposals database login',$header);
+bifPageheader('proposals',$header);
 
 if ((array_key_exists('loginError',$_SESSION)) && ($_SESSION['loginError'] != ''))
     {
@@ -24,6 +24,7 @@ if ((array_key_exists('loginError',$_SESSION)) && ($_SESSION['loginError'] != ''
     unset($_SESSION['loginError']);
     }
 ?>
+<img src="bif2016logo.jpg" align="right">
 <form method="post" action="login.php">
 <table cellspacing="1">
 <tr>
