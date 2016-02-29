@@ -1,13 +1,13 @@
 <?php
 require_once 'init.php';
 connectDB();
+require_once 'util.php';
+require_once 'scheduler.php';
 $post_ser = serialize($_POST);
 dumpData('submitProposal POST',$post_ser);
 $get_ser = serialize($_GET);
 dumpData('submitProposal GET',$get_ser);
 requirePrivilege(array('scheduler','confirmed'),'submitting proposal');
-require_once 'util.php';
-require_once 'scheduler.php';
 
 bifPageheader('proposal submitted');
 $formtype = POSTvalue('formtype');
