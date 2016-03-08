@@ -1,5 +1,6 @@
 <?php
 ini_set('session.gc_maxlifetime', 864000);
+mb_internal_encoding('UTF-8');
 session_start();
 
 $db = false;
