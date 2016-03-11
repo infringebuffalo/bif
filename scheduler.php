@@ -833,6 +833,6 @@ function beginApiCallHtml($command, $parameters=array(), $inline=false, $formnam
 
 function endApiCallHtml($submitlabel)
     {
-    return "<input type='submit' id='submit' value='$submitlabel' />\n</form>\n";
+    return "<input type='submit' name='submit' value='$submitlabel' />\n</form>\n";
     }
 ?>
