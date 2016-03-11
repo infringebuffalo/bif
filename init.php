@@ -204,7 +204,7 @@ echo <<<ENDSTRING
 <link type="text/css" rel="stylesheet" href="style.css" />
 <title>$titleprefix Buffalo Infringement Festival</title>
 ENDSTRING;
-echo $headerExtras;
+echo "\n" . $headerExtras;
 echo <<<ENDSTRING
 </head>
 <body>
