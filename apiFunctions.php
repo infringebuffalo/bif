@@ -329,25 +329,6 @@ function changeProposalOrgfield($proposal,$fieldlabel,$newinfo)
     log_message("changed proposal {ID:$proposal} field $fieldlabel from '$oldinfo' to '$newinfo'");
     }
 
-function changeProposalAvail($proposal,$daynum,$newinfo)
-    {
-    if (!hasPrivilege('scheduler') && (getProposerID($proposal) != $_SESSION['userid']))
-        return;
-    $info_ser = dbQueryByID('select availability from proposal where id=?',$proposal);
-    if ($info_ser == NULL)
-        return;
-    $info = unserialize($info_ser['availability']);
-    $oldinfo = $info[$daynum];
-    $info[$daynum] = $newinfo;
-    $info_ser = serialize($info);
-    $stmt = dbPrepare('update proposal set availability=? where id=?');
-    $stmt->bind_param('si',$info_ser,$proposal);
-    $stmt->execute();
-    $stmt->close();
-    updateProposalLastedit($proposal,$_SESSION['userid']);
-    log_message("changed proposal {ID:$proposal} availability $daynum from '$oldinfo' to '$newinfo'");
-    }
-
 function deleteProposal($id)
     {
     $stmt = dbPrepare('update proposal set deleted=1 where id=?');

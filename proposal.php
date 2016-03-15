@@ -23,7 +23,7 @@ function main()
     $canSeeSchedule = true;
     $canEditSchedule = hasPrivilege('scheduler');
 
-    bifPageheader('proposal: ' . $proposal->title, proposalPageHeader($proposal->availability));
+    bifPageheader('proposal: ' . $proposal->title, proposalPageHeader());
     echo proposalBrochureText($proposal);
     echo proposalWebText($proposal);
     if ($canSeeSchedule)
@@ -154,7 +154,6 @@ function proposalMainInfo($proposal)
         $html .= "<tr id='edit_fieldNew' class='edit_info'><th>[add field]</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='addProposalInfoField' /><input type='hidden' name='proposal' value='" . $proposal->id . "' /><input type='text' name='fieldname'><input type='submit' name='submit' value='add'><button onclick='hideEditor(\"fieldNew\"); return false;'>don't add</button></form></td></tr>\n";
         $html .= "<tr id='show_fieldNew' class='show_info' onclick='showEditor(\"fieldNew\");'><th style='background:#ff8'>[add field]</th><td>&nbsp;</td></tr>\n";
         }
-    $html .= "<tr><th>Availability</th><td>" . availTable($proposal->id,$proposal->availability) . "</td></tr>\n";
     $html .= '<tr><th>Submitted</th><td>' . $proposal->submitted . '</td></tr>';
     
     $html .= '</table>';
@@ -168,10 +167,10 @@ class ProposalData
     function __construct($proposal_id)
         {
         $this->id = $proposal_id;
-        $stmt = dbPrepare('select `proposerid`, `info`, `availability`, `orgcontact`, `submitted`, `user`.`name`, `festival`.`name`, `proposal`.`access` from `proposal` join `user` on `proposerid`=`user`.`id` join `festival` on `proposal`.`festival`=`festival`.`id` where `proposal`.`id`=?');
+        $stmt = dbPrepare('select `proposerid`, `info`, `orgcontact`, `submitted`, `user`.`name`, `festival`.`name`, `proposal`.`access` from `proposal` join `user` on `proposerid`=`user`.`id` join `festival` on `proposal`.`festival`=`festival`.`id` where `proposal`.`id`=?');
         $stmt->bind_param('i',$proposal_id);
         $stmt->execute();
-        $stmt->bind_result($proposer_id,$info_ser,$availability_ser,$orgcontact,$submitted,$proposer_name, $festivalname, $access_ser);
+        $stmt->bind_result($proposer_id,$info_ser,$orgcontact,$submitted,$proposer_name, $festivalname, $access_ser);
         $stmt->fetch();
         $stmt->close();
         
@@ -180,7 +179,6 @@ class ProposalData
         $this->proposer_name = $proposer_name;
         $this->festivalname = $festivalname;
         $this->info = unserialize($info_ser);
-        $this->availability = unserialize($availability_ser);
         $this->access = unserialize($access_ser);
         $this->orgcontactinfo = dbQueryByID('select `name`,`card`.`id`,`card`.`email` from `user` join `card` on `user`.`id`=`card`.`userid` where `user`.`id`=?',$orgcontact);
         getDatabase();
@@ -314,22 +312,11 @@ function jsSafe($s)
     return $s;
     }
 
-function proposalPageHeader($availability)
+function proposalPageHeader()
     {
     $header = <<<ENDSTRING
 <script src="jquery.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-var availability = {
-ENDSTRING;
-
-    global $festivalNumberOfDays;
-    for ($i=0; $i < $festivalNumberOfDays; $i++)
-        if (is_array($availability) && array_key_exists($i,$availability))
-            $header .= " $i : '" . dayToDateday($i) . ': ' . jsSafe($availability[$i]) . "',";
-
-    $header .= <<<ENDSTRING
-};
-
 function showEditor(name)
     {
     $('#show_' + name).hide();
@@ -384,11 +371,9 @@ function toggleEdit(rowname)
     }
 function hoverFunc()
     {
-    $('.availabilityInfo').html(availability[$(this).data("bifday")]);
     }
 function unhoverFunc()
     {
-    $('.availabilityInfo').html('&nbsp;');
     }
 function limitChars(node, limit)
     {
@@ -618,27 +603,6 @@ function proposalSchedulingDiv($proposal)
 */
     $out .= '</div><br>';
     return $out;
-    }
-
-
-function availTable($proposal_id,$av)
-    {
-    global $festivalNumberOfDays;
-    $s = "<table>\n";
-    if (is_array($av))
-        {
-        for ($i=0; $i < $festivalNumberOfDays; $i++)
-            {
-            if (array_key_exists($i,$av))
-                {
-                $s .= "<tr>\n<th class='editField' id='fieldAvail$i'>" . dayToDateday($i) . "</th>\n";
-                $s .= "<td>\n<div id='show_fieldAvail$i' class='show_info'>$av[$i]</div>\n";
-                $s .= "<div id='edit_fieldAvail$i' class='edit_info'>" . beginApiCallHtml('changeProposalAvail', array('proposal'=>$proposal_id,'daynum'=>$i)) . "<textarea id='input_fieldAvail$i' name='newinfo' cols='40'>" . $av[$i] . "</textarea>" . endApiCallHtml('save') . "</div>\n</td>\n</tr>\n";
-                }
-            }
-        }
-    $s .= "</table>\n";
-    return $s;
     }
 
 ?>
