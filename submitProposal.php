@@ -139,7 +139,7 @@ function insertProposal($info,$proposerid,$festival,$title,$orgcontact,$batchid)
     $formtext = createFormText($info, $title);
     $forminfo = array(POSTvalue("formtype")=>$formtext);
     $forminfo_ser = serialize($forminfo);
-    $stmt = dbPrepare('insert into `proposal` (`id`, `proposerid`, `festival`, `title`, `info`, `forminfo`, `orgcontact`, `orgfields`) values (?,?,?,?,?,?,?,?,?)');
+    $stmt = dbPrepare('insert into `proposal` (`id`, `proposerid`, `festival`, `title`, `info`, `forminfo`, `orgcontact`, `orgfields`) values (?,?,?,?,?,?,?,?)');
     $stmt->bind_param('iiisssis',$proposalid,$proposerid,$festival,$title,$info_ser,$forminfo_ser,$orgcontactid,$orgfields_ser);
     $stmt->execute();
     $stmt->close();
