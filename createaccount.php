@@ -9,7 +9,8 @@ if (loggedIn())
     session_start();
     }
 
-$username = htmlentities(POSTvalue('username'),ENT_COMPAT | ENT_HTML5, "UTF-8");
+$username = trim(POSTvalue('username'));
+$usernameSafe = htmlentities($username,ENT_COMPAT | ENT_HTML5, "UTF-8");
 
 if (preg_match('/^(Viagra|Cialis|Levitra)$/', $username))
     {
@@ -21,9 +22,9 @@ if (preg_match('/^(Viagra|Cialis|Levitra)$/', $username))
 
 if (!preg_match('/^[^@]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$/', $username))
     {
-    $_SESSION['createaccountError'] = 'Failed to create login: valid e-mail address required';
+    $_SESSION['createaccountError'] = 'Failed to create login: valid e-mail address required ("' . $usernameSafe . '" failed check)';
     header('Location: loginForm.php');
-    log_message("bad-address registration blocked ($username)");
+    log_message("bad-address registration blocked ($usernameSafe)");
     die();
     }
 
@@ -43,7 +44,7 @@ else
         {
         $_SESSION['createaccountError'] = 'Failed to create login: account already exists';
         header('Location: loginForm.php');
-        log_message("duplicate registration blocked ($username)");
+        log_message("duplicate registration blocked ($usernameSafe)");
         die();
         }
     else
@@ -60,7 +61,7 @@ else
         $_SESSION['userid'] = $userid;
         $_SESSION['username'] = $username;
         $_SESSION['privs'] = '';
-        log_message("created account $userid $username");
+        log_message("created account $userid $usernameSafe");
         }
     }
 
