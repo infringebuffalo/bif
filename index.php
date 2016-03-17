@@ -35,41 +35,28 @@ if (hasPrivilege(array('scheduler','organizer')))
 <ul><li>(<a href="listVenues.php?festival=960">2013 venues</a>)</li></ul>
 </li>
 <li><a href="calendar.php">Calendar</a></li>
-ENDSTRING;
-    if (hasPrivilege('admin'))
-        {
-        echo "<li><a href='log.php'>View log</a></li>\n";
-        }
-    if (hasPrivilege('scheduler'))
-        {
-        echo <<<ENDSTRING
 <li><a href="listUsers.php">Users</a></li>
-<br>
-<li><a href="Infringement_Proposal.php">Submit a proposal</a></li>
-<br>
-<li><a href="preferences.php">Preferences</a></li>
-<br>
-<li><a href="newGroupshow.php">Create a Group Show</a></li>
-<br>
 ENDSTRING;
-        }
+    }
+if (hasPrivilege('admin'))
+    {
+    echo "<li><a href='log.php'>View log</a></li>\n";
+    }
+if (hasPrivilege('scheduler'))
+    {
+    echo "<li><a href='preferences.php'>Preferences</a></li>\n";
+    echo "<br><li><a href='newGroupshow.php'>Create a Group Show</a></li>\n";
+    }
+    
+if (hasPrivilege(array('confirmed','scheduler','organizer')))
+    {
+    echo "<br><br><li><a href='Infringement_Proposal.php'>Submit a proposal</a></li><br>\n";
     }
 else
     {
-    
-    echo "Proposal submissions are now open!";
-
-    if (hasPrivilege('confirmed'))
-        {
-        echo '<br><br>
-          <li><a href="Infringement_Proposal.php">Submit a proposal</a></li>
-          <br>';
-        }
-    else
-        echo '<li>Your e-mail address must be verified before you can submit a proposal: <a href="verifyEmail.php">send verification message</a></li><br>' . "\n";
-    
+    echo "<li>Your e-mail address must be verified before you can submit a proposal: <a href='verifyEmail.php'>send verification message</a></li><br>\n";
     }
-    
+
 
 $festival = getFestivalID();
 $stmt = dbPrepare('select id,title,isgroupshow from proposal where proposerid=? and festival=? and deleted=0 order by title');
@@ -85,7 +72,7 @@ while ($stmt->fetch())
         $first = false;
         }
 		if ($isgroupshow == 0){
-          echo "<li><a href='proposal.php?id=$proposalid'>(Proposal) - $title</a></li>\n";
+          echo "<li><a href='proposal.php?id=$proposalid'>$title</a></li>\n";
 	    }else{
 		  echo "<li><a href='proposal.php?id=$proposalid'>(Group Show) - $title</a></li>\n";
 		}
