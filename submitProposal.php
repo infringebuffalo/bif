@@ -3,10 +3,10 @@ require_once 'init.php';
 connectDB();
 require_once 'util.php';
 require_once 'scheduler.php';
-$post_ser = serialize($_POST);
-dumpData('submitProposal POST',$post_ser);
-$get_ser = serialize($_GET);
-dumpData('submitProposal GET',$get_ser);
+$post_json = json_encode($_POST);
+dumpData('submitProposal POST',$post_json);
+$get_json = json_encode($_GET);
+dumpData('submitProposal GET',$get_json);
 requirePrivilege(array('scheduler','confirmed'),'submitting proposal');
 
 bifPageheader('proposal submitted');
@@ -132,15 +132,15 @@ function addInfo(&$info,$label,$value)
 
 function insertProposal($info,$proposerid,$festival,$title,$orgcontact,$batchid)
     {
-    $info_ser = serialize($info);
-    $orgfields_ser = serialize(array());
+    $info_json = json_encode($info);
+    $orgfields_json = json_encode(array());
     $proposalid = newEntityID('proposal');
     $orgcontactid = $orgcontact['id'];
     $formtext = createFormText($info, $title);
     $forminfo = array(POSTvalue("formtype")=>$formtext);
-    $forminfo_ser = serialize($forminfo);
-    $stmt = dbPrepare('insert into `proposal` (`id`, `proposerid`, `festival`, `title`, `info`, `forminfo`, `orgcontact`, `orgfields`) values (?,?,?,?,?,?,?,?)');
-    $stmt->bind_param('iiisssis',$proposalid,$proposerid,$festival,$title,$info_ser,$forminfo_ser,$orgcontactid,$orgfields_ser);
+    $forminfo_json = json_encode($forminfo);
+    $stmt = dbPrepare('insert into `proposal` (`id`, `proposerid`, `festival`, `title`, `info_json`, `forminfo_json`, `orgcontact`, `orgfields_json`) values (?,?,?,?,?,?,?,?)');
+    $stmt->bind_param('iiisssis',$proposalid,$proposerid,$festival,$title,$info_json,$forminfo_json,$orgcontactid,$orgfields_json);
     $stmt->execute();
     $stmt->close();
     if ($batchid != 0)

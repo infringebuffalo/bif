@@ -8,13 +8,13 @@ bifPageheader('change preferences');
 
 $summaryLabels = array();
 $festival = getFestivalID();
-$stmt = dbPrepare('select orgfields from proposal where festival=? and deleted=0');
+$stmt = dbPrepare('select orgfields_json from proposal where festival=? and deleted=0');
 $stmt->bind_param('i',$festival);
 $stmt->execute();
-$stmt->bind_result($orgfields_ser);
+$stmt->bind_result($orgfields_json);
 while ($stmt->fetch())
     {
-    $orgfields = unserialize($orgfields_ser);
+    $orgfields = json_decode($orgfields_json,true);
     if (is_array($orgfields))
         {
         foreach (array_keys($orgfields) as $k)

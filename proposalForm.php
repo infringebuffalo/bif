@@ -11,13 +11,13 @@ if (!isset($_GET['id']))
 else
     $proposal_id = $_GET['id'];
 
-$stmt = dbPrepare('select `proposerid`, `title`, `forminfo`, `user`.`name` from `proposal` join `user` on `proposerid`=`user`.`id` where `proposal`.`id`=?');
+$stmt = dbPrepare('select `proposerid`, `title`, `forminfo_json`, `user`.`name` from `proposal` join `user` on `proposerid`=`user`.`id` where `proposal`.`id`=?');
 $stmt->bind_param('i',$proposal_id);
 $stmt->execute();
-$stmt->bind_result($proposer_id,$title,$forminfo_ser,$proposer_name);
+$stmt->bind_result($proposer_id,$title,$forminfo_json,$proposer_name);
 $stmt->fetch();
 $stmt->close();
-$forminfo = unserialize($forminfo_ser);
+$forminfo = json_decode($forminfo_json,true);
 
 if (!hasPrivilege('scheduler'))
     {

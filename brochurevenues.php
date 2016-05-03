@@ -15,13 +15,13 @@ require_once 'util.php';
 
 <?php
 $festival = GETvalue('festival',getFestivalID());
-$stmt = dbPrepare('select name,info from venue where deleted=0 and festival=? order by name');
+$stmt = dbPrepare('select name,info_json from venue where deleted=0 and festival=? order by name');
 $stmt->bind_param('i',$festival);
 $stmt->execute();
-$stmt->bind_result($name,$info_ser);
+$stmt->bind_result($name,$info_json);
 while ($stmt->fetch())
     {
-    $info = unserialize($info_ser);
+    $info = json_decode($info_json,true);
     $address = '';
     $website = '';
     foreach ($info as $i)

@@ -16,7 +16,7 @@ function qrcode($url)
     $query = urlencode("qrcode $url");
     $ddg = "http://api.duckduckgo.com/?q=$query&format=json";
     $json = file_get_contents($ddg);
-    $data = json_decode($json);
+    $data = json_decode($json,true);
     preg_match('/<img.*>/U',$data->Answer,$matches);
     return $matches[0];
     }
@@ -106,13 +106,13 @@ $sign .= "<div style='text-align:center'>\n";
 $sign .= "<h1>Buffalo Infringement Festival</h1>\n<br><br><br>\n";
 $sign .= "<p style='font-size:x-large'>Scan code to see what's happening nearby NOW!:</p>\n";
 $sign .= str_replace('<img','<img width="300"',qrcode("http://infringebuffalo.org/near.php?venue=$id&qr=1"));
-$stmt = dbPrepare('select info from venue where id=?');
+$stmt = dbPrepare('select info_json from venue where id=?');
 $stmt->bind_param('i',$id);
 $stmt->execute();
-$stmt->bind_result($info_ser);
+$stmt->bind_result($info_json);
 $stmt->fetch();
 $stmt->close();
-$info = unserialize($info_ser);
+$info = json_decode($info_json,true);
 $nearurl = getInfo($info,"near shows url");
 if ($nearurl != '')
     $sign .= "<br><br>\n<p>Or visit<br> $nearurl</p>\n";

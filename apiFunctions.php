@@ -38,8 +38,8 @@ function newVenue($name,$shortname)
                         );
     $venueid = newEntityID('venue');
     $festival = getFestivalID();
-    $stmt = dbPrepare('insert into `venue` (`id`, `name`, `shortname`, `festival`, `info`) values (?,?,?,?,?)');
-    $info = serialize($defaultInfo);
+    $stmt = dbPrepare('insert into `venue` (`id`, `name`, `shortname`, `festival`, `info_json`) values (?,?,?,?,?)');
+    $info = json_encode($defaultInfo);
     $stmt->bind_param('issis',$venueid,$name,$shortname,$festival,$info);
     $stmt->execute();
     $stmt->close();
@@ -50,14 +50,14 @@ function newVenue($name,$shortname)
 
 function copyVenue($id)
     {
-    $row = dbQueryByID('select name,shortname,info from venue where id=?',$id);
+    $row = dbQueryByID('select name,shortname,info_json from venue where id=?',$id);
     $name = $row['name'];
     $shortname = $row['shortname'];
-    $info = $row['info'];
+    $info_json = $row['info_json'];
     $newvenueid = newEntityID('venue');
     $festival = getFestivalID();
-    $stmt = dbPrepare('insert into `venue` (`id`, `name`, `shortname`, `festival`, `info`) values (?,?,?,?,?)');
-    $stmt->bind_param('issis',$newvenueid,$name,$shortname,$festival,$info);
+    $stmt = dbPrepare('insert into `venue` (`id`, `name`, `shortname`, `festival`, `info_json`) values (?,?,?,?,?)');
+    $stmt->bind_param('issis',$newvenueid,$name,$shortname,$festival,$info_json);
     $stmt->execute();
     $stmt->close();
     log_message("copyVenue {ID:$id} ($name) to {ID:$newvenueid}");
@@ -101,12 +101,12 @@ function newGroupshow($title,$description,$batch)
     {
     $showid = newEntityID('proposal');
     $festival = getFestivalID();
-    $stmt = dbPrepare('insert into `proposal` (`id`, `proposerid`, `festival`, `title`, `info`, `orgcontact`, `isgroupshow`) values (?,?,?,?,?,?,1)');
+    $stmt = dbPrepare('insert into `proposal` (`id`, `proposerid`, `festival`, `title`, `info_json`, `orgcontact`, `isgroupshow`) values (?,?,?,?,?,?,1)');
     $proposerid = $_SESSION['userid'];
     $info = array(array('Type','group'),array('Description for web',''),array('Description for brochure',''), array('Image link',''), array('batch',$batch));
-    $info_ser = serialize($info);
+    $info_json = json_encode($info);
     $orgcontact = $proposerid;
-    $stmt->bind_param('iiissi',$showid,$proposerid,$festival,$title,$info_ser,$orgcontact);
+    $stmt->bind_param('iiissi',$showid,$proposerid,$festival,$title,$info_json,$orgcontact);
     $stmt->execute();
     $stmt->close();
     log_message("newGroupshow {ID:$showid} : $title");
@@ -197,7 +197,7 @@ function updatePassword()
         die();
         }
     $stmt = dbPrepare('update user set password=?,newpassword=? where id=?');
-    $stmt->bind_param('ssi',$endNewpassword,$encNewpassword,$id);
+    $stmt->bind_param('ssi',$encNewpassword,$encNewpassword,$id);
     $stmt->execute();
     $stmt->close();
     log_message("changed password");
@@ -264,16 +264,16 @@ function getProposerID($proposal)
 
 function updateProposalLastedit($proposal,$user)
     {
-    $row = dbQueryByID('select access from proposal where id=?',$proposal);
-    $access = unserialize($row['access']);
-    if (!$access)
+    $row = dbQueryByID('select access_json from proposal where id=?',$proposal);
+    $access = json_decode($row['access_json'],true);
+    if (!is_array($access))
         $access = array();
     if (!isset($access['lastedit']))
         $access['lastedit'] = array();
     $access['lastedit'][$user] = strftime('%F %T');
-    $access_ser = serialize($access);
-    $stmt = dbPrepare('update proposal set access=? where id=?');
-    $stmt->bind_param('si',$access_ser,$proposal);
+    $access_json = json_encode($access);
+    $stmt = dbPrepare('update proposal set access_json=? where id=?');
+    $stmt->bind_param('si',$access_json,$proposal);
     $stmt->execute();
     $stmt->close();
     }
@@ -296,15 +296,15 @@ function changeProposalInfo($proposal,$fieldnum,$newinfo)
     $isOwner = (getProposerID($proposal) == $_SESSION['userid']);
     if (!hasPrivilege('scheduler') && (!$isOwner))
         return;
-    $info_ser = dbQueryByID('select info from proposal where id=?',$proposal);
-    if ($info_ser == NULL)
+    $row = dbQueryByID('select info_json from proposal where id=?',$proposal);
+    if ($row == NULL)
         return;
-    $info = unserialize($info_ser['info']);
+    $info = json_decode($row['info_json'],true);
     $oldinfo = $info[$fieldnum][1];
     $info[$fieldnum] = array($info[$fieldnum][0], $newinfo);
-    $info_ser = serialize($info);
-    $stmt = dbPrepare('update proposal set info=? where id=?');
-    $stmt->bind_param('si',$info_ser,$proposal);
+    $info_json = json_encode($info);
+    $stmt = dbPrepare('update proposal set info_json=? where id=?');
+    $stmt->bind_param('si',$info_json,$proposal);
     $stmt->execute();
     $stmt->close();
     updateProposalLastedit($proposal,$_SESSION['userid']);
@@ -315,15 +315,15 @@ function changeProposalOrgfield($proposal,$fieldlabel,$newinfo)
     {
     if (!hasPrivilege('scheduler') && (getProposerID($proposal) != $_SESSION['userid']))
         return;
-    $orgfields_ser = dbQueryByID('select orgfields from proposal where id=?',$proposal);
-    if ($orgfields_ser == NULL)
+    $row = dbQueryByID('select orgfields_json from proposal where id=?',$proposal);
+    if ($row == NULL)
         return;
-    $orgfields = unserialize($orgfields_ser['orgfields']);
+    $orgfields = json_decode($row['orgfields_json'],true);
     $oldinfo = $orgfields[$fieldlabel];
     $orgfields[$fieldlabel] = $newinfo;
-    $orgfields_ser = serialize($orgfields);
-    $stmt = dbPrepare('update proposal set orgfields=? where id=?');
-    $stmt->bind_param('si',$orgfields_ser,$proposal);
+    $orgfields_json = json_encode($orgfields);
+    $stmt = dbPrepare('update proposal set orgfields_json=? where id=?');
+    $stmt->bind_param('si',$orgfields_json,$proposal);
     $stmt->execute();
     $stmt->close();
     log_message("changed proposal {ID:$proposal} field $fieldlabel from '$oldinfo' to '$newinfo'");
@@ -367,15 +367,15 @@ function undeleteVenue($id)
 
 function changeVenueInfo($venue,$fieldnum,$newinfo)
     {
-    $info_ser = dbQueryByID('select info from venue where id=?',$venue);
-    if ($info_ser == NULL)
+    $row = dbQueryByID('select info_json from venue where id=?',$venue);
+    if ($row == NULL)
         return;
-    $info = unserialize($info_ser['info']);
+    $info = json_decode($row['info_json'],true);
     $oldinfo = $info[$fieldnum][1];
     $info[$fieldnum] = array($info[$fieldnum][0], $newinfo);
-    $info_ser = serialize($info);
-    $stmt = dbPrepare('update venue set info=? where id=?');
-    $stmt->bind_param('si',$info_ser,$venue);
+    $info_json = json_encode($info);
+    $stmt = dbPrepare('update venue set info_json=? where id=?');
+    $stmt->bind_param('si',$info_json,$venue);
     $stmt->execute();
     $stmt->close();
     log_message("changed venue {ID:$venue} field $fieldnum from '$oldinfo' to '$newinfo'");
@@ -383,10 +383,10 @@ function changeVenueInfo($venue,$fieldnum,$newinfo)
 
 function setVenueLatLon($venue,$latlon)
     {
-    $info_ser = dbQueryByID('select info from venue where id=?',$venue);
-    if ($info_ser == NULL)
+    $row = dbQueryByID('select info_json from venue where id=?',$venue);
+    if ($row == NULL)
         return;
-    $info = unserialize($info_ser['info']);
+    $info = json_decode($row['info_json'],true);
     $pos = explode(',',$latlon);
     $count = 0;
     foreach ($info as $data)
@@ -398,9 +398,9 @@ function setVenueLatLon($venue,$latlon)
         $info[$count] = $data;
         $count++;
         }
-    $info_ser = serialize($info);
-    $stmt = dbPrepare('update venue set info=? where id=?');
-    $stmt->bind_param('si',$info_ser,$venue);
+    $info_json = json_encode($info);
+    $stmt = dbPrepare('update venue set info_json=? where id=?');
+    $stmt->bind_param('si',$info_json,$venue);
     $stmt->execute();
     $stmt->close();
     log_message("changed venue {ID:$venue} latitude/longitude to $latlon");
@@ -426,14 +426,14 @@ function changeVenueShortname($venue,$newinfo)
 
 function addVenueInfoField($venue,$fieldname,$fieldvalue)
     {
-    $info_ser = dbQueryByID('select info from venue where id=?',$venue);
-    if ($info_ser == NULL)
+    $row = dbQueryByID('select info_json from venue where id=?',$venue);
+    if ($row == NULL)
         return;
-    $info = unserialize($info_ser['info']);
+    $info = json_decode($row['info_json'],true);
     $info[] = array($fieldname,$fieldvalue);
-    $info_ser = serialize($info);
-    $stmt = dbPrepare('update venue set info=? where id=?');
-    $stmt->bind_param('si',$info_ser,$venue);
+    $info_json = json_encode($info);
+    $stmt = dbPrepare('update venue set info_json=? where id=?');
+    $stmt->bind_param('si',$info_json,$venue);
     $stmt->execute();
     $stmt->close();
     log_message("added field '$fieldname' to venue {ID:$venue}");
@@ -441,14 +441,14 @@ function addVenueInfoField($venue,$fieldname,$fieldvalue)
 
 function deleteVenueInfoField($venue,$fieldnum)
     {
-    $info_ser = dbQueryByID('select info from venue where id=?',$venue);
-    if ($info_ser == NULL)
+    $row = dbQueryByID('select info_json from venue where id=?',$venue);
+    if ($row == NULL)
         return;
-    $info = unserialize($info_ser['info']);
+    $info = json_decode($row['info_json'],true);
     unset($info[$fieldnum]);
-    $info_ser = serialize($info);
-    $stmt = dbPrepare('update venue set info=? where id=?');
-    $stmt->bind_param('si',$info_ser,$venue);
+    $info_json = json_encode($info);
+    $stmt = dbPrepare('update venue set info_json=? where id=?');
+    $stmt->bind_param('si',$info_json,$venue);
     $stmt->execute();
     $stmt->close();
     log_message("deleted field $fieldnum from venue {ID:$venue}");
@@ -566,14 +566,14 @@ function batchChangeContact($batchid,$newcontact)
 
 function addProposalInfoField($proposal,$fieldname)
     {
-    $info_ser = dbQueryByID('select info from proposal where id=?',$proposal);
-    if ($info_ser == NULL)
+    $row = dbQueryByID('select info_json from proposal where id=?',$proposal);
+    if ($row == NULL)
         return;
-    $info = unserialize($info_ser['info']);
+    $info = json_decode($row['info_json'],true);
     $info[] = array($fieldname,'');
-    $info_ser = serialize($info);
-    $stmt = dbPrepare('update proposal set info=? where id=?');
-    $stmt->bind_param('si',$info_ser,$proposal);
+    $info_json = json_encode($info);
+    $stmt = dbPrepare('update proposal set info_json=? where id=?');
+    $stmt->bind_param('si',$info_json,$proposal);
     $stmt->execute();
     $stmt->close();
     log_message("added field '$fieldname' to proposal {ID:$proposal}");
@@ -634,26 +634,26 @@ function newBatchColumn($columnname,$fieldlabel,$defaultvalue,$batchid)
     $festival = getFestivalID();
     if ($batchid == 0)
         {
-        $stmt = dbPrepare('select id, info, orgfields from proposal where festival=? and deleted=0');
+        $stmt = dbPrepare('select id, info_json, orgfields_json from proposal where festival=? and deleted=0');
         $stmt->bind_param('i',$festival);
         }
     else
         {
-        $stmt = dbPrepare('select id, info, orgfields from proposal join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=? and festival=? and deleted=0');
+        $stmt = dbPrepare('select id, info_json, orgfields_json from proposal join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=? and festival=? and deleted=0');
         $stmt->bind_param('ii',$batchid,$festival);
         }
     $stmt->execute();
-    $stmt->bind_result($id,$info_ser,$orgfields_ser);
+    $stmt->bind_result($id,$info_json,$orgfields_json);
     $prop = array();
     while ($stmt->fetch())
         {
-        $prop[$id] = array("info"=>$info_ser, "orgfields"=>$orgfields_ser);
+        $prop[$id] = array("info_json"=>$info_json, "orgfields_json"=>$orgfields_json);
         }
     $stmt->close();
     foreach ($prop as $id=>$data)
         {
-        $info = unserialize($data["info"]);
-        $orgfields = unserialize($data["orgfields"]);
+        $info = json_decode($data["info_json"],true);
+        $orgfields = json_decode($data["orgfields_json"],true);
         $columnval = $defaultvalue;
         foreach ($info as $formrow)
             {
@@ -664,9 +664,9 @@ function newBatchColumn($columnname,$fieldlabel,$defaultvalue,$batchid)
                 }
             }
         $orgfields[$columnname] = $columnval;
-        $orgfields_ser = serialize($orgfields);
-        $stmt = dbPrepare('update proposal set orgfields=? where id=?');
-        $stmt->bind_param('si',$orgfields_ser,$id);
+        $orgfields_json = json_encode($orgfields);
+        $stmt = dbPrepare('update proposal set orgfields_json=? where id=?');
+        $stmt->bind_param('si',$orgfields_json,$id);
         $stmt->execute();
         $stmt->close();
         }
@@ -689,20 +689,20 @@ function autobatch($newbatchid,$fieldlabel,$exactlabel,$value,$exactvalue,$fromb
     $festival = getFestivalID();
     if ($frombatchid == 0)
         {
-        $stmt = dbPrepare('select id, info from proposal where festival=? and deleted=0');
+        $stmt = dbPrepare('select id, info_json from proposal where festival=? and deleted=0');
         $stmt->bind_param('i',$festival);
         }
     else
         {
-        $stmt = dbPrepare('select id, info from proposal join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=? and festival=? and deleted=0');
+        $stmt = dbPrepare('select id, info_json from proposal join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=? and festival=? and deleted=0');
         $stmt->bind_param('ii',$frombatchid,$festival);
         }
     $stmt->execute();
-    $stmt->bind_result($id,$info_ser);
+    $stmt->bind_result($id,$info_json);
     $prop = array();
     while ($stmt->fetch())
         {
-        $info = unserialize($info_ser);
+        $info = json_decode($info_json,true);
         foreach ($info as $formrow)
             {
             if ((($exactlabel==1) && (strcasecmp($formrow[0],$fieldlabel) == 0)) ||
@@ -732,20 +732,20 @@ function autoCategory($newcategoryid,$fieldlabel,$exactlabel,$value,$exactvalue,
     $festival = getFestivalID();
     if ($frombatchid == 0)
         {
-        $stmt = dbPrepare('select id, info from proposal where festival=? and deleted=0');
+        $stmt = dbPrepare('select id, info_json from proposal where festival=? and deleted=0');
         $stmt->bind_param('i',$festival);
         }
     else
         {
-        $stmt = dbPrepare('select id, info from proposal join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=? and festival=? and deleted=0');
+        $stmt = dbPrepare('select id, info_json from proposal join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=? and festival=? and deleted=0');
         $stmt->bind_param('ii',$frombatchid,$festival);
         }
     $stmt->execute();
-    $stmt->bind_result($id,$info_ser);
+    $stmt->bind_result($id,$info_json);
     $prop = array();
     while ($stmt->fetch())
         {
-        $info = unserialize($info_ser);
+        $info = json_decode($info_json,true);
         if ($addall)
             $prop[] = $id;
         else
@@ -833,8 +833,8 @@ function batchAddInfoField($batchid,$fieldname)
 
 function grantProposalAccess($proposal,$user,$mode)
     {
-    $row = dbQueryByID('select access from proposal where id=?',$proposal);
-    $access = unserialize($row['access']);
+    $row = dbQueryByID('select access_json from proposal where id=?',$proposal);
+    $access = json_decode($row['access_json'],true);
     if (!$access)
         $access = array();
     if (!isset($access[$user]))
@@ -842,9 +842,9 @@ function grantProposalAccess($proposal,$user,$mode)
     if (!in_array($mode,$access[$user]))
         {
         $access[$user][] = $mode;
-        $access_ser = serialize($access);
-        $stmt = dbPrepare('update proposal set access=? where id=?');
-        $stmt->bind_param('si',$access_ser,$proposal);
+        $access_json = json_encode($access);
+        $stmt = dbPrepare('update proposal set access_json=? where id=?');
+        $stmt->bind_param('si',$access_json,$proposal);
         $stmt->execute();
         $stmt->close();
         log_message("granted user {ID:$user} access '$mode' on proposal {ID:$proposal}");

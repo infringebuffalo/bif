@@ -167,10 +167,10 @@ class ProposalData
     function __construct($proposal_id)
         {
         $this->id = $proposal_id;
-        $stmt = dbPrepare('select `proposerid`, `info`, `orgcontact`, `submitted`, `user`.`name`, `festival`.`name`, `proposal`.`access` from `proposal` join `user` on `proposerid`=`user`.`id` join `festival` on `proposal`.`festival`=`festival`.`id` where `proposal`.`id`=?');
+        $stmt = dbPrepare('select `proposerid`, `info_json`, `orgcontact`, `submitted`, `user`.`name`, `festival`.`name`, `festival`.`id`, `proposal`.`access_json` from `proposal` join `user` on `proposerid`=`user`.`id` join `festival` on `proposal`.`festival`=`festival`.`id` where `proposal`.`id`=?');
         $stmt->bind_param('i',$proposal_id);
         $stmt->execute();
-        $stmt->bind_result($proposer_id,$info_ser,$orgcontact,$submitted,$proposer_name, $festivalname, $access_ser);
+        $stmt->bind_result($proposer_id,$info_json,$orgcontact,$submitted,$proposer_name, $festivalname, $festivalid, $access_json);
         $stmt->fetch();
         $stmt->close();
         
@@ -178,10 +178,10 @@ class ProposalData
         $this->submitted = $submitted;
         $this->proposer_name = $proposer_name;
         $this->festivalname = $festivalname;
-        $this->info = unserialize($info_ser);
-        $this->access = unserialize($access_ser);
+        $this->info = json_decode($info_json,true);
+        $this->access = json_decode($access_json,true);
         $this->orgcontactinfo = dbQueryByID('select `name`,`card`.`id`,`card`.`email` from `user` join `card` on `user`.`id`=`card`.`userid` where `user`.`id`=?',$orgcontact);
-        getDatabase();
+        getDatabase($festivalid);
         global $proposalList;
         $this->title = $proposalList[$proposal_id]->title;
         $this->deleted = $proposalList[$proposal_id]->deleted;
@@ -192,10 +192,13 @@ class ProposalData
         }
     function fieldByLabel($label)
         {
-        foreach ($this->info as $fieldnum=>$v)
+        if (is_array($this->info))
             {
-            if (strcasecmp($v[0],$label)==0)
-                return $v[1];
+            foreach ($this->info as $fieldnum=>$v)
+                {
+                if (strcasecmp($v[0],$label)==0)
+                    return $v[1];
+                }
             }
         return '';
         }

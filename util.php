@@ -134,9 +134,9 @@ function savePreferences()
         $prefs = $_SESSION['preferences'];
     else
         $prefs = array();
-    $prefs_ser = serialize($prefs);
-    $stmt = dbPrepare('update user set preferences=? where id=?');
-    $stmt->bind_param('si',$prefs_ser,$_SESSION['userid']);
+    $prefs_json = json_encode($prefs);
+    $stmt = dbPrepare('update user set preferences_json=? where id=?');
+    $stmt->bind_param('si',$prefs_json,$_SESSION['userid']);
     if (!$stmt->execute())
         die($stmt->error);
     $stmt->close();

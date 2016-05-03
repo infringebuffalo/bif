@@ -115,7 +115,7 @@ function venueScheduleDiv($id,$venueinfo)
 function venueInfoDiv($id,$venueinfo)
     {
     $html = '';
-    $info = unserialize($venueinfo['info']);
+    $info = json_decode($venueinfo['info_json'],true);
 
     $html .= "<div><table>\n";
 
@@ -147,7 +147,7 @@ function venueInfoDiv($id,$venueinfo)
 
 function venueMapDiv($id,$venueinfo)
     {
-    $info = unserialize($venueinfo['info']);
+    $info = json_decode($venueinfo['info_json'],true);
     $maphtml = getInfo($info,'maphtml');
     $html = "<div class='rfloat'>\n";
     if (trim($maphtml) != '')
@@ -209,7 +209,7 @@ $(document).ready(function() {
 </script>
 ENDSTRING;
 
-$venueinfo = dbQueryByID('select venue.name,shortname,info,festival,deleted,festival.name as festivalname from venue join festival on venue.festival=festival.id where venue.id=?',$id);
+$venueinfo = dbQueryByID('select venue.name,shortname,info_json,festival,deleted,festival.name as festivalname from venue join festival on venue.festival=festival.id where venue.id=?',$id);
 
 $toolsdiv = venueToolsDiv($id,$venueinfo);
 $schedulingdiv = venueSchedulingDiv($id,$venueinfo);

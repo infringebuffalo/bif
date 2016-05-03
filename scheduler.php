@@ -225,15 +225,15 @@ function getPrograminfoList($festival=0)
     {
     global $programinfoList;
     $programinfoList = array();
-    $stmt = dbPrepare("select id,title,info from proposal where deleted=0 and festival=?");
+    $stmt = dbPrepare("select id,title,info_json from proposal where deleted=0 and festival=?");
     $festival = getFestivalID();
     $stmt->bind_param('i',$festival);
     $stmt->execute();
     $stmt->store_result();
-    $stmt->bind_result($id,$title,$info_ser);
+    $stmt->bind_result($id,$title,$info_json);
     while ($stmt->fetch())
         {
-        $info = unserialize($info_ser);
+        $info = json_decode($info_json,true);
 
         $programinfoList[$id] = new programInfo($id,$title,$info);
         }
@@ -717,8 +717,8 @@ function editableListingRow($id,$showdate,$showtime,$showvenue,$showproposal,$sh
 
 function getProposalInfo($id,$field)
     {
-    $row = dbQueryByID('select info from proposal where id=?',$id);
-    $info = unserialize($row['info']);
+    $row = dbQueryByID('select info_json from proposal where id=?',$id);
+    $info = json_decode($row['info_json'],true);
     foreach ($info as $i)
         if (is_array($i) && array_key_exists(0,$i) && ($i[0] == $field))
             return $i[1];
@@ -727,8 +727,8 @@ function getProposalInfo($id,$field)
 
 function setProposalInfo($id,$field,$value)
     {
-    $row = dbQueryByID('select info from proposal where id=?',$id);
-    $info = unserialize($row['info']);
+    $row = dbQueryByID('select info_json from proposal where id=?',$id);
+    $info = json_decode($row['info_json'],true);
     $found = false;
     foreach ($info as &$i)
         if (is_array($i) && array_key_exists(0,$i) && (strcasecmp($i[0],$field)==0))
@@ -739,9 +739,9 @@ function setProposalInfo($id,$field,$value)
             }
     if (!$found)
         $info[] = array($field,$value);
-    $info_ser = serialize($info);
-    $stmt = dbPrepare('update proposal set info=? where id=?');
-    $stmt->bind_param('si',$info_ser,$id);
+    $info_json = json_encode($info);
+    $stmt = dbPrepare('update proposal set info_json=? where id=?');
+    $stmt->bind_param('si',$info_json,$id);
     $stmt->execute();
     $stmt->close();
     }

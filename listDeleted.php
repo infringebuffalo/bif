@@ -12,7 +12,7 @@ $(document).ready(function() {
 </script>
 ENDSTRING;
 
-$stmt = dbPrepare('select `proposal`.`id`, `proposerid`, `name`, `title`, `orgfields` from `proposal` join `user` on `proposerid`=`user`.`id` where `deleted` = 1 and `festival`=? order by `title`');
+$stmt = dbPrepare('select `proposal`.`id`, `proposerid`, `name`, `title`, `orgfields_json` from `proposal` join `user` on `proposerid`=`user`.`id` where `deleted` = 1 and `festival`=? order by `title`');
 $stmt->bind_param('i',getFestivalID());
 
 class propRow
@@ -58,12 +58,12 @@ function array_contains($v,$a)
 
 $rows = array();
 $stmt->execute();
-$stmt->bind_result($id,$proposer_id,$proposer_name,$title,$orgfields_ser);
+$stmt->bind_result($id,$proposer_id,$proposer_name,$title,$orgfields_json);
 while ($stmt->fetch())
     {
     if ($title == '')
         $title = '!!NEEDS A TITLE!!';
-    $orgfields = unserialize($orgfields_ser);
+    $orgfields = json_decode($orgfields_json,true);
     $rows[] = new propRow($id,$title,$proposer_id,$proposer_name,$orgfields);
     }
 $stmt->close();

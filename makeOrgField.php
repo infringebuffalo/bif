@@ -17,22 +17,22 @@ $default = POSTvalue('default');
 bifPageheader('make summary field');
     
 $neworgfields = array();
-$stmt = dbPrepare('select id, title, info, forminfo, orgfields from proposal where deleted=0 order by title');
+$stmt = dbPrepare('select id, title, info_json, forminfo_json, orgfields_json from proposal where deleted=0 order by title');
 $stmt->execute();
-$stmt->bind_result($id,$title,$info_ser,$forminfo_ser,$orgfields_ser);
+$stmt->bind_result($id,$title,$info_json,$forminfo_json,$orgfields_json);
 echo "<table>\n";
 echo "<tr><th>proposal</th><th>existing value</th><th>new value</th></tr>\n";
 while ($stmt->fetch())
     {
-    $info = unserialize($info_ser);
+    $info = json_decode($info_json,true);
     if (!isset($info[1][1]))
         continue;
     if ($info[1][1] != $type)
         continue;
     if ($title == '')
         $title = '!!NEEDS A TITLE!!';
-    $orgfields = unserialize($orgfields_ser);
-    $forminfo = unserialize($forminfo_ser);
+    $orgfields = json_decode($orgfields_json,true);
+    $forminfo = json_decode($forminfo_json,true);
     if ($field == 0)
         $new = $default;
     else
@@ -50,9 +50,9 @@ $stmt->close();
 
 foreach ($neworgfields as $id=>$orgfields)
     {
-    $orgfields_ser = serialize($orgfields);
+    $orgfields_json = json_encode($orgfields);
     $stmt = dbPrepare('update proposal set orgfields=? where id=?');
-    $stmt->bind_param('si',$orgfields_ser,$id);
+    $stmt->bind_param('si',$orgfields_json,$id);
     $stmt->execute();
     $stmt->close();
     }

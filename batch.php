@@ -67,7 +67,7 @@ echo $pageDescription;
 
 class propRow
     {
-    function __construct($id,$title,$proposer_id,$proposer_name,$orgfields,$submitted,$access_ser)
+    function __construct($id,$title,$proposer_id,$proposer_name,$orgfields,$submitted,$access_json)
         {
         $this->id = $id;
         $this->title = $title;
@@ -77,8 +77,8 @@ class propRow
         $this->submitted = $submitted;
         $this->lastedit = $submitted;
         $this->lasteditByProposer = $submitted;
-        $access = unserialize($access_ser);
-        if ($access)
+        $access = json_decode($access_json,true);
+        if (($access) && (isset($access['lastedit'])))
             {
             if (isset($access['lastedit'][$proposer_id]))
                 {
@@ -147,26 +147,26 @@ function addSummaryLabels(&$labels,$orgfields)
 
 if ($id != 0)
     {
-    $stmt = dbPrepare('select proposal.id, proposerid, name, title, orgfields, submitted, access from proposal join user on proposerid=user.id join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=? and deleted=0 order by title');
+    $stmt = dbPrepare('select proposal.id, proposerid, name, title, orgfields_json, submitted, access_json from proposal join user on proposerid=user.id join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=? and deleted=0 order by title');
     $stmt->bind_param('i',$id);
     }
 else
     {
     $festival = GETvalue('festival',getFestivalID());
-    $stmt = dbPrepare('select `proposal`.`id`, `proposerid`, `name`, `title`, `orgfields`, `submitted`, `access` from `proposal` join `user` on `proposerid`=`user`.`id` where `deleted` = 0 and `festival` = ? order by `title`');
+    $stmt = dbPrepare('select `proposal`.`id`, `proposerid`, `name`, `title`, `orgfields_json`, `submitted`, `access_json` from `proposal` join `user` on `proposerid`=`user`.`id` where `deleted` = 0 and `festival` = ? order by `title`');
     $stmt->bind_param('i',$festival);
     }
 
 $rows = array();
 $labels = array();
 $stmt->execute();
-$stmt->bind_result($id,$proposer_id,$proposer_name,$title,$orgfields_ser,$submitted,$access_ser);
+$stmt->bind_result($id,$proposer_id,$proposer_name,$title,$orgfields_json,$submitted,$access_json);
 while ($stmt->fetch())
     {
     if ($title == '')
         $title = '!!NEEDS A TITLE!!';
-    $orgfields = unserialize($orgfields_ser);
-    $rows[] = new propRow($id,$title,$proposer_id,$proposer_name,$orgfields,$submitted,$access_ser);
+    $orgfields = json_decode($orgfields_json,true);
+    $rows[] = new propRow($id,$title,$proposer_id,$proposer_name,$orgfields,$submitted,$access_json);
     addSummaryLabels($labels,$orgfields);
     }
 $stmt->close();

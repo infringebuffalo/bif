@@ -12,13 +12,13 @@ bifPageheader('venue locations');
 <tr><th width='10%'>name</th><th>lat/lon</th><th width='20%'>address</th><th>new lat/lon</th></tr>
 <?php
 $festival = GETvalue('festival',getFestivalID());
-$stmt = dbPrepare('select `id`, `name`, info from `venue` where `festival`=? and deleted=0 order by name');
+$stmt = dbPrepare('select `id`, `name`, info_json from `venue` where `festival`=? and deleted=0 order by name');
 $stmt->bind_param('i',$festival);
 $stmt->execute();
-$stmt->bind_result($id,$name,$info_ser);
+$stmt->bind_result($id,$name,$info_json);
 while ($stmt->fetch()) 
     {
-    $info = unserialize($info_ser);
+    $info = json_decode($info_json,true);
     if ($name == '')
         $name = '!!NEEDS A NAME!!';
     echo "<tr>\n";

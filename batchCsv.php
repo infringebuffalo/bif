@@ -71,25 +71,25 @@ function addSummaryLabels(&$labels,$orgfields)
 
 if ($id != 0)
     {
-    $stmt = dbPrepare('select proposal.id, proposerid, name, title, orgfields, submitted from proposal join user on proposerid=user.id join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=? and deleted=0 order by title');
+    $stmt = dbPrepare('select proposal.id, proposerid, name, title, orgfields_json, submitted from proposal join user on proposerid=user.id join proposalBatch on proposal.id=proposalBatch.proposal_id where proposalBatch.batch_id=? and deleted=0 order by title');
     $stmt->bind_param('i',$id);
     }
 else
     {
     $festival = GETvalue('festival',getFestivalID());
-    $stmt = dbPrepare('select `proposal`.`id`, `proposerid`, `name`, `title`, `orgfields`, `submitted` from `proposal` join `user` on `proposerid`=`user`.`id` where `deleted` = 0 and `festival` = ? order by `title`');
+    $stmt = dbPrepare('select `proposal`.`id`, `proposerid`, `name`, `title`, `orgfields_json`, `submitted` from `proposal` join `user` on `proposerid`=`user`.`id` where `deleted` = 0 and `festival` = ? order by `title`');
     $stmt->bind_param('i',$festival);
     }
 
 $rows = array();
 $labels = array();
 $stmt->execute();
-$stmt->bind_result($id,$proposer_id,$proposer_name,$title,$orgfields_ser,$submitted);
+$stmt->bind_result($id,$proposer_id,$proposer_name,$title,$orgfields_json,$submitted);
 while ($stmt->fetch())
     {
     if ($title == '')
         $title = '!!NEEDS A TITLE!!';
-    $orgfields = unserialize($orgfields_ser);
+    $orgfields = json_decode($orgfields_json,true);
     $rows[] = new propRow($id,$title,$proposer_id,$proposer_name,$orgfields,$submitted);
     addSummaryLabels($labels,$orgfields);
     }

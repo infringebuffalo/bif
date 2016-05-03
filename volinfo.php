@@ -2,6 +2,7 @@
 require 'init.php';
 connectDB();
 requirePrivilege(array('scheduler','organizer'));
+require 'util.php';
 
 header('Content-Type: text/csv');
 header('Content-Disposition: attachment; filename="volinfo.csv"');
@@ -9,29 +10,21 @@ header('Pragma: no-cache');
 header('Expires: 0');
 $STDOUT = fopen('php://output', 'w');
 
-$stmt = dbPrepare('select id,title,info from proposal where deleted=0 order by title');
+$festival = getFestivalID();
+$stmt = dbPrepare('select id,title,info_json from proposal where deleted=0 and festival=? order by title');
+$stmt->bind_param('i',$festival);
 $stmt->execute();
-$stmt->bind_result($id,$title,$info_ser);
+$stmt->bind_result($id,$title,$info_json);
 while ($stmt->fetch())
     {
-    $info = unserialize($info_ser);
+    $info = json_decode($info_json,true);
     $url = "http://infringebuffalo.org/db2/proposal.php?id=$id";
     $contact = getInfo($info,"Contact info");
     $type = getInfo($info,"Type");
-    if ($type == 'music')
-        {
-        $help = getInfo($info,"How help BIF");
-        $volunteer = getInfo($info,"Will volunteer");
-        }
-    else
-        {
-        $help = getInfo($info,"How will you help infringement");
-        $volunteer = getInfo($info,"What can you provide to help");
-        }
+    $volunteer = getInfo($info,"Volunteering");
     $contact = str_replace("\n"," ",$contact);
-    $help = str_replace("\n"," ",$help);
     $volunteer = str_replace("\n"," ",$volunteer);
-    fputcsv($STDOUT,array($title,$url,$contact,$help,$volunteer),',','"');
+    fputcsv($STDOUT,array($title,$url,$contact,$volunteer),',','"');
     }
 fclose($STDOUT);
 ?>
