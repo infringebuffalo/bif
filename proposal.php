@@ -291,7 +291,7 @@ function proposalSideControlDiv($proposal)
     if ($proposal->deleted)
         $batchdiv .= "<form method='POST' action='api.php'><input type='hidden' name='command' value='undeleteProposal' /><input type='hidden' name='id' value='" . $proposal->id . "' /><input type='submit' value='undelete project' /></form>\n";
     else
-        $batchdiv .= "<form method='POST' action='api.php'><input type='hidden' name='command' value='deleteProposal' /><input type='hidden' name='id' value='" . $proposal->id . "' /><input type='submit' value='delete project' /></form>\n";
+        $batchdiv .= "<form method='POST' action='api.php' onsubmit='return confirm(\"Really delete it?\")'><input type='hidden' name='command' value='deleteProposal' /><input type='hidden' name='id' value='" . $proposal->id . "' /><input type='submit' value='delete project'/></form>\n";
     if (!hasAccess($proposal->proposer_id,'viewschedule',$proposal->access))
         $batchdiv .= beginApiCallHtml('grantProposalAccess',array('proposal'=>$proposal->id,'user'=>$proposal->proposer_id,'mode'=>'viewschedule')) . endApiCallHtml('allow proposer to view schedule');
     $batchdiv .= "<br><a href=\"proposalForm.php?id=" . $proposal->id . "\">[original form]</a>\n";

@@ -358,9 +358,23 @@ function deleteProposal($id)
     {
     $stmt = dbPrepare('update proposal set deleted=1 where id=?');
     $stmt->bind_param('i',$id);
-    $stmt->execute();
+    if (!$stmt->execute())
+        log_message($stmt->error);
     $stmt->close();
     log_message("deleted proposal {ID:$id}");
+    $stmt = dbPrepare('delete from listing where proposal=?');
+    $stmt->bind_param('i',$id);
+    if (!$stmt->execute())
+        log_message($stmt->error);
+    $stmt->close();
+    log_message("deleted all listings for proposal {ID:$id}");
+/* Note that this doesn't remove the corresponding entries from the "entity" table, so those become effectively dangling pointers */
+    $stmt = dbPrepare('delete from groupPerformer where performer=?');
+    $stmt->bind_param('i',$id);
+    if (!$stmt->execute())
+        log_message($stmt->error);
+    $stmt->close();
+    log_message("deleted all group show listings for proposal {ID:$id}");
     }
 
 function undeleteProposal($id)
