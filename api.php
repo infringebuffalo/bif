@@ -23,7 +23,7 @@ class apiFunction
             requirePrivilege('scheduler',"for api call '$this->name'");
         $args = array();
         foreach ($this->params as $param)
-            $args[] = POSTvalue($param->name);
+            $args[] = REQUESTvalue($param->name);
         call_user_func_array($this->name,$args);
         }
     }
@@ -81,17 +81,19 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('batchAddInfoField',1,0),
             new apiFunction('grantProposalAccess',1,0),
             new apiFunction('setVenueLatLon',1,0),
-            new apiFunction('getIconFromURL',1,0)
+            new apiFunction('getIconFromURL',1,0),
+            new apiFunction('deleteBatch',1,0)
             );
 
-$command = POSTvalue('command');
+$command = REQUESTvalue('command');
 if ($command == '')
     {
+    log_message("api.php called with no command");
     header('Location: .');
     die();
     }
 
-$returnurl = POSTvalue('returnurl');
+$returnurl = REQUESTvalue('returnurl');
 
 $called = false;
 foreach ($api as $a)

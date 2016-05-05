@@ -229,6 +229,31 @@ function changeBatchMembers()
     log_message("changed membership of batch {ID:$batchid}");
     }
 
+function deleteBatch($id)
+    {
+    $contents = array();
+    $stmt = dbPrepare('select proposal_id from proposalBatch where batch_id=?');
+    $stmt->bind_param('i',$id);
+    if (!$stmt->execute())
+        log_message("get batch proposals: " . $stmt->error);
+    $stmt->bind_result($pid);
+    while ($stmt->fetch())
+        $contents[] = $pid;
+    $stmt->close();
+    dumpData("deleted batch", json_encode(array("batchid"=>$id,"contents"=>$contents)));
+    $stmt = dbPrepare('delete from proposalBatch where batch_id=?');
+    $stmt->bind_param('i',$id);
+    if (!$stmt->execute())
+        log_message("remove proposals from batch: " . $stmt->error);
+    $stmt->close();
+    $stmt = dbPrepare('update batch set festival=0 where id=?');
+    $stmt->bind_param('i',$id);
+    if (!$stmt->execute())
+        log_message("set batch festival to 0: " . $stmt->error);
+    $stmt->close();
+    log_message("deleted batch {ID:$id}");
+    }
+
 function changeCategoryDescription($id,$name,$description)
     {
     $stmt = dbPrepare('update category set name=?,description=? where id=?');

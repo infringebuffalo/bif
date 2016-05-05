@@ -32,6 +32,17 @@ function GETvalue($field,$default='')
         return $default;
     }
 
+function REQUESTvalue($field,$default='')
+    {
+    if (isset($_REQUEST[$field]))
+        {
+        if (get_magic_quotes_gpc()) return stripslashes($_REQUEST[$field]);
+        else return $_REQUEST[$field];
+        }
+    else
+        return $default;
+    }
+
 function connectDB()
     {
     require 'config/config.php';

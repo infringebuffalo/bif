@@ -27,6 +27,7 @@ if ($id != 0)
         $pageDescription .= "&nbsp;&nbsp;<a href='autobatch.php?id=$id'>[auto-add to this batch]</a>\n";
         $pageDescription .= "&nbsp;&nbsp;<a href='batchChangeContact.php?id=$id'>[change festival contact for all]</a>\n";
         $pageDescription .= "&nbsp;&nbsp;<a href='batchAddField.php?id=$id'>[add info field to all]</a>\n";
+        $pageDescription .= "&nbsp;&nbsp;<a style='color:red' onclick='if (confirm(\"Really delete this batch?\")) window.location.href=\"api.php?command=deleteBatch&id=$id&returnurl=listBatches.php\"'>[delete batch]</a>\n";
         }
     $pageDescription .= "</p>\n";
     }
