@@ -244,13 +244,12 @@ function getPrograminfoList($festival=0)
 
 function generateSmallCalendar($dayfunc)
     {
-    global $festivalStartDate, $festivalNumberOfDays;
     $retstr = '<table rules=all>';
     $retstr .= '<tr><th>S<th>M<th>T<th>W<th>T<th>F<th>S</tr>' . "\n";
     $retstr .= '<tr>';
-    if (date('w',$festivalStartDate) > 0)
-        $retstr .= '<td colspan=' . date('w',$festivalStartDate) . "></td>\n";
-    for ($d = 0; $d < $festivalNumberOfDays; $d++)
+    if (date('w',festivalStartDate()) > 0)
+        $retstr .= '<td colspan=' . date('w',festivalStartDate()) . "></td>\n";
+    for ($d = 0; $d < festivalNumberOfDays(); $d++)
         {
         if (date('w',dayToTimestamp($d)) == 0)
             $retstr .= '</tr><tr>';
@@ -298,9 +297,8 @@ function timeRangeToString($t1,$t2)
     }
 function dateMenu($name, $default='')
     {
-    global $festivalNumberOfDays;
     $retstr = '<select name="' . $name . '">';
-    for ($d = 0; $d < $festivalNumberOfDays; $d++)
+    for ($d = 0; $d < festivalNumberOfDays(); $d++)
         {
         $date = dayToDate('day'.$d);
         $retstr .= '<option value="' . $date . '"';
@@ -450,12 +448,11 @@ function groupShowMenu($name)
 # converts "day0" etc (or 0, 1, 2 etc) to timestamp for 00:00:00 of that festival day
 function dayToTimestamp($day)
     {
-    global $festivalStartDate;
     if (strtolower(substr($day,0,3))=='day') $d = substr($day,3,2);
     else $d = $day;
-    $day = date('j',$festivalStartDate) + $d;
-    $month = date('n',$festivalStartDate);
-    $year = date('Y',$festivalStartDate);
+    $day = date('j',festivalStartDate()) + $d;
+    $month = date('n',festivalStartDate());
+    $year = date('Y',festivalStartDate());
     return mktime(0,0,0,$month,$day,$year);
     }
 
@@ -474,8 +471,7 @@ function dayToDateDay($day)
 # converts "2011-07-28" to 0, etc
 function dateToDaynum($date)
     {
-    global $festivalStartDate;
-    $d = strtotime($date) - $festivalStartDate;
+    $d = strtotime($date) - festivalStartDate();
     return floor($d/(60*60*24));
     }
 
@@ -834,5 +830,40 @@ function beginApiCallHtml($command, $parameters=array(), $inline=false, $formnam
 function endApiCallHtml($submitlabel)
     {
     return "<input type='submit' name='submit' value='$submitlabel' />\n</form>\n";
+    }
+
+function fetchFestivalInfo()
+    {
+    $festival = getFestivalID();
+    $stmt = dbPrepare('select UNIX_TIMESTAMP(startDate), numberOfDays from festival where id=?');
+    $stmt->bind_param('i',$festival);
+    $stmt->execute();
+    $stmt->bind_result($startDate, $numberOfDays);
+    if ($stmt->fetch())
+        {
+        $_SESSION['festivalStartDate'] = $startDate;
+        $_SESSION['festivalNumberOfDays'] = $numberOfDays;
+        }
+    else
+        {
+        log_message('failed to get festival info; using 2016 as default');
+        $_SESSION['festivalStartDate'] = mktime(0,0,0, 7, 28, 2016);
+        $_SESSION['festivalNumberOfDays'] = 11;
+        }
+    $stmt->close();
+    }
+
+function festivalStartDate()
+    {
+    if (!array_key_exists('festivalStartDate', $_SESSION))
+        fetchFestivalInfo();
+    return $_SESSION['festivalStartDate'];
+    }
+
+function festivalNumberOfDays()
+    {
+    if (!array_key_exists('festivalNumberOfDays', $_SESSION))
+        fetchFestivalInfo();
+    return $_SESSION['festivalNumberOfDays'];
     }
 ?>

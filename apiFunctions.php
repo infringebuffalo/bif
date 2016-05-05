@@ -1,4 +1,5 @@
 <?php
+require_once 'scheduler.php';
 
 function newVenue($name,$shortname)
     {
@@ -119,7 +120,6 @@ function newGroupshow($title,$description,$batch)
 
 function scheduleEvent()
     {
-    global $festivalNumberOfDays;
     $proposal = POSTvalue('proposal',0);
     $venue = POSTvalue('venue',0);
     $venuenote = POSTvalue('venuenote');
@@ -128,7 +128,7 @@ function scheduleEvent()
     $installation = POSTvalue('installation',0);
     $note = POSTvalue('note');
     log_message("scheduleEvent {ID:$proposal}");
-    for ($d=0; $d < $festivalNumberOfDays; $d++)
+    for ($d=0; $d < festivalNumberOfDays(); $d++)
         {
         $date = dayToDate($d);
         if ($_POST[$date] == '1')

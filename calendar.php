@@ -8,27 +8,19 @@ $festivalID = getFestivalID();
 
 bifPageheader('calendar');
 
-?>
-<table rules=all><tr><th>S<th>M<th>T<th>W<th>T<th>F<th>S</tr><tr><td colspan=4>
-<td><a href='calendar.php?day=day0'><?php echo dayToDateDay(0); ?></a>
-<td><a href='calendar.php?day=day1'><?php echo dayToDateDay(1); ?></a>
-<td><a href='calendar.php?day=day2'><?php echo dayToDateDay(2); ?></a>
-<tr><td><a href='calendar.php?day=day3'><?php echo dayToDateDay(3); ?></a>
+$smallcal = "<table rules=all><tr><th>S<th>M<th>T<th>W<th>T<th>F<th>S</tr>\n";
+$smallcal .= "<tr>\n";
+if (date('w',festivalStartDate()) > 0)
+    $smallcal .= '<td colspan=' . date('w',festivalStartDate()) . "></td>\n";
+    for ($d = 0; $d < festivalNumberOfDays(); $d++)
+        {
+        if (date('w',dayToTimestamp($d)) == 0)
+            $smallcal .= '</tr><tr>';
+        $smallcal .= "<td><a href='calendar.php?day=day$d'>" . dayToDateDay($d) . "</td>\n";
+        }
+$smallcal .= '<td colspan=' . (7-date('w',dayToTimestamp($d))) . "></td></tr>\n</table>\n";
+echo $smallcal;
 
-<td><a href='calendar.php?day=day4'><?php echo dayToDateDay(4); ?></a>
-<td><a href='calendar.php?day=day5'><?php echo dayToDateDay(5); ?></a>
-<td><a href='calendar.php?day=day6'><?php echo dayToDateDay(6); ?></a>
-<td><a href='calendar.php?day=day7'><?php echo dayToDateDay(7); ?></a>
-<td><a href='calendar.php?day=day8'><?php echo dayToDateDay(8); ?></a>
-<td><a href='calendar.php?day=day9'><?php echo dayToDateDay(9); ?></a>
-<tr><td><a href='calendar.php?day=day10'><?php echo dayToDateDay(10); ?></a>
-<td colspan=6></table>
-
-<p>
-(or <a href="venuecalendar.php">calendar ordered by venue</a>)
-</p>
-
-<?php
 function date_performances($date)
     {
     global $listingList;
@@ -81,7 +73,7 @@ if ((isset($_GET['day'])) && ($_GET['day']))
 
 else
     {
-    for ($i = 0; $i < $festivalNumberOfDays; $i++)
+    for ($i = 0; $i < festivalNumberOfDays(); $i++)
         {
         $date = dayToDate('day' . $i);
         echo "<h2>" . dateToString($date) . "</h2>\n";
@@ -124,7 +116,7 @@ else
         $odd = ! $odd;
         echo '<td><a href="proposal.php?id=' . $inst['id'] . '">' . $inst['title'] . '</a>';
         echo '<td><a href="venue.php?id=' . $inst['venueid'] . '">' . $inst['venue'] . '</a>';
-        for ($d=0; $d < $festivalNumberOfDays; $d++)
+        for ($d=0; $d < festivalNumberOfDays(); $d++)
             {
             if (array_key_exists(dayToDate($d),$inst) && $inst[dayToDate($d)])
                 echo '<td>' . dayToDateDay($d) . '</td>';

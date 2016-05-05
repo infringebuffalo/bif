@@ -122,7 +122,6 @@ function secondContactInfo()
 
 function createUniversalProposal($title,$proposerid,$festival,$batchid,$orgcontact)
     {
-    global $festivalNumberOfDays;
     $info = array();
     addInfo($info,'Contact info',contactInfo());
     addInfo($info,'Secondary contact info', secondContactInfo());
@@ -167,7 +166,6 @@ function insertProposal($info,$proposerid,$festival,$title,$orgcontact,$batchid)
 
 function createFormText($info,$title)
     {
-    global $festivalNumberOfDays;
     $text = "Title:\n$title\n\n";
     foreach ($info as $i)
         {

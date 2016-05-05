@@ -65,11 +65,11 @@ ENDSTRING;
 
 function venueScheduleDiv($id,$venueinfo)
     {
-    global $festivalNumberOfDays, $venueList;
+    global $venueList;
     $html = '';
     $dayshows = array();
     $dayinst = array();
-    for ($i=0; $i < $festivalNumberOfDays; $i++)
+    for ($i=0; $i < festivalNumberOfDays(); $i++)
         {
         $dayshows[dayToDate($i)] = array();
         $dayinst[dayToDate($i)] = array();
@@ -85,7 +85,7 @@ function venueScheduleDiv($id,$venueinfo)
     $html .= "<div class=\"schedulebox\">\nSchedule:\n<table>\n";
     $html .= "<thead><tr><th>day</th><th>performances</th><th>installations</th></tr></thead>\n";
     $html .= "<tbody>\n";
-    for ($i=0; $i < $festivalNumberOfDays; $i++)
+    for ($i=0; $i < festivalNumberOfDays(); $i++)
         {
         $date = dayToDate($i);
         $html .= '<tr><td>' . dateToString($date,true) . '</td>';

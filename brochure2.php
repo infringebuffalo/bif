@@ -31,8 +31,8 @@ getPrograminfoList();
 
 function generateList($genre,$type)
     {
-    global $festivalNumberOfDays, $listingList, $programinfoList;
-    for ($i = 0; $i < $festivalNumberOfDays; $i++)
+    global $listingList, $programinfoList;
+    for ($i = 0; $i < festivalNumberOfDays(); $i++)
         {
         $date = dayToDate('day' . $i);
         $dateText = dateToString($date);
@@ -69,7 +69,7 @@ function generateList($genre,$type)
 
 function generateShowCount($genre)
     {
-    global $festivalNumberOfDays, $listingList, $programinfoList;
+    global $listingList, $programinfoList;
     $count = array();
     foreach ($listingList as $l)
         {

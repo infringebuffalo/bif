@@ -190,7 +190,7 @@ foreach ($headings as $k=>$v)
 <br/><br/>
 
 <?php
-for ($i = 0; $i < $festivalNumberOfDays; $i++)
+for ($i = 0; $i < festivalNumberOfDays(); $i++)
     {
     $date = dayToDate('day' . $i);
     echo "<h2>" . dateToString($date) . "</h2>\n";

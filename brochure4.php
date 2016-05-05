@@ -106,7 +106,7 @@ function generateList($genre,$type)
 
 function generateShowCount($genre)
     {
-    global $festivalNumberOfDays, $listingList, $programinfoList;
+    global $listingList, $programinfoList;
     $count = array();
     foreach ($listingList as $l)
         {

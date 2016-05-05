@@ -75,7 +75,7 @@ function sheetlistingRow($id,$append)
     }
 
 $dayshows = array();
-for ($i=0; $i < $festivalNumberOfDays; $i++)
+for ($i=0; $i < festivalNumberOfDays(); $i++)
     $dayshows[dayToDate($i)] = array();
 getDatabase();
 global $venueList;
@@ -85,7 +85,7 @@ foreach ($venueList[$id]->listings as $l)
         $dayshows[$l->date][] = sortingKey($l->starttime) . sheetlistingRow($l->id,'<td valign="top">'.stripslashes($l->venuenote).'</td>');
     }
 
-for ($i=0; $i < $festivalNumberOfDays; $i++)
+for ($i=0; $i < festivalNumberOfDays(); $i++)
     {
     $s = '';
     $date = dayToDate($i);
