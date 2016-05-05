@@ -6,3 +6,4 @@ tmp/
 *.tgz
 config/config.php
 main/dbconfig.php
+.htaccess
