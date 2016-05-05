@@ -22,17 +22,19 @@ if (hasPrivilege(array('scheduler','organizer')))
     {
     echo <<<ENDSTRING
 <li><a href="listBatches.php">Batches</a></li>
+<ul><li><a href="newBatch.php">New batch</a></li></ul>
 <li><a href="batch.php?id=0">All projects</a></li>
-<ul><li>(<a href="batch.php?id=0&festival=4200">2015 projects</a>)</li></ul>
-<ul><li>(<a href="batch.php?id=0&festival=4102">2014 projects</a>)</li></ul>
-<ul><li>(<a href="batch.php?id=0&festival=960">2013 projects</a>)</li></ul>
+<ul><li>(<a href="batch.php?id=0&festival=4200">2015 projects</a>)</li>
+    <li>(<a href="batch.php?id=0&festival=4102">2014 projects</a>)</li>
+    <li>(<a href="batch.php?id=0&festival=960">2013 projects</a>)</li></ul>
 <li><a href="unbatchedCheck.php">Check for unbatched projects</a></li>
 <li><a href="listDeleted.php">Deleted projects</a></li>
 <li><a href="listCategories.php">Categories (for public website)</a></li>
 <li><a href="listVenues.php">Venues</a>
-<ul><li>(<a href="listVenues.php?festival=4200">2015 venues</a>)</li></ul>
-<ul><li>(<a href="listVenues.php?festival=4102">2014 venues</a>)</li></ul>
-<ul><li>(<a href="listVenues.php?festival=960">2013 venues</a>)</li></ul>
+<ul><li><a href="newVenue.php">make new venue</a></li></ul>
+<ul><li>(<a href="listVenues.php?festival=4200">2015 venues</a>)</li>
+    <li>(<a href="listVenues.php?festival=4102">2014 venues</a>)</li>
+    <li>(<a href="listVenues.php?festival=960">2013 venues</a>)</li></ul>
 </li>
 <li><a href="calendar.php">Calendar</a></li>
 <li><a href="listUsers.php">Users</a></li>
