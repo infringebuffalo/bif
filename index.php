@@ -20,6 +20,7 @@ if ((array_key_exists('adminmessage',$_SESSION)) && ($_SESSION['adminmessage'] !
 if (hasPrivilege('scheduler'))
     {
     echo "<div style='float:right; width:40%; border-style:solid; border-width:1px'>\n<p>Scheduler changes:\n<ul>\n";
+    echo "<li>6 May '16 - added simple search function</li>\n";
     echo "<li>6 May '16 - can now get list of all of a batch's contact emails (not just proposers)</li>\n";
     echo "<li>5 May '16 - deleting a show will delete any scheduled performances it has</li>\n";
     echo "<li>5 May '16 - batches can be deleted</li>\n";
@@ -36,7 +37,9 @@ if (hasPrivilege(array('scheduler','organizer')))
 <li><a href="batch.php?id=0">All projects</a></li>
 <ul><li>(<a href="batch.php?id=0&festival=4200">2015 projects</a>)</li>
     <li>(<a href="batch.php?id=0&festival=4102">2014 projects</a>)</li>
-    <li>(<a href="batch.php?id=0&festival=960">2013 projects</a>)</li></ul>
+    <li>(<a href="batch.php?id=0&festival=960">2013 projects</a>)</li>
+    <li><form method="POST" action="search.php"><input type="text" name="target" size="10" value=""><input type="submit" name="submit" value="search"></form></li>
+</ul>
 <li><a href="unbatchedCheck.php">Check for unbatched projects</a></li>
 <li><a href="listDeleted.php">Deleted projects</a></li>
 <li><a href="listCategories.php">Categories (for public website)</a></li>
