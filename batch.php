@@ -18,7 +18,8 @@ if ($id != 0)
     $pageTitle = 'batch: ' . $name;
     $pageDescription = "<p>$description</p>\n";
     $pageDescription .= "<p>";
-    $pageDescription .= "<a href='batchEmail.php?id=$id'>[email addresses]</a>\n";
+    $pageDescription .= "<a href='emails.php?type=batch&id=$id'>[proposer email addresses]</a>\n";
+    $pageDescription .= "<a href='emails.php?type=batch&id=$id&allcontacts=1'>[contact email addresses]</a>\n";
     $pageDescription .= "<a href='batchCsv.php?id=$id'>[csv spreadsheet]</a>\n";
     if (hasPrivilege('scheduler'))
         {
