@@ -460,7 +460,8 @@ function proposalScheduleDiv($proposal,$canEditSchedule)
 function proposalGroupShowPerformers($proposal,$canEditSchedule)
     {
     $out = "<!--BEGIN PERFORMERS--><div>\n";
-    $out .= "<p>Performers:</p><table rules='all'>\n";
+    $out .= "<div style='float:left'>\n";
+    $out .= "<p style='margin:0'>Performers:</p><table rules='all'>\n";
     $count = 0;
     foreach ($proposal->performers as $perf)
         {
@@ -501,7 +502,9 @@ function proposalGroupShowPerformers($proposal,$canEditSchedule)
         $out .= '</tr>';
         }
     $out .= "</table>\n";
-    $out .= "</div><!--END PERFORMERS-->\n";
+    $out .= "</div>\n";
+    $out .= "<div style='float:left'><a href='emails.php?type=groupshow&id=" . $proposal->id . "'>[email addresses]</a></div>\n";
+    $out .= "</div><br clear='all'><!--END PERFORMERS-->\n";
     return $out;
     }
 

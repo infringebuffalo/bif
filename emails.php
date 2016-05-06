@@ -14,8 +14,8 @@ else
     getDatabase();
     if ($type == 'batch')
         $result = getBatchEmails();
-    else if ($type == 'proposal')
-        $result = getProposalEmails();
+    else if ($type == 'groupshow')
+        $result = getGroupshowEmails();
     bifPageheader($result['header']);
     echo $result['start'] . "\n";
     $output = "";
@@ -70,9 +70,29 @@ function errorPage()
     bifPagefooter();
     }
 
-function getProposalEmails()
+function getGroupshowEmails()
     {
-    return array('header' => 'unimplemented', 'start'=>'<p>not implemented yet</p>', 'emails' => array());
+    $id = GETvalue('id',0);
+    if ($id == 0)
+        return array('header' => 'error', 'start'=>'<p>No group show ID was given</p>', 'emails' => array());
+    $result = array();
+    $row = dbQueryByID('select title from `proposal` where id=?',$id);
+    $result['header'] = 'email for group show: ' . $row['title'];
+    $result['start'] = "<p>E-mail addresses for proposers, primary contacts, and secondary contacts of performing acts:</p>\n";
+    $result['emails'] = array();
+    $stmt = dbPrepare('select user.email,proposal.info_json from user join proposal on proposerid=user.id join groupPerformer on performer=proposal.id where groupevent=?');
+    $stmt->bind_param('i',$id);
+    $stmt->execute();
+    $stmt->bind_result($email,$info_json);
+    while ($stmt->fetch())
+        {
+        $result['emails'][] = $email;
+        $contacts = findContactEmails($info_json);
+        foreach ($contacts as $c)
+            $result['emails'][] = $c;
+        }
+    $stmt->close();
+    return $result;
     }
 
 function getBatchEmails()
