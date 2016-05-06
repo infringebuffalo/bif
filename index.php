@@ -17,6 +17,16 @@ if ((array_key_exists('adminmessage',$_SESSION)) && ($_SESSION['adminmessage'] !
     unset($_SESSION['adminmessage']);
     }
 
+if (hasPrivilege('scheduler'))
+    {
+    echo "<div style='float:right; width:40%; border-style:solid; border-width:1px'>\n<p>Scheduler changes:\n<ul>\n";
+    echo "<li>6 May '16 - can now get list of all of a batch's contact emails (not just proposers)</li>\n";
+    echo "<li>5 May '16 - deleting a show will delete any scheduled performances it has</li>\n";
+    echo "<li>5 May '16 - batches can be deleted</li>\n";
+    echo "<li>3 May '16 - some internal data converted to JSON; this should avoid future encoding errors</li>\n";
+    echo "</p></div>\n";
+    }
+
 echo "<ul>\n";
 if (hasPrivilege(array('scheduler','organizer')))
     {
