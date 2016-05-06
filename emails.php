@@ -53,6 +53,7 @@ function removeDuplicates($emails)
     $prev = '';
     foreach ($emails as $e)
         {
+        $e = trim($e);
         if (strcasecmp($e,$prev) != 0)
             {
             $result[] = $e;
