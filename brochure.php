@@ -257,6 +257,7 @@ class instDates2
         }
     }
 
+$fullFestivalDates = date('M j',dayToTimestamp(0)) . " - " . date('M j',dayToTimestamp(festivalNumberOfDays()-1));
 
 global $proposalList;
 $bigInstList = array();
@@ -272,7 +273,7 @@ foreach ($venueList as $v)
             $idates->dates[] = $l->date;
         } 
     $is = $idates->output();
-    if ($is == 'Jul 24 - Aug 3')
+    if ($is == $fullFestivalDates)
         $vlist[] = sortingKey($p->title) . $p->title . '<br/>';
     else if ($is != '')
         $vlist[] = sortingKey($p->title) . $p->title . ' (' . $is . ')<br/>';
