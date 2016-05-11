@@ -187,7 +187,7 @@ function getBatchEmailsJustProposers()
 function findContactEmails($info_json)
     {
     $emails = array();
-    $info = json_decode($info_json);
+    $info = json_decode($info_json,true);
     foreach ($info as $i)
         {
         if (($i[0] == 'Contact info') || ($i[0] == 'Secondary contact info'))
