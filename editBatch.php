@@ -24,6 +24,7 @@ $(document).ready(function() {
 </script>
 ENDSTRING;
 
+$festival = getFestivalID();
 
 $row = dbQueryByID('select name,description from `batch` where id=?',$id);
 $batchName = $row['name'];
@@ -31,40 +32,31 @@ $batchDescription = $row['description'];
 
 
 $proposal = array();
-$stmt = dbPrepare('select proposal.id, title from proposal where deleted=0 order by title');
+$stmt = dbPrepare('select proposal.id, title, batch_id from proposal join proposalBatch on proposal.id=proposal_id where festival=? and deleted=0 order by title');
+$stmt->bind_param('i',$festival);
 $stmt->execute();
-$stmt->bind_result($proposalid,$title);
-echo "<table>\n";
+$stmt->bind_result($proposal_id,$title,$batch_id);
 while ($stmt->fetch())
     {
-    if ($title == '')
-        $title = '!!NEEDS A TITLE!!';
-    $proposal[$proposalid] = array('id'=>$proposalid, 'title'=>substr($title,0,32), 'class'=>'allproposals','checked'=>0);
+    if (!array_key_exists($proposal_id,$proposal))
+        {
+        if ($title == '')
+            $title = '!!NEEDS A TITLE!!';
+        $proposal[$proposal_id] = array('id'=>$proposal_id, 'title'=>$title, 'class'=>'allproposals','checked'=>0);
+        }
+    $proposal[$proposal_id]['class'] .= " batch$batch_id";
+    if ($batch_id == $id)
+        $proposal[$proposal_id]['checked'] = 1;
     }
 $stmt->close();
 
 $batch = array(array('allproposals','&lt;all&gt;'));
-$festival = getFestivalID();
 $stmt = dbPrepare('select id,name from batch where festival=?');
 $stmt->bind_param('i',$festival);
 $stmt->execute();
 $stmt->bind_result($batchid,$batchname);
 while ($stmt->fetch())
     $batch[] = array("batch$batchid",$batchname);
-$stmt->close();
-
-$stmt = dbPrepare('select proposal_id,batch_id from proposalBatch');
-$stmt->execute();
-$stmt->bind_result($proposal_id,$batch_id);
-while ($stmt->fetch())
-    {
-    if (array_key_exists($proposal_id,$proposal))
-        {
-        $proposal[$proposal_id]['class'] .= " batch$batch_id";
-        if ($batch_id == $id)
-            $proposal[$proposal_id]['checked'] = 1;
-        }
-    }
 $stmt->close();
 
 bifPageheader('batch: ' . $batchName,$header);
