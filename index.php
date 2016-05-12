@@ -57,6 +57,7 @@ ENDSTRING;
     }
 if (hasPrivilege('admin'))
     {
+    echo "<li><a href='newContact.php'>New festival contact</a></li>\n";
     echo "<li><a href='log.php'>View log</a></li>\n";
     }
 if (hasPrivilege('scheduler'))

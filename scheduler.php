@@ -359,6 +359,35 @@ function venueMenu($menuname,$selected='')
     return $retstr;
     }
 
+function userMenu($menuname,$privilege='')
+    {
+    $users = array();
+    $stmt = dbPrepare('select id,email,name,privs_json from user');
+    $stmt->execute();
+    $stmt->bind_result($id,$email,$name,$privs_json);
+    while ($stmt->fetch())
+        {
+        if ($privilege !== '')
+            {
+            $userPrivs = json_decode($privs_json,true);
+            $isokay = privsArrayIncludes($userPrivs,$privilege);
+            }
+        else
+            $isokay = true;
+        if ($isokay)
+            $users[$id] = "$name ($email)";
+        }
+    $stmt->close();
+    $retstr = "<select name='$menuname'>\n<option selected value='0'>Choose a user</option>\n";
+    asort($users, SORT_STRING|SORT_FLAG_CASE);
+    foreach ($users as $uid=>$uname)
+        {
+        $retstr .= "<option value='$uid'>$uname</option>\n";
+        }
+    $retstr .= "</select>\n";
+    return $retstr;
+    }
+
 function batchMenu($name,$includeAllShows=true,$selected=0)
     {
     $retstr = "<select name='$name'>\n";

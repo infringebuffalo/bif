@@ -7,6 +7,8 @@ mb_language('uni');
 mb_regex_encoding('UTF-8');
 session_start();
 
+$STARTTIME = microtime(TRUE);
+
 $db = false;
 date_default_timezone_set('America/New_York');
 
@@ -153,33 +155,60 @@ function requirePrivilege($priv,$reason='')
 
 function hasPrivilege($priv)
     {
+    global $userPrivs, $db;
     if (!loggedIn())
         return false;
-    if (!isset($db))
+    if ($db == false)
         connectDB();
-    global $userPrivs,$db;
     if ($userPrivs === false)
         {
-        $stmt = dbPrepare('select privs from user where id=?');
+        $stmt = dbPrepare('select privs_json from user where id=?');
         $stmt->bind_param('i',$_SESSION['userid']);
         if (!$stmt->execute())
             die($stmt->error);
-        $stmt->bind_result($userPrivs);
+        $stmt->bind_result($privs_json);
         $stmt->fetch();
         $stmt->close();
+        $userPrivs = json_decode($privs_json,true);
         }
-    if (is_array($priv))
+    if (privsArrayIncludes($userPrivs, $priv))
+        return true;
+    return false;
+    }
+
+function privsArrayIncludes($userPrivs, $priv, $festival=-1)
+    {
+    if (!is_array($userPrivs))
+        return false;
+    if ($festival == -1)
+        $festival = getFestivalID();
+    if (!is_array($priv))
+        $priv = array($priv);
+    foreach ($priv as $p)
         {
-        foreach ($priv as $p)
-            if (stripos($userPrivs,'/' . $p . '/') !== false)
-                return true;
-        }
-    else
-        {
-        if (stripos($userPrivs,'/' . $priv . '/') !== false)
-                return true;
+        if ((array_key_exists(0,$userPrivs)) && (in_array($p,$userPrivs[0])))
+            return true;
+        else if ((array_key_exists($festival,$userPrivs)) && (in_array($p,$userPrivs[$festival])))
+            return true;
         }
     return false;
+    }
+
+/* This will just return the ID of the last festival in the database */
+function getFestivalID()
+    {
+    static $id=-1;
+    if ($id == -1)
+        {
+        $stmt = dbPrepare('select `id` from `festival` order by `id` DESC limit 1');
+        if (!$stmt->execute())
+            die($stmt->error);
+        $stmt->bind_result($id);
+        if (!$stmt->fetch())
+            $id = 0;
+        $stmt->close();
+        }
+    return $id;
     }
 
 
@@ -233,8 +262,15 @@ ENDSTRING;
 }
 
 
-function bifPagefooter()
+function bifPagefooter($showTiming=false)
 {
+if ($showTiming)
+    {
+    global $STARTTIME;
+    $ENDTIME = microtime(TRUE);
+    $t = $ENDTIME - $STARTTIME;
+    echo "<p style='font-size:75%'>page took $t seconds</p>";
+    }
 echo <<<ENDSTRING
 </body>
 </html>

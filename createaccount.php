@@ -60,7 +60,6 @@ else
         $stmt->close();
         $_SESSION['userid'] = $userid;
         $_SESSION['username'] = $username;
-        $_SESSION['privs'] = '';
         log_message("created account $userid $usernameSafe");
         }
     }

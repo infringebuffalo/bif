@@ -1,5 +1,4 @@
 <?php
-$STARTTIME = microtime(TRUE);
 require_once 'init.php';
 connectDB();
 requirePrivilege(array('scheduler','organizer'));
@@ -221,8 +220,6 @@ foreach ($rows as $r)
 $out .= "</tbody>\n</table>\n";
 echo $out;
 
-$ENDTIME = microtime(TRUE);
-$t = $ENDTIME - $STARTTIME;
-echo "<p style='font-size:75%'>$count shows; page took $t seconds</p>";
-bifPagefooter();
+echo "<p style='font-size:75%'>$count shows</p>";
+bifPagefooter(true);
 ?>

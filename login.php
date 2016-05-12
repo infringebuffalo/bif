@@ -12,10 +12,10 @@ connectDB();
 $username = trim(POSTvalue('username'));
 $postedpassword = md5(POSTvalue('password'));
 
-$stmt = dbPrepare('select id,password,newpassword,privs,preferences_json from user where email=?');
+$stmt = dbPrepare('select id,password,newpassword,preferences_json from user where email=?');
 $stmt->bind_param('s',$username);
 $stmt->execute();
-$stmt->bind_result($userid,$password,$newpassword,$privs,$preferences_json);
+$stmt->bind_result($userid,$password,$newpassword,$preferences_json);
 if ($stmt->fetch())
     {
     $stmt->close();
@@ -23,7 +23,6 @@ if ($stmt->fetch())
         {
         $_SESSION['userid'] = $userid;
         $_SESSION['username'] = $username;
-        $_SESSION['privs'] = $privs;
         if ($preferences_json != '')
             $_SESSION['preferences'] = json_decode($preferences_json,true);
         else

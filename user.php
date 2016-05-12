@@ -17,7 +17,7 @@ function privButton($priv,$thisUserPrivs,$user_id)
 <input type="hidden" name="privilege" value="$priv" />
 <input type="hidden" name="userid" value="$user_id" />
 ENDSTRING;
-    if (stripos($thisUserPrivs,"/$priv/") !== false)
+    if (privsArrayIncludes($thisUserPrivs, $priv))
         {
         $s .= <<< ENDSTRING
 <input type="hidden" name="command" value="removePrivilege" />
@@ -41,13 +41,14 @@ bifPageheader('user: ' . $row['name']);
 
 if (hasPrivilege('admin'))
     {
-    $stmt = dbPrepare('select privs from user where id=?');
+    $stmt = dbPrepare('select privs_json from user where id=?');
     $stmt->bind_param('i',$user_id);
     if (!$stmt->execute())
         die($stmt->error);
-    $stmt->bind_result($thisUserPrivs);
+    $stmt->bind_result($privs_json);
     $stmt->fetch();
     $stmt->close();
+    $thisUserPrivs = json_decode($privs_json,true);
     echo "<div style='float:right'>\n";
     foreach (array('scheduler','organizer','confirmed') as $priv)
         echo privButton($priv,$thisUserPrivs,$user_id);

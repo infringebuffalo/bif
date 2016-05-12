@@ -42,7 +42,7 @@ function proposalMatches($target, $title, $info_json)
     {
     if (stripos($title,$target) !== FALSE)
         return TRUE;
-    $info = json_decode($info_json);
+    $info = json_decode($info_json,true);
     if (is_array($info))
         {
         foreach ($info as $i)

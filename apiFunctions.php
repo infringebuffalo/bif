@@ -553,33 +553,52 @@ function subscribe($address,$mailinglist)
 
 function addPrivilege($userid,$privilege)
     {
-    $privilege = '/' . $privilege . '/';
-    $row = dbQueryByID('select privs from user where id=?',$userid);
-    if (($row) && (stripos($row['privs'],$privilege) === false))
+    $row = dbQueryByID('select privs_json from user where id=?',$userid);
+    if ($row)
         {
-        $privlist = $row['privs'] . $privilege;
-        $stmt = dbPrepare('update user set privs=? where id=?');
-        $stmt->bind_param('si',$privlist,$userid);
-        $stmt->execute();
-        $stmt->close();
-        log_message("added privilege $privilege for user {ID:$userid}");
+        $userPrivs = json_decode($row['privs_json'], true);
+        $festival = getFestivalID();
+        if (!array_key_exists($festival, $userPrivs))
+            $userPrivs[$festival] = array();
+        if (!in_array($privilege, $userPrivs[$festival]))
+            {
+            $userPrivs[$festival][] = $privilege;
+            $privs_json = json_encode($userPrivs);
+            $stmt = dbPrepare('update user set privs_json=? where id=?');
+            $stmt->bind_param('si',$privs_json,$userid);
+            $stmt->execute();
+            $stmt->close();
+            log_message("added privilege $privilege for user {ID:$userid}");
+            }
+        else
+            log_message("addPrivilege({ID:$userid},$privilege) - already has privilege");
         }
+    else
+        log_message("addPrivilege({ID:$userid},$privilege) - user info not found");
     }
 
 function removePrivilege($userid,$privilege)
     {
-    $privilege = '/' . $privilege . '/';
-    $row = dbQueryByID('select privs from user where id=?',$userid);
-    if (($row) && (stripos($row['privs'],$privilege) !== false))
+    $row = dbQueryByID('select privs_json from user where id=?',$userid);
+    if ($row)
         {
-        $privlist = $row['privs'];
-        $privlist = str_replace($privilege,'',$privlist);
-        $stmt = dbPrepare('update user set privs=? where id=?');
-        $stmt->bind_param('si',$privlist,$userid);
-        $stmt->execute();
-        $stmt->close();
-        log_message("removed privilege $privilege from user {ID:$userid}");
+        $userPrivs = json_decode($row['privs_json'], true);
+        $festival = getFestivalID();
+        if ((array_key_exists($festival, $userPrivs)) && (in_array($privilege, $userPrivs[$festival])))
+            {
+            unset($userPrivs[$festival][array_search($privilege,$userPrivs[$festival])]);
+            $privs_json = json_encode($userPrivs);
+            $stmt = dbPrepare('update user set privs_json=? where id=?');
+            $stmt->bind_param('si',$privs_json,$userid);
+            $stmt->execute();
+            $stmt->close();
+            log_message("removed privilege $privilege from user {ID:$userid}");
+            }
+        else
+            log_message("removePrivilege({ID:$userid},$privilege) - does not have privilege");
         }
+    else
+        log_message("removePrivilege({ID:$userid},$privilege) - user info not found");
     }
 
 function batchChangeContact($batchid,$newcontact)
@@ -922,5 +941,20 @@ function getIconFromURL($proposal,$url)
     log_message("saved icon {ID:$imageid} for proposal {ID:$proposal}");
     }
 
+function newContact($userid,$role,$description)
+    {
+    if ($userid != 0)
+        {
+        $contactid = newEntityID('contact');
+        $festival = getFestivalID();
+        $stmt = dbPrepare('insert into `contact` (`id`, `userid`, `festival`, `role`, `description`) values (?,?,?,?,?)');
+        $stmt->bind_param('iiiss',$contactid,$festival,$userid,$role,$description);
+        $stmt->execute();
+        $stmt->close();
+        log_message("newContact {ID:$contactid} : $role / $description");
+        }
+    else
+        log_message("newContact - userid 0");
+    }
 
 ?>

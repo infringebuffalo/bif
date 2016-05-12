@@ -18,16 +18,30 @@ bifPageheader('all users',$header);
 <tr><th>name</th><th>e-mail</th></tr>
 <?php
 $amAdmin = hasPrivilege('admin');
-$stmt = dbPrepare('select `id`, `name`, `email`, `privs` from `user` order by `name`');
+$festival = getFestivalID();
+$stmt = dbPrepare('select `id`, `name`, `email`, `privs_json` from `user` order by `name`');
 $stmt->execute();
-$stmt->bind_result($id,$name,$email,$privs);
+$stmt->bind_result($id,$name,$email,$privs_json);
 while ($stmt->fetch()) 
     {
     if ($name == '')
         $name = '!!NEEDS A NAME!!';
     echo "<tr><td><a href='user.php?id=$id'>$name</a></td><td>$email</td>";
     if ($amAdmin)
-        echo "<td>" . str_replace('/',' ',$privs) . "</td></tr>\n";
+        {
+        $userPrivs = json_decode($privs_json,true);
+        if (is_array($userPrivs))
+            {
+            echo "<td>";
+            if (array_key_exists(0, $userPrivs))
+                foreach ($userPrivs[0] as $priv)
+                    echo "[$priv] ";
+            if (array_key_exists($festival, $userPrivs))
+                foreach ($userPrivs[$festival] as $priv)
+                    echo "$priv ";
+            echo "</td></tr>\n";
+            }
+        }
     }
 $stmt->close();
 ?>

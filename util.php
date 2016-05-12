@@ -34,19 +34,6 @@ function getUserID($username)
     return $id;
     }
 
-/* This will just return the ID of the last festival in the database */
-function getFestivalID()
-    {
-    $stmt = dbPrepare('select `id` from `festival` order by `id` DESC limit 1');
-    if (!$stmt->execute())
-        die($stmt->error);
-    $stmt->bind_result($id);
-    if (!$stmt->fetch())
-        $id = 0;
-    $stmt->close();
-    return $id;
-    }
-
 function dbQueryByID($query,$id)
     {
     $stmt = dbPrepare($query);
