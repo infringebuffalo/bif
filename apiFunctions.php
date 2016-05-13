@@ -579,7 +579,7 @@ function subscribe($address,$mailinglist)
         }
     }
 
-function addPrivilege($userid,$privilege,$festival)
+function addPrivilege($userid,$privilege,$festival=0)
     {
     if ($festival == '')
         $festival = getFestivalID();
