@@ -18,7 +18,7 @@ $namePublic = FALSE;
 $emailPublic = FALSE;
 $phonePublic = FALSE;
 $snailmailPublic = FALSE;
-if (array_key_exists('public',$prefs))
+if ((is_array($prefs)) && (array_key_exists('public',$prefs)))
     {
     $namePublic = $prefs['public']['name'];
     $emailPublic = $prefs['public']['email'];
