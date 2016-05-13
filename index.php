@@ -67,10 +67,10 @@ if (hasPrivilege('scheduler'))
     echo "<br><li><a href='newGroupshow.php'>Create a Group Show</a></li>\n";
     }
     
-//if (hasPrivilege(array('confirmed','scheduler','organizer')))
-if (hasPrivilege(array('scheduler','organizer')))
+if (hasPrivilege(array('confirmed','scheduler','organizer')))
     {
-    echo "<br><br><li><a href='Infringement_Proposal.php'>Submit a proposal</a></li><br>\n";
+    if (hasPrivilege(array('scheduler','organizer')))
+        echo "<br><br><li><a href='Infringement_Proposal.php'>Submit a proposal</a></li><br>\n";
     }
 else
     {
