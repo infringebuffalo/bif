@@ -44,13 +44,13 @@ function fieldPublic($prefs,$field)
         return false;
     if (!array_key_exists($field,$prefs['public']))
         return false;
-    return $prefs['public'][$field];
+    return (intval($prefs['public'][$field]) == 1);
     }
 
 
 function showField($label,$field,$row,$canViewAll,$prefs)
     {
-    if (($canViewAll) || (fieldPublic($prefs,'name')))
+    if (($canViewAll) || (fieldPublic($prefs,$field)))
         {
         echo "<tr><th>$label</th><td>$row[$field]</td>";
         if (($canViewAll) && (fieldPublic($prefs,$field)))
