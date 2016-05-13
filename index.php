@@ -20,6 +20,7 @@ if ((array_key_exists('adminmessage',$_SESSION)) && ($_SESSION['adminmessage'] !
 if (hasPrivilege('scheduler'))
     {
     echo "<div style='float:right; width:40%; border-style:solid; border-width:1px'>\n<p>Scheduler changes:\n<ul>\n";
+    echo "<li>13 May '16 - new feature: list of festival contacts - please add some</li>\n";
     echo "<li>6 May '16 - added list of a group show performers' contact emails</li>\n";
     echo "<li>6 May '16 - added simple search function</li>\n";
     echo "<li>6 May '16 - can now get list of all of a batch's contact emails (not just proposers)</li>\n";
