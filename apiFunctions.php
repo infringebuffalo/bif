@@ -944,6 +944,28 @@ function grantProposalAccess($proposal,$user,$mode)
         log_message("user {ID:$user} already has access '$mode' on proposal {ID:$proposal}");
     }
 
+function revokeProposalAccess($proposal,$user,$mode)
+    {
+    $row = dbQueryByID('select access_json from proposal where id=?',$proposal);
+    $access = json_decode($row['access_json'],true);
+    if (!$access)
+        $access = array();
+    if (!isset($access[$user]))
+        $access[$user] = array();
+    if (in_array($mode,$access[$user]))
+        {
+        unset($access[$user][array_search($mode,$access[$user])]);
+        $access_json = json_encode($access);
+        $stmt = dbPrepare('update proposal set access_json=? where id=?');
+        $stmt->bind_param('si',$access_json,$proposal);
+        $stmt->execute();
+        $stmt->close();
+        log_message("revoked user {ID:$user} access '$mode' on proposal {ID:$proposal}");
+        }
+    else
+        log_message("revokeProposalAccess: user {ID:$user} does not have access '$mode' on proposal {ID:$proposal}");
+    }
+
 function getIconFromURL($proposal,$url)
     {
     $stmt = dbPrepare('select title from proposal where id=?');
