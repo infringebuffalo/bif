@@ -1,13 +1,80 @@
 <?php
 require_once 'init.php';
 connectDB();
-requirePrivilege(array('scheduler','organizer'));
+requireLogin();
+//requirePrivilege(array('scheduler','organizer'));
 require_once 'util.php';
 
-if (!isset($_GET['id']))
-    die('no user id given');
+$user_id = GETvalue('id',$_SESSION['userid']);
+
+$row = dbQueryByID('select name,email,phone,snailmail,preferences_json from user where id=?',$user_id);
+$prefs = json_decode($row['preferences_json'],true);
+$canViewAll = ((hasPrivilege(array('scheduler','admin'))) || ($user_id == $_SESSION['userid']));
+
+if ($canViewAll)
+    bifPageheader('user: ' . $row['name']);
 else
-    $user_id = $_GET['id'];
+    bifPageheader('user info');
+
+if (hasPrivilege('admin'))
+    showPrivilegeButtons($user_id);
+
+echo "<table>\n";
+showField('Name','name',$row,$canViewAll,$prefs);
+showField('E-mail','email',$row,$canViewAll,$prefs);
+showField('Phone','phone',$row,$canViewAll,$prefs);
+showField('Address','snailmail',$row,$canViewAll,$prefs);
+echo "</table>\n";
+if ($canViewAll)
+    echo "<p><a href='editUserInfo.php?id=$user_id'>[edit info]</a></p>\n";
+
+showContactRoles($user_id);
+
+if ($canViewAll)
+    showProposals($user_id);
+
+bifPagefooter();
+
+
+function fieldPublic($prefs,$field)
+    {
+    if (!is_array($prefs))
+        return false;
+    if (!array_key_exists('public',$prefs))
+        return false;
+    if (!array_key_exists($field,$prefs['public']))
+        return false;
+    return $prefs['public'][$field];
+    }
+
+
+function showField($label,$field,$row,$canViewAll,$prefs)
+    {
+    if (($canViewAll) || (fieldPublic($prefs,'name')))
+        {
+        echo "<tr><th>$label</th><td>$row[$field]</td>";
+        if (($canViewAll) && (fieldPublic($prefs,$field)))
+            echo "<td>(public)</td>";
+        echo "</tr>\n";
+        }
+    }
+
+
+function showPrivilegeButtons($user_id)
+    {
+    $stmt = dbPrepare('select privs_json from user where id=?');
+    $stmt->bind_param('i',$user_id);
+    if (!$stmt->execute())
+        die($stmt->error);
+    $stmt->bind_result($privs_json);
+    $stmt->fetch();
+    $stmt->close();
+    $thisUserPrivs = json_decode($privs_json,true);
+    echo "<div style='float:right'>\n";
+    foreach (array('scheduler','organizer','confirmed') as $priv)
+        echo privButton($priv,$thisUserPrivs,$user_id);
+    echo "</div>\n";
+    }
 
 
 function privButton($priv,$thisUserPrivs,$user_id)
@@ -36,76 +103,52 @@ ENDSTRING;
     }
 
 
-$row = dbQueryByID('select name,email,phone,snailmail from user where id=?',$user_id);
-bifPageheader('user: ' . $row['name']);
-
-if (hasPrivilege('admin'))
+function showContactRoles($user_id)
     {
-    $stmt = dbPrepare('select privs_json from user where id=?');
+    $stmt = dbPrepare('select role,description from contact where userid=?');
     $stmt->bind_param('i',$user_id);
-    if (!$stmt->execute())
-        die($stmt->error);
-    $stmt->bind_result($privs_json);
-    $stmt->fetch();
+    $stmt->execute();
+    $stmt->bind_result($role,$description);
+    $roles = array();
+    while ($stmt->fetch())
+        $roles[] = "<li>$role: $description</li>";
     $stmt->close();
-    $thisUserPrivs = json_decode($privs_json,true);
-    echo "<div style='float:right'>\n";
-    foreach (array('scheduler','organizer','confirmed') as $priv)
-        echo privButton($priv,$thisUserPrivs,$user_id);
-    echo "</div>\n";
-    }
-
-if (hasPrivilege('scheduler'))
-    {
-    echo "<table>\n";
-    echo "<tr><th>Name</th><td>$row[name]</td></tr>\n";
-    echo "<tr><th>E-mail</th><td>$row[email]</td></tr>\n";
-    echo "<tr><th>Phone</th><td>$row[phone]</td></tr>\n";
-    echo "<tr><th>Address</th><td>" . multiline($row['snailmail']) . "</td></tr>\n";
-    echo "</table>\n";
-    echo "<p><a href='editUserInfo.php?id=$user_id'>[edit info]</a></p>\n";
-    }
-else echo "YOU'RE NOT A SCHEDULER";
-
-$row = dbQueryByID('select user.name,card.role,card.email,card.phone,card.snailmail from card join user on card.userid=user.id where user.id=?',$user_id);
-if ($row)
-    {
-    echo "<h2>Public contact info</h2>\n";
-    echo "<table>\n";
-    echo "<tr><th>Name</th><td>$row[name]</td></tr>\n";
-    echo "<tr><th>Role</th><td>$row[role]</td></tr>\n";
-    echo "<tr><th>E-mail</th><td>$row[email]</td></tr>\n";
-    if ($row['phone'] != '')
-        echo "<tr><th>Phone</th><td>$row[phone]</td></tr>\n";
-    if ($row['snailmail'] != '')
-        echo "<tr><th>Address</th><td>" . multiline($row['snailmail']) . "</td></tr>\n";
-    echo "</table>\n";
-    }
-
-$currentFestival = getFestivalID();
-$stmt = dbPrepare('select proposal.id, title, festival.id, festival.name from proposal join festival on proposal.festival=festival.id where proposerid=? and deleted=0 order by title');
-$stmt->bind_param('i',$user_id);
-$stmt->execute();
-$stmt->bind_result($proposal_id, $title, $festivalid, $festivalname);
-$first = true;
-while ($stmt->fetch())
-    {
-    if ($first)
+    if (count($roles) > 0)
         {
-        echo "<h2>Proposals</h2>\n";
-        echo "<ul>\n";
-        $first = false;
+        echo "<h2>Festival role";
+        if (count($roles) > 1) echo "s";
+        echo "</h2>\n<ul>";
+        echo implode("\n",$roles);
+        echo "</ul>\n";
         }
-    if ($title == '')
-        $title = '!!NEEDS A TITLE!!';
-    echo "<li><a href=\"proposal.php?id=$proposal_id\">$title</a>";
-    if ($festivalid != $currentFestival)
-        echo " ($festivalname)";
-    echo "</li>\n";
     }
-if (!$first)
-    echo "</ul>\n";
-$stmt->close();
 
-bifPagefooter();
+function showProposals($user_id)
+    {
+    $currentFestival = getFestivalID();
+    $stmt = dbPrepare('select proposal.id, title, festival.id, festival.name from proposal join festival on proposal.festival=festival.id where proposerid=? and deleted=0 order by title');
+    $stmt->bind_param('i',$user_id);
+    $stmt->execute();
+    $stmt->bind_result($proposal_id, $title, $festivalid, $festivalname);
+    $first = true;
+    while ($stmt->fetch())
+        {
+        if ($first)
+            {
+            echo "<h2>Proposals</h2>\n";
+            echo "<ul>\n";
+            $first = false;
+            }
+        if ($title == '')
+            $title = '!!NEEDS A TITLE!!';
+        echo "<li><a href=\"proposal.php?id=$proposal_id\">$title</a>";
+        if ($festivalid != $currentFestival)
+            echo " ($festivalname)";
+        echo "</li>\n";
+        }
+    if (!$first)
+        echo "</ul>\n";
+    $stmt->close();
+    }
+
 ?>

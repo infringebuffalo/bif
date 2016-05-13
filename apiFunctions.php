@@ -976,7 +976,7 @@ function newContact($userid,$role,$description)
         $contactid = newEntityID('contact');
         $festival = getFestivalID();
         $stmt = dbPrepare('insert into `contact` (`id`, `userid`, `festival`, `role`, `description`) values (?,?,?,?,?)');
-        $stmt->bind_param('iiiss',$contactid,$festival,$userid,$role,$description);
+        $stmt->bind_param('iiiss',$contactid,$userid,$festival,$role,$description);
         $stmt->execute();
         $stmt->close();
         log_message("newContact {ID:$contactid} : $role / $description");
