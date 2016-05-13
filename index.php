@@ -66,13 +66,19 @@ if (hasPrivilege('scheduler'))
     echo "<br><li><a href='newGroupshow.php'>Create a Group Show</a></li>\n";
     }
     
-if (hasPrivilege(array('confirmed','scheduler','organizer')))
+//if (hasPrivilege(array('confirmed','scheduler','organizer')))
+if (hasPrivilege(array('scheduler','organizer')))
     {
     echo "<br><br><li><a href='Infringement_Proposal.php'>Submit a proposal</a></li><br>\n";
     }
 else
     {
     echo "<li>Your e-mail address must be verified before you can submit a proposal: <a href='verifyEmail.php'>send verification message</a></li><br>\n";
+    }
+
+if (hasPrivilege(array('confirmed','scheduler','organizer')))
+    {
+    echo "<li><a href='listContacts.php'>Festival contacts</a></li><br>\n";
     }
 
 
@@ -86,7 +92,7 @@ while ($stmt->fetch())
     {
     if ($first)
         {
-        echo "<li>Your proposals:<ul>\n";
+        echo "<li>My proposals:<ul>\n";
         $first = false;
         }
 		if ($isgroupshow == 0){
