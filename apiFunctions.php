@@ -168,9 +168,26 @@ function updateContact()
         die();
         }
     $stmt = dbPrepare("update user set name=?, phone=?, snailmail=? where id=?");
-    $stmt->bind_param('sssi', $_POST['name'], $_POST['phone'], $_POST['snailmail'], $id);
+    $stmt->bind_param('sssi', POSTvalue('name'), POSTvalue('phone'), POSTvalue('snailmail'), $id);
     $stmt->execute();
     $stmt->close();
+    log_message("changed info for userid {ID:$id}");
+    }
+
+function updateUserInfo()
+    {
+    $id=POSTvalue('id');
+    if (($id != $_SESSION['userid']) && (!hasPrivilege('scheduler')))
+        {
+        log_message("tried to change contact info for userid {ID:$id}");
+        header('Location: .');
+        die();
+        }
+    $stmt = dbPrepare("update user set name=?, phone=?, snailmail=? where id=?");
+    $stmt->bind_param('sssi', POSTvalue('name'), POSTvalue('phone'), POSTvalue('snailmail'), $id);
+    $stmt->execute();
+    $stmt->close();
+    log_message("changed info for userid {ID:$id}");
     }
 
 function updatePassword()

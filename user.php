@@ -63,6 +63,7 @@ if (hasPrivilege('scheduler'))
     echo "<tr><th>Phone</th><td>$row[phone]</td></tr>\n";
     echo "<tr><th>Address</th><td>" . multiline($row['snailmail']) . "</td></tr>\n";
     echo "</table>\n";
+    echo "<p><a href='editUserInfo.php?id=$user_id'>[edit info]</a></p>\n";
     }
 else echo "YOU'RE NOT A SCHEDULER";
 
