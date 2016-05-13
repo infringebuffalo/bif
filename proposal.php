@@ -129,7 +129,7 @@ function proposalMainInfo($proposal)
     if (hasPrivilege('scheduler'))
         $html .= "&nbsp;&nbsp;&nbsp;(<a href=\"changeOwner.php?id=" . $proposal->id . "\">change proposer</a>)";
     $html .= "</td></tr>\n";
-    $html .= "<tr><th>Festival contact</th><td><a href='card.php?id=" . $proposal->orgcontactinfo['id'] . "'>" . $proposal->orgcontactinfo['name'] . "</a> (" . $proposal->orgcontactinfo['email'] . ")</td></tr>\n";
+    $html .= "<tr><th>Festival contact</th><td><a href='user.php?id=" . $proposal->orgcontactinfo['id'] . "'>" . $proposal->orgcontactinfo['name'] . "</a> (" . $proposal->orgcontactinfo['email'] . ")</td></tr>\n";
     foreach ($proposal->info as $fieldnum=>$v)
         {
         $html .= "<tr>\n<th class='editField' id='field$fieldnum'>$v[0]</th>\n<td>\n";
@@ -180,7 +180,8 @@ class ProposalData
         $this->festivalname = $festivalname;
         $this->info = json_decode($info_json,true);
         $this->access = json_decode($access_json,true);
-        $this->orgcontactinfo = dbQueryByID('select `name`,`card`.`id`,`card`.`email` from `user` join `card` on `user`.`id`=`card`.`userid` where `user`.`id`=?',$orgcontact);
+        $this->orgcontactinfo = dbQueryByID('select `name`,`email` from `user` where `id`=?',$orgcontact);
+        $this->orgcontactinfo['id'] = $orgcontact;
         getDatabase($festivalid);
         global $proposalList;
         $this->title = $proposalList[$proposal_id]->title;
