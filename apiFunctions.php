@@ -183,8 +183,19 @@ function updateUserInfo()
         header('Location: .');
         die();
         }
-    $stmt = dbPrepare("update user set name=?, phone=?, snailmail=? where id=?");
-    $stmt->bind_param('sssi', POSTvalue('name'), POSTvalue('phone'), POSTvalue('snailmail'), $id);
+    $row = dbQueryByID('select preferences_json from user where id=?',$id);
+    $prefs = json_decode($row['preferences_json'],true);
+    if (!$prefs)
+        $prefs = array();
+    if (!array_key_exists('public',$prefs))
+        $prefs['public'] = array();
+    $prefs['public']['name'] = POSTvalue('namePublic',0);
+    $prefs['public']['email'] = POSTvalue('emailPublic',0);
+    $prefs['public']['phone'] = POSTvalue('phonePublic',0);
+    $prefs['public']['snailmail'] = POSTvalue('snailmailPublic',0);
+    $prefs_json = json_encode($prefs);
+    $stmt = dbPrepare("update user set name=?, phone=?, snailmail=?, preferences_json=? where id=?");
+    $stmt->bind_param('ssssi', POSTvalue('name'), POSTvalue('phone'), POSTvalue('snailmail'), $prefs_json, $id);
     $stmt->execute();
     $stmt->close();
     log_message("changed info for userid {ID:$id}");
