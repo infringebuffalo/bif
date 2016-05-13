@@ -8,8 +8,7 @@ require_once 'util.php';
 if (isset($_POST['batch']))
     $checkedBatches = $_POST['batch'];
 else
-/*** UGLY BIT: to make things easier right now - these are the default "primary batches" for 2014 ***/
-    $checkedBatches = array(4202, 4203, 4204, 4205, 4206, 4207, 4208, 4480);
+    $checkedBatches = array();
 
 bifPageheader('check for unbatched proposals');
 ?>
