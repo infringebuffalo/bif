@@ -62,6 +62,7 @@ function showField($label,$field,$row,$canViewAll,$prefs)
 
 function showPrivilegeButtons($user_id)
     {
+    $festival = getFestivalID();
     $stmt = dbPrepare('select privs_json from user where id=?');
     $stmt->bind_param('i',$user_id);
     if (!$stmt->execute())
@@ -71,18 +72,20 @@ function showPrivilegeButtons($user_id)
     $stmt->close();
     $thisUserPrivs = json_decode($privs_json,true);
     echo "<div style='float:right'>\n";
-    foreach (array('scheduler','organizer','confirmed') as $priv)
-        echo privButton($priv,$thisUserPrivs,$user_id);
+    foreach (array('scheduler','organizer') as $priv)
+        echo privButton($priv,$thisUserPrivs,$user_id,$festival);
+    echo privButton('confirmed',$thisUserPrivs,$user_id,0);
     echo "</div>\n";
     }
 
 
-function privButton($priv,$thisUserPrivs,$user_id)
+function privButton($priv,$thisUserPrivs,$user_id,$festival)
     {
     $s = <<<ENDSTRING
 <form method="POST" action="api.php">
 <input type="hidden" name="privilege" value="$priv" />
 <input type="hidden" name="userid" value="$user_id" />
+<input type="hidden" name="festival" value="$festival" />
 ENDSTRING;
     if (privsArrayIncludes($thisUserPrivs, $priv))
         {

@@ -579,13 +579,14 @@ function subscribe($address,$mailinglist)
         }
     }
 
-function addPrivilege($userid,$privilege)
+function addPrivilege($userid,$privilege,$festival)
     {
+    if ($festival == '')
+        $festival = getFestivalID();
     $row = dbQueryByID('select privs_json from user where id=?',$userid);
     if ($row)
         {
         $userPrivs = json_decode($row['privs_json'], true);
-        $festival = getFestivalID();
         if (!array_key_exists($festival, $userPrivs))
             $userPrivs[$festival] = array();
         if (!in_array($privilege, $userPrivs[$festival]))
@@ -596,7 +597,7 @@ function addPrivilege($userid,$privilege)
             $stmt->bind_param('si',$privs_json,$userid);
             $stmt->execute();
             $stmt->close();
-            log_message("added privilege $privilege for user {ID:$userid}");
+            log_message("added privilege $privilege for user {ID:$userid}, festival {ID:$festival}");
             }
         else
             log_message("addPrivilege({ID:$userid},$privilege) - already has privilege");
@@ -605,13 +606,14 @@ function addPrivilege($userid,$privilege)
         log_message("addPrivilege({ID:$userid},$privilege) - user info not found");
     }
 
-function removePrivilege($userid,$privilege)
+function removePrivilege($userid,$privilege,$festival)
     {
+    if ($festival == '')
+        $festival = getFestivalID();
     $row = dbQueryByID('select privs_json from user where id=?',$userid);
     if ($row)
         {
         $userPrivs = json_decode($row['privs_json'], true);
-        $festival = getFestivalID();
         if ((array_key_exists($festival, $userPrivs)) && (in_array($privilege, $userPrivs[$festival])))
             {
             unset($userPrivs[$festival][array_search($privilege,$userPrivs[$festival])]);
