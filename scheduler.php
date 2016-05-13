@@ -843,6 +843,8 @@ function noteDiv($note,$entity_id)
 
 function beginApiCallHtml($command, $parameters=array(), $inline=false, $formname='')
     {
+    $command = htmlentities($command,ENT_QUOTES|ENT_HTML5);
+    $formname = htmlentities($formname,ENT_QUOTES|ENT_HTML5);
     $html = "<form method='POST' action='api.php'";
     if ($formname != '')
         $html .= " name='$formname'";
@@ -851,6 +853,8 @@ function beginApiCallHtml($command, $parameters=array(), $inline=false, $formnam
     $html .= ">\n<input type='hidden' name='command' value='$command' />\n";
     foreach ($parameters as $name=>$value)
         {
+        $name = htmlentities($name,ENT_QUOTES|ENT_HTML5);
+        $value = htmlentities($value,ENT_QUOTES|ENT_HTML5);
         $html .= "<input type='hidden' name='$name' value='$value' />\n";
         }
     return $html;
@@ -858,6 +862,7 @@ function beginApiCallHtml($command, $parameters=array(), $inline=false, $formnam
 
 function endApiCallHtml($submitlabel)
     {
+    $submitlabel = htmlentities($submitlabel,ENT_QUOTES|ENT_HTML5);
     return "<input type='submit' name='submit' value='$submitlabel' />\n</form>\n";
     }
 
