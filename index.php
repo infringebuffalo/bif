@@ -20,7 +20,7 @@ if ((array_key_exists('adminmessage',$_SESSION)) && ($_SESSION['adminmessage'] !
 if (hasPrivilege('scheduler'))
     {
     echo "<div style='float:right; width:40%; border-style:solid; border-width:1px'>\n<p>Scheduler changes:\n<ul>\n";
-    echo "<li>13 May '16 - new feature: list of festival contacts - please add some</li>\n";
+    echo "<li>16 May '16 - added first draft of 'check for issues' tool</li>\n";
     echo "<li>13 May '16 - can now revoke proposer's access to schedule</li>\n";
     echo "<li>6 May '16 - added list of a group show performers' contact emails</li>\n";
     echo "<li>6 May '16 - added simple search function</li>\n";
@@ -55,6 +55,7 @@ if (hasPrivilege(array('scheduler','organizer')))
 </li>
 <li><a href="calendar.php">Calendar</a></li>
 <li><a href="listUsers.php">Users</a></li>
+<li><a href="issues.php">Check for scheduling issues</a>
 ENDSTRING;
     }
 if (hasPrivilege('admin'))
