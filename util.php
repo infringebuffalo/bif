@@ -146,4 +146,12 @@ function dumpData($info, $data)
     $stmt->close();
     log_message("dumped data for '$info'");
     }
+
+function applyIDMacro($text)
+    {
+    $a = preg_replace('/\{ID:([0-9]+) (.*)\}/U','<a href="id.php?id=$1">$2</a>',$text);
+    $b = preg_replace('/\{ID:(.*)\}/U','<a href="id.php?id=$1">$1</a>',$a);
+    return $b;
+    }
+
 ?>
