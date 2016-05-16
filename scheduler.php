@@ -869,13 +869,13 @@ function endApiCallHtml($submitlabel)
 function fetchFestivalInfo()
     {
     $festival = getFestivalID();
-    $stmt = dbPrepare('select UNIX_TIMESTAMP(startDate), numberOfDays from festival where id=?');
+    $stmt = dbPrepare('select startDate, numberOfDays from festival where id=?');
     $stmt->bind_param('i',$festival);
     $stmt->execute();
     $stmt->bind_result($startDate, $numberOfDays);
     if ($stmt->fetch())
         {
-        $_SESSION['festivalStartDate'] = $startDate;
+        $_SESSION['festivalStartDate'] = strtotime($startDate);
         $_SESSION['festivalNumberOfDays'] = $numberOfDays;
         }
     else
