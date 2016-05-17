@@ -9,7 +9,7 @@ $data = dbQueryByID('select name,phone,snailmail from user where id=?',$_SESSION
 ?>
 <div class="contact">
 <form method="POST" action="api.php">
-<input type="hidden" name="command" value="updateContact" />
+<input type="hidden" name="command" value="updateUserContact" />
 <input type="hidden" name="returnurl" value="." />
 <input type="hidden" name="id" value="<?php echo $_SESSION['userid'] ?>" />
 <table cellpadding="3">

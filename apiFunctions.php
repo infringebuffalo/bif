@@ -158,7 +158,7 @@ function scheduleGroupPerformer()
     $stmt->close();
     }
 
-function updateContact()
+function updateUserContact()
     {
     $id=POSTvalue('id');
     if (($id != $_SESSION['userid']) && (!hasPrivilege('scheduler')))
@@ -1004,6 +1004,41 @@ function newContact($userid,$role,$description)
         }
     else
         log_message("newContact - userid 0");
+    }
+
+function updateFestivalContact($id,$role,$description)
+    {
+    if ($id != 0)
+        {
+        $stmt = dbPrepare('update `contact` set `role`=?, `description`=? where `id`=?');
+        $stmt->bind_param('ssi',$role,$description,$id);
+        $stmt->execute();
+        $stmt->close();
+        log_message("updateFestivalContact {ID:$id} : $role / $description");
+        postWarningMessage("Festival contact info updated");
+        }
+    else
+        log_message("updateFestivalContact - id 0");
+    }
+
+function deleteFestivalContact($id)
+    {
+    if ($id != 0)
+        {
+        $data = dbQueryByID('select role from contact where id=?',$id);
+        $stmt = dbPrepare('delete from `contact` where `id`=?');
+        $stmt->bind_param('i',$id);
+        $stmt->execute();
+        $stmt->close();
+        $stmt = dbPrepare('delete from `entity` where `id`=?');
+        $stmt->bind_param('i',$id);
+        $stmt->execute();
+        $stmt->close();
+        log_message("deleted festival contact $contactid: $data[role]");
+        postWarningMessage("Festival contact '$data[role]' deleted");
+        }
+    else
+        log_message("deleteFestivalContact - id 0");
     }
 
 ?>

@@ -108,13 +108,19 @@ ENDSTRING;
 
 function showContactRoles($user_id)
     {
-    $stmt = dbPrepare('select role,description from contact where userid=?');
+    $stmt = dbPrepare('select id,role,description from contact where userid=?');
     $stmt->bind_param('i',$user_id);
     $stmt->execute();
-    $stmt->bind_result($role,$description);
+    $stmt->bind_result($id,$role,$description);
     $roles = array();
     while ($stmt->fetch())
-        $roles[] = "<li>$role: $description</li>";
+        {
+        $role = "<li>$role: $description";
+        if ((hasPrivilege(array('scheduler','admin'))) || ($user_id == $_SESSION['userid']));
+            $role .= " <a href='editContact.php?id=$id'>[edit]</a>";
+        $role .= "</li>";
+        $roles[] = $role;
+        }
     $stmt->close();
     if (count($roles) > 0)
         {

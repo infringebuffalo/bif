@@ -36,7 +36,7 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('newGroupshow',1,0),
             new apiFunction('scheduleEvent',1,0),
             new apiFunction('scheduleGroupPerformer',1,0),
-            new apiFunction('updateContact',0,0),
+            new apiFunction('updateUserContact',0,0),
             new apiFunction('updateUserInfo',0,0),
             new apiFunction('updatePassword',0,0),
             new apiFunction('changeBatchDescription',1,0),
@@ -85,7 +85,9 @@ $api = array(new apiFunction('newVenue',1,0),
             new apiFunction('setVenueLatLon',1,0),
             new apiFunction('getIconFromURL',1,0),
             new apiFunction('deleteBatch',1,0),
-            new apiFunction('newContact',0,1)
+            new apiFunction('newContact',0,1),
+            new apiFunction('updateFestivalContact',1,0),
+            new apiFunction('deleteFestivalContact',0,1)
             );
 
 $command = REQUESTvalue('command');
