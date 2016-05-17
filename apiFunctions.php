@@ -570,13 +570,9 @@ function subscribe($address,$mailinglist)
     $body = '';
     log_message("subscribing $address to $mailinglist");
     if (loggedMail($email, $subject, $body))
-        {
-        $_SESSION['adminmessage'] .= '<p>request to add ' . $address . ' to ' . $mailinglist . '@infringebuffalo.org mailing list has been sent</p>';
-        }
+        postWarningMessage('<p>request to add ' . $address . ' to ' . $mailinglist . '@infringebuffalo.org mailing list has been sent</p>');
     else
-        {
-        $_SESSION['adminmessage'] .= '<p>e-mail failed on request to add ' . $address . ' to ' . $mailinglist . '@infringebuffalo.org</p>';
-        }
+        postWarningMessage('<p>e-mail failed on request to add ' . $address . ' to ' . $mailinglist . '@infringebuffalo.org</p>');
     }
 
 function addPrivilege($userid,$privilege,$festival=0)
@@ -651,7 +647,7 @@ function batchChangeContact($batchid,$newcontact)
             $stmt->close();
             }
         log_message("changed contact for batch {ID:$batchid} to {ID:$newcontact}");
-        $_SESSION['adminmessage'] .= '<p>changed contact for <a href="batch.php?id=' . $batchid . '">batch</a></p>';
+        postWarningMessage('<p>changed contact for <a href="batch.php?id=' . $batchid . '">batch</a></p>');
         }
     else
         log_message("batchChangeContact - userid 0");

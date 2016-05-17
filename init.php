@@ -259,6 +259,11 @@ echo <<<ENDSTRING
 $title
 </h1>
 ENDSTRING;
+if ((array_key_exists('adminmessage',$_SESSION)) && ($_SESSION['adminmessage'] != ''))
+    {
+    echo '<div style="background:#ffff80; padding:0.5em; width:790px;">' . $_SESSION['adminmessage'] . '</div>';
+    unset($_SESSION['adminmessage']);
+    }
 }
 
 

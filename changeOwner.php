@@ -6,11 +6,7 @@ require_once 'util.php';
 
 $proposal_id = GETvalue('id',0);
 if ($proposal_id == 0)
-    {
-    $_SESSION['adminmessage'] = 'ERROR: no proposal id given for changeOwner';
-    header('location:.');
-    die();
-    }
+    errorAndQuit('ERROR: no proposal id given for changeOwner');
 $row = dbQueryByID('select title,name,email from proposal join user on proposerid=user.id where proposal.id=?',$proposal_id);
 
 $header = <<<ENDSTRING

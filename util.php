@@ -154,4 +154,18 @@ function applyIDMacro($text)
     return $b;
     }
 
+function postWarningMessage($message)
+    {
+    if (!array_key_exists('adminmessage',$_SESSION))
+        $_SESSION['adminmessage'] = '';
+    $_SESSION['adminmessage'] .= $message;
+    }
+
+function errorAndQuit($message)
+    {
+    postWarningMessage($message);
+    header('Location: .');
+    die();
+    }
+
 ?>

@@ -6,19 +6,11 @@ require_once 'util.php';
 
 $proposal_id = GETvalue('proposalid',0);
 if ($proposal_id == 0)
-    {
-    $_SESSION['adminmessage'] = 'ERROR: no proposal id given for newOwner';
-    header('location:.');
-    die();
-    }
+    errorAndQuit('ERROR: no proposal id given for newOwner');
 
 $user_id = GETvalue('userid',0);
 if ($user_id == 0)
-    {
-    $_SESSION['adminmessage'] = 'ERROR: no user id given for newOwner';
-    header('location:.');
-    die();
-    }
+    errorAndQuit('ERROR: no user id given for newOwner');
 
 $oldrow = dbQueryByID('select proposerid from proposal where id=?',$proposal_id);
 
