@@ -46,7 +46,7 @@ If you have any questions, ask away:
 <li>General/PR: pr@infringebuffalo.org / info@infringebuffalo.org
 <li>Music: Curt, steelcrazybooking@gmail.com
 <li>Theater: Jessica, jessicaknoerl@gmail.com
-<li>Poetry/Literary: Marek, b00bflo@gmail.com
+<li>Poetry/Literary: Marek, marekp@roadrunner.com
 <li>Dance: Leslie, danceundertheradar@gmail.com
 <li>Film: Tom, tms@kitefishlabs.com
 <li>Street performance: David, dga8787@aol.com
