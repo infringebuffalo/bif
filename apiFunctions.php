@@ -164,8 +164,7 @@ function updateContact()
     if (($id != $_SESSION['userid']) && (!hasPrivilege('scheduler')))
         {
         log_message("tried to change contact info for userid {ID:$id}");
-        header('Location: .');
-        die();
+        errorAndQuit("You don't have permission to do that");
         }
     $stmt = dbPrepare("update user set name=?, phone=?, snailmail=? where id=?");
     $stmt->bind_param('sssi', POSTvalue('name'), POSTvalue('phone'), POSTvalue('snailmail'), $id);
@@ -180,8 +179,7 @@ function updateUserInfo()
     if (($id != $_SESSION['userid']) && (!hasPrivilege('scheduler')))
         {
         log_message("tried to change contact info for userid {ID:$id}");
-        header('Location: .');
-        die();
+        errorAndQuit("You don't have permission to do that");
         }
     $row = dbQueryByID('select preferences_json from user where id=?',$id);
     $prefs = json_decode($row['preferences_json'],true);
@@ -212,7 +210,7 @@ function updatePassword()
     if ($newpassword1 != $newpassword2)
         {
         log_message("change password failed - new password mismatch");
-        $_SESSION['changepasswordError'] = 'Failed to change password: new password and confirmation did not match.';
+        postWarningMessage('Failed to change password: new password and confirmation did not match.');
         header('Location: changePassword.php');
         die();
         }
@@ -220,7 +218,7 @@ function updatePassword()
     if ((!$row) || ($row['password'] != $encOldpassword))
         {
         log_message("change password failed - wrong old password");
-        $_SESSION['changepasswordError'] = 'Failed to change password: old password was incorrect.';
+        postWarningMessage('Failed to change password: old password was incorrect.');
         header('Location: changePassword.php');
         die();
         }
@@ -973,7 +971,7 @@ function getIconFromURL($proposal,$url)
     if (!$stmt->fetch())
         {
         $stmt->close();
-        die('no such proposal - id ' . $proposal);
+        errorAndQuit('no such proposal - id ' . $proposal);
         }
     $stmt->close();
     $imagedata = file_get_contents($url);

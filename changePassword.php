@@ -4,11 +4,6 @@ require_once 'util.php';
 requireLogin();
 connectDB();
 bifPageheader('change password');
-if ((array_key_exists('changepasswordError',$_SESSION)) && ($_SESSION['changepasswordError'] != ''))
-    {
-    echo '<div style="background:#ff8080">' . $_SESSION['changepasswordError'] . '</div>';
-    unset($_SESSION['changepasswordError']);
-    }
 ?>
 <form method="POST" action="api.php">
 <input type="hidden" name="command" value="updatePassword">
