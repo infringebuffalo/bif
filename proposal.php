@@ -11,14 +11,11 @@ function main()
     {
     $proposal_id = GETvalue('id',0);
     if ($proposal_id == 0)
-        die('no proposal selected');
+        errorAndQuit('no proposal selected');
     $proposal = new ProposalData($proposal_id);
     if ((!hasPrivilege(array('scheduler','organizer'))) &&
         ($proposal->proposer_id != $_SESSION['userid']))
-            {
-            header('Location: .');
-            die();
-            }
+            errorAndQuit("You don't have permission to view that proposal");
     $canSeeSchedule = hasAccess($_SESSION['userid'],'viewschedule',$proposal->access) || hasPrivilege(array('scheduler','organizer'));
     $canSeeSchedule = true;
     $canEditSchedule = hasPrivilege('scheduler');

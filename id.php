@@ -3,7 +3,7 @@ require_once 'init.php';
 connectDB();
 
 if (!isset($_GET['id']))
-    die('no id given');
+    errorAndQuit('no id given');
 else
     $entity_id = $_GET['id'];
 $stmt = dbPrepare('select `tablename` from `entity` where `id`=?');

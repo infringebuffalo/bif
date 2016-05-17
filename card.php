@@ -4,7 +4,7 @@ require_once 'util.php';
 connectDB();
 
 if (!isset($_GET['id']))
-    die('no card id given');
+    errorAndQuit('no card id given');
 else
     $id = $_GET['id'];
 

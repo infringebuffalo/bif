@@ -66,7 +66,7 @@ function showPrivilegeButtons($user_id)
     $stmt = dbPrepare('select privs_json from user where id=?');
     $stmt->bind_param('i',$user_id);
     if (!$stmt->execute())
-        die($stmt->error);
+        errorAndQuit("Database error: " . $stmt->error,true);
     $stmt->bind_result($privs_json);
     $stmt->fetch();
     $stmt->close();

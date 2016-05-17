@@ -6,7 +6,7 @@ require_once 'util.php';
 
 
 if (!isset($_GET['id']))
-    die('no batch id given');
+    errorAndQuit('editBatch: no batch id given');
 else
     $id = $_GET['id'];
 

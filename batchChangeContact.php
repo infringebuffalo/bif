@@ -6,7 +6,7 @@ require_once 'util.php';
 require_once 'scheduler.php';
 
 if (!isset($_GET['id']))
-    die('no batch id given');
+    errorAndQuit('batchChangeContact: no batch id given');
 else
     $id = $_GET['id'];
 

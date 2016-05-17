@@ -175,7 +175,7 @@ function venueMapDiv($id,$venueinfo)
 
 
 if (!isset($_GET['id']))
-    die('no venue id given');
+    errorAndQuit('no venue id given');
 else
     $id = $_GET['id'];
 

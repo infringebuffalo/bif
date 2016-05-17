@@ -7,7 +7,7 @@ require_once 'scheduler.php';
 getDatabase();
 
 if (!isset($_GET['id']))
-    die('no proposal selected');
+    errorAndQuit('no proposal selected');
 else
     $proposal_id = $_GET['id'];
 
@@ -22,10 +22,7 @@ $forminfo = json_decode($forminfo_json,true);
 if (!hasPrivilege('scheduler'))
     {
     if ($proposer_id != $_SESSION['userid'])
-        {
-        header('Location: .');
-        die();
-        }
+        errorAndQuit("You don't have permission to view that proposal");
     }
 
 bifPageheader('proposal: ' . $title);

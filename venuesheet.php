@@ -6,10 +6,7 @@ require_once 'scheduler.php';
 
 $id = GETvalue('id',0);
 if ($id == 0)
-    {
-    header('Location: .');
-    die();
-    }
+    errorAndQuit('no venue id given');
 
 $info = dbQueryByID('select name,info from venue where id=?',$id);
 

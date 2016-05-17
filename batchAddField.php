@@ -5,7 +5,7 @@ requirePrivilege(array('scheduler'));
 require_once 'scheduler.php';
 
 if (!isset($_GET['id']))
-    die('no batch id given');
+    errorAndQuit('batchAddField: no batch id given');
 else
     $id = $_GET['id'];
 

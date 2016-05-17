@@ -9,7 +9,7 @@ getPrograminfoList();
 if ((array_key_exists('id',$_GET)) && ($_GET['id']) && (is_numeric($_GET['id'])))
     $id=$_GET['id'];
 else
-    die();
+    errorAndQuit('no venue id given');
 
 function qrcode($url)
     {

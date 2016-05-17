@@ -11,10 +11,10 @@ $id = GETvalue('id',0);
 $stmt = dbPrepare('select data from dump where id=?');
 $stmt->bind_param('i',$id);
 if (!$stmt->execute())
-    die($stmt->error);
+    errorAndQuit("Database error: " . $stmt->error,true);
 $stmt->bind_result($data);
 if (!$stmt->fetch())
-    die($stmt->error);
+    errorAndQuit("Database error: " . $stmt->error,true);
 $stmt->close();
 
 $d = preg_split('/:"(.*?)";/s', $data, -1, PREG_SPLIT_DELIM_CAPTURE);

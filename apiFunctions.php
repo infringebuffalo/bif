@@ -209,16 +209,14 @@ function updatePassword()
     $username = $_SESSION['username'];
     if ($newpassword1 != $newpassword2)
         {
-        log_message("change password failed - new password mismatch");
-        postWarningMessage('Failed to change password: new password and confirmation did not match.');
+        postWarningMessage('Failed to change password: new password and confirmation did not match.',true);
         header('Location: changePassword.php');
         die();
         }
     $row = dbQueryByString('select password from user where email=?', $username);
     if ((!$row) || ($row['password'] != $encOldpassword))
         {
-        log_message("change password failed - wrong old password");
-        postWarningMessage('Failed to change password: old password was incorrect.');
+        postWarningMessage('Failed to change password: old password was incorrect.',true);
         header('Location: changePassword.php');
         die();
         }

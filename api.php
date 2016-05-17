@@ -90,11 +90,7 @@ $api = array(new apiFunction('newVenue',1,0),
 
 $command = REQUESTvalue('command');
 if ($command == '')
-    {
-    log_message("api.php called with no command");
-    header('Location: .');
-    die();
-    }
+    errorAndQuit("api.php called with no command",true);
 
 $returnurl = REQUESTvalue('returnurl');
 

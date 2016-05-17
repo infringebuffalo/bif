@@ -17,7 +17,7 @@ $oldrow = dbQueryByID('select proposerid from proposal where id=?',$proposal_id)
 $stmt = dbPrepare('update proposal set proposerid=? where id=?');
 $stmt->bind_param('ii',$user_id,$proposal_id);
 if (!$stmt->execute())
-    die($stmt->error);
+    errorAndQuit("Database error: " . $stmt->error,true);
 $stmt->close();
 
 log_message("changed ownership of proposal $proposal_id from user $oldrow[id] to $user_id");

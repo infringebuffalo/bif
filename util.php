@@ -26,7 +26,7 @@ function getUserID($username)
     $stmt = dbPrepare('select `id` from `user` where `email`=?');
     $stmt->bind_param('s',$username);
     if (!$stmt->execute())
-        die($stmt->error);
+        errorAndQuit("Database error: " . $stmt->error);
     $stmt->bind_result($id);
     if (!$stmt->fetch())
         $id = 0;
@@ -39,7 +39,7 @@ function dbQueryByID($query,$id)
     $stmt = dbPrepare($query);
     $stmt->bind_param('i',$id);
     if (!$stmt->execute())
-        die($stmt->error);
+        errorAndQuit("Database error: " . $stmt->error);
     $data = array();
     $params = array();
     $meta = $stmt->result_metadata();
@@ -57,7 +57,7 @@ function dbQueryByString($query,$str)
     $stmt = dbPrepare($query);
     $stmt->bind_param('s',$str);
     if (!$stmt->execute())
-        die($stmt->error);
+        errorAndQuit("Database error: " . $stmt->error);
     $data = array();
     $params = array();
     $meta = $stmt->result_metadata();
@@ -125,7 +125,7 @@ function savePreferences()
     $stmt = dbPrepare('update user set preferences_json=? where id=?');
     $stmt->bind_param('si',$prefs_json,$_SESSION['userid']);
     if (!$stmt->execute())
-        die($stmt->error);
+        errorAndQuit("Database error: " . $stmt->error);
     $stmt->close();
     log_message('saved preferences');
     }
@@ -154,16 +154,18 @@ function applyIDMacro($text)
     return $b;
     }
 
-function postWarningMessage($message)
+function postWarningMessage($message,$dolog=false)
     {
     if (!array_key_exists('adminmessage',$_SESSION))
         $_SESSION['adminmessage'] = '';
     $_SESSION['adminmessage'] .= $message;
+    if ($dolog)
+        log_message($message);
     }
 
-function errorAndQuit($message)
+function errorAndQuit($message,$dolog=false)
     {
-    postWarningMessage($message);
+    postWarningMessage($message,$dolog);
     header('Location: .');
     die();
     }

@@ -56,7 +56,7 @@ function connectDB()
         die('Database error: ' . $db->connect_error);
     $stmt = dbPrepare("set names 'utf8'");
     if (!$stmt->execute())
-        die($stmt->error);
+        die('Database error: ' . $stmt->error);
     $stmt->close();
     }
 
@@ -65,7 +65,7 @@ function dbPrepare($sql)
     global $db;
     $stmt = $db->prepare($sql);
     if (!$stmt)
-        die('Database error: ' . $db->error);
+        errorAndQuit('Database error: ' . $db->error,true);
     return $stmt;
     }
 
@@ -106,7 +106,7 @@ function log_message($m,$proposalid=0,$is_sql=0)
             $userid = 0;
         $stmt->bind_param('isiis',$userid,$_SERVER['REMOTE_ADDR'],$proposalid,$is_sql,$m);
         if (!$stmt->execute())
-            die($stmt->error);
+            die('Database error: ' . $stmt->error);
         $stmt->close();
         }
     }
@@ -117,7 +117,7 @@ function newEntityID($tablename)
     $stmt = dbPrepare('insert into `entity` (`tablename`) values (?)');
     $stmt->bind_param('s',$tablename);
     if (!$stmt->execute())
-        die($stmt->error);
+        errorAndQuit("Database error: " . $stmt->error,true);
     $stmt->close();
     return $db->insert_id;
     }
@@ -165,7 +165,7 @@ function hasPrivilege($priv)
         $stmt = dbPrepare('select privs_json from user where id=?');
         $stmt->bind_param('i',$_SESSION['userid']);
         if (!$stmt->execute())
-            die($stmt->error);
+            die('Database error: ' . $stmt->error);
         $stmt->bind_result($privs_json);
         $stmt->fetch();
         $stmt->close();
@@ -202,7 +202,7 @@ function getFestivalID()
         {
         $stmt = dbPrepare('select `id` from `festival` order by `id` DESC limit 1');
         if (!$stmt->execute())
-            die($stmt->error);
+            die('Database error: ' . $stmt->error);
         $stmt->bind_result($id);
         if (!$stmt->fetch())
             $id = 0;

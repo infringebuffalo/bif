@@ -6,7 +6,7 @@ require_once 'scheduler.php';
 
 $proposalid=POSTvalue('proposalid',0);
 if ($proposalid == 0)
-    die('no proposal id given');
+    errorAndQuit('imageStore: no proposal id given',true);
 $stmt = dbPrepare('select `proposerid`,`title` from `proposal` where `id`=?');
 $stmt->bind_param('i',$proposalid);
 $stmt->execute();
@@ -14,7 +14,7 @@ $stmt->bind_result($proposer_id,$title);
 if (!$stmt->fetch())
     {
     $stmt->close();
-    die('no such proposal');
+    errorAndQuit('imageStore: no such proposal',true);
     }
 $stmt->close();
 
@@ -22,8 +22,7 @@ if (!hasPrivilege('scheduler'))
     {
     if ($proposer_id != $_SESSION['userid'])
         {
-        header('Location: .');
-        die();
+        errorAndQuit("You don't have permission to do that");
         }
     }
 

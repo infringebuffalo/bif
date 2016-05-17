@@ -5,7 +5,7 @@ requirePrivilege(array('scheduler','organizer'));
 require_once 'util.php';
 
 if (!isset($_GET['id']))
-    die('no listing id given');
+    errorAndQuit('no listing id given');
 else
     $listing_id = $_GET['id'];
 

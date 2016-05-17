@@ -6,7 +6,7 @@ require_once 'util.php';
 
 
 if (!isset($_GET['id']))
-    die('no category id given');
+    errorAndQuit('editCategory: no category id given');
 else
     $id = $_GET['id'];
 
