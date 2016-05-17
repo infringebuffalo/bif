@@ -809,14 +809,14 @@ function addToCategory($proposal,$category)
 
 function getNotes($entity)
     {
-    $stmt = dbPrepare('select note.id,creatorid,note,user.name from note join noteLink on note.id=noteLink.note_id join user on creatorid=user.id where noteLink.entity_id=?');
+    $stmt = dbPrepare('select note.id,creatorid,note,user.name,timestamp from note join noteLink on note.id=noteLink.note_id join user on creatorid=user.id where noteLink.entity_id=?');
     $stmt->bind_param('i',$entity);
     $stmt->execute();
     $notes = array();
-    $stmt->bind_result($id,$creatorid,$note,$creatorname);
+    $stmt->bind_result($id,$creatorid,$note,$creatorname,$timestamp);
     while ($stmt->fetch())
         {
-        $notes[] = array('id'=>$id, 'creatorid'=>$creatorid, 'creatorname'=>$creatorname, 'note'=>$note);
+        $notes[] = array('id'=>$id, 'creatorid'=>$creatorid, 'creatorname'=>$creatorname, 'note'=>$note, 'timestamp'=>$timestamp);
         }
     $stmt->close();
     return $notes;
@@ -824,9 +824,13 @@ function getNotes($entity)
 
 function noteDiv($note,$entity_id)
     {
+    if ($note[timestamp] == '0000-00-00 00:00:00')
+        $timestamp = '';
+    else
+        $timestamp = " ($note[timestamp])";
     if ($note['creatorid'] == $_SESSION['userid'])
         {
-        $div = "<div id='show_note$note[id]' class='show_info note'><span class='noteauthor'>$note[creatorname]:</span> $note[note]<br> <a onclick='showEditor(\"note$note[id]\");'>[edit]</a> <a href='linkNote.php?id=$note[id]'>[link]</a></div>\n";
+        $div = "<div id='show_note$note[id]' class='show_info note'><span class='noteauthor'>$note[creatorname]$timestamp:</span><br> $note[note]<br> <a onclick='showEditor(\"note$note[id]\");'>[edit]</a> <a href='linkNote.php?id=$note[id]'>[link]</a></div>\n";
         $div .= "<div id='edit_note$note[id]' class='edit_info note'>";
         $div .= beginApiCallHtml('changeNote', array('noteid'=>$note['id']), true) . "<textarea name='note' rows='2' cols='30'>$note[note]</textarea><br><input type='submit' name='submit' value='update' style='padding:0' /></form>\n";
         $div .= beginApiCallHtml('unlinkNote', array('noteid'=>$note['id'], 'entityid'=>$entity_id), true) . "<input type='submit' name='submit' value='remove' style='padding:0' />\n</form>\n";
@@ -835,7 +839,7 @@ function noteDiv($note,$entity_id)
         }
     else
         {
-        $div = "<div style='border: 1px solid'><span style='background:#aaa'>$note[creatorname]:</span> $note[note]</div>\n";
+        $div = "<div style='border: 1px solid'><span style='background:#aaa'>$note[creatorname]$timestamp:</span><br> $note[note]</div>\n";
         }
     return $div;
     }
