@@ -35,14 +35,14 @@ bifPageheader($pageTitle);
 echo $pageDescription;
 
 
+$festival = GETvalue('festival',getFestivalID());
 if ($id != 0)
     {
-    $stmt = dbPrepare('select proposal.id, title from proposal join user on proposerid=user.id join proposalCategory on proposal.id=proposalCategory.proposal_id where proposalCategory.category_id=? and deleted=0 order by title');
-    $stmt->bind_param('i',$id);
+    $stmt = dbPrepare('select proposal.id, title from proposal join user on proposerid=user.id join proposalCategory on proposal.id=proposalCategory.proposal_id where proposalCategory.category_id=? and deleted=0 and festival=? order by title');
+    $stmt->bind_param('ii',$id,$festival);
     }
 else
     {
-    $festival = GETvalue('festival',getFestivalID());
     $stmt = dbPrepare('select `proposal`.`id`, `title` from `proposal` join `user` on `proposerid`=`user`.`id` where `deleted` = 0 and `festival` = ? order by `title`');
     $stmt->bind_param('i',$festival);
     }
