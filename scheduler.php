@@ -824,7 +824,7 @@ function getNotes($entity)
 
 function noteDiv($note,$entity_id)
     {
-    if ($note[timestamp] == '0000-00-00 00:00:00')
+    if ($note['timestamp'] == '0000-00-00 00:00:00')
         $timestamp = '';
     else
         $timestamp = " ($note[timestamp])";
