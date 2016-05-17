@@ -17,7 +17,7 @@ function qrcode($url)
     $ddg = "http://api.duckduckgo.com/?q=$query&format=json";
     $json = file_get_contents($ddg);
     $data = json_decode($json,true);
-    preg_match('/<img.*>/U',$data->Answer,$matches);
+    preg_match('/<img.*>/U',$data['Answer'],$matches);
     return $matches[0];
     }
 
