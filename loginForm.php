@@ -17,12 +17,6 @@ $(document).ready(function() {
 ENDSTRING;
 
 bifPageheader('proposals',$header);
-
-if ((array_key_exists('loginError',$_SESSION)) && ($_SESSION['loginError'] != ''))
-    {
-    echo '<div style="background:#ff8080">' . $_SESSION['loginError'] . '</div>';
-    unset($_SESSION['loginError']);
-    }
 ?>
 <img src="bif2016logo.jpg" align="right">
 <form method="post" action="login.php">

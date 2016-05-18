@@ -1,5 +1,6 @@
 <?php
 require_once 'init.php';
+require_once 'util.php';
 
 if (loggedIn())
     {
@@ -31,19 +32,15 @@ if ($stmt->fetch())
         }
     else
         {
-        $_SESSION['loginError'] = 'Login failed';
         log_message($username . ' login failed: wrong password');
-        header('Location: index.php');
-        die();
+        errorAndQuit('Login failed');
         }
     }
 else
     {
     $stmt->close();
-    $_SESSION['loginError'] = 'Login failed';
     log_message($username . ' login failed: no account');
-    header('Location: index.php');
-    die();
+    errorAndQuit('Login failed');
     }
 
 if ($password != $newpassword)
