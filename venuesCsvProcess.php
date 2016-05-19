@@ -23,8 +23,10 @@ if ($_FILES)
         $data = fgetcsv($fp);
         if ($data === false)
             break;
+/*
         foreach ($data as $k=>$v)
             $data[$k] = filter_var($v, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
+*/
         $id = intval($data[$idfield]);
         $name = $data[$namefield];
         $shortname = $data[$shortnamefield];
