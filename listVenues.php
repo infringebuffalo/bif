@@ -28,7 +28,7 @@ while ($stmt->fetch())
     if ($name == '')
         $name = '!!NEEDS A NAME!!';
     echo "<tr>\n";
-    echo "<td><a href='venue.php?id=$id'>$name</a></td>\n";
+    echo "<td><a href='venue.php?id=$id'>" . htmlspecialchars($name,ENT_COMPAT | ENT_HTML5, "UTF-8") . "</a></td>\n";
     echo "<td><a href='venuesheet.php?id=$id'>sheet</a></td>\n";
     echo "<td><a href='venuesign.php?id=$id'>sign</a></td>\n";
     echo "</tr>\n";

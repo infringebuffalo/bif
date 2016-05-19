@@ -119,19 +119,19 @@ function venueInfoDiv($id,$venueinfo)
 
     $html .= "<div><table>\n";
 
-    $html .= "<tr id='edit_fieldName' class='edit_info'><th>Name</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeVenueName' /><input type='hidden' name='venue' value='$id' /><textarea name='newinfo' cols='80'>$venueinfo[name]</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldName\"); return false;'>don't edit</button></td></form></tr>\n";
+    $html .= "<tr id='edit_fieldName' class='edit_info'><th>Name</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeVenueName' /><input type='hidden' name='venue' value='$id' /><textarea name='newinfo' cols='80'>" . htmlspecialchars($venueinfo[name],ENT_COMPAT | ENT_HTML5, "UTF-8") . "</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldName\"); return false;'>don't edit</button></td></form></tr>\n";
     $html .= "<tr id='show_fieldName' class='show_info'> <th>Name <span class='fieldEditLink' onclick='showEditor(\"fieldName\");'>[edit]</span></th> <td>" . htmlspecialchars($venueinfo['name'],ENT_COMPAT | ENT_HTML5, "UTF-8") . "</td></tr>\n";
-    $html .= "<tr id='edit_fieldShortname' class='edit_info'><th>Short name</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeVenueShortname' /><input type='hidden' name='venue' value='$id' /><textarea name='newinfo' cols='80'>$venueinfo[shortname]</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldShortname\"); return false;'>don't edit</button></td></form></tr>\n";
+    $html .= "<tr id='edit_fieldShortname' class='edit_info'><th>Short name</th><td><form method='POST' action='api.php'><input type='hidden' name='command' value='changeVenueShortname' /><input type='hidden' name='venue' value='$id' /><textarea name='newinfo' cols='80'>" . htmlspecialchars($venueinfo[shortname],ENT_COMPAT | ENT_HTML5, "UTF-8") . "</textarea><input type='submit' name='submit' value='save'><button onclick='hideEditor(\"fieldShortname\"); return false;'>don't edit</button></td></form></tr>\n";
     $html .= "<tr id='show_fieldShortname' class='show_info'> <th>Short name <span class='fieldEditLink' onclick='showEditor(\"fieldShortname\");'>[edit]</span></th> <td>" . htmlspecialchars($venueinfo['shortname'],ENT_COMPAT | ENT_HTML5, "UTF-8") . "</td></tr>\n";
 
     foreach ($info as $fieldnum=>$v)
         {
-        $html .= "<tr id='edit_field$fieldnum' class='edit_info'><th>$v[0]</th>\n";
+        $html .= "<tr id='edit_field$fieldnum' class='edit_info'><th>" . htmlspecialchars($v[0],ENT_COMPAT | ENT_HTML5, "UTF-8") . "</th>\n";
         $html .= "<td style='white-space:nowrap'>" . beginApiCallHtml('changeVenueInfo', array('venue'=>"$id", 'fieldnum'=>"$fieldnum"));
-        $html .= "<textarea id='input_field$fieldnum' name='newinfo' cols='80'>$v[1]</textarea>\n<input type='submit' name='submit' value='save'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>don't edit</button></form>";
+        $html .= "<textarea id='input_field$fieldnum' name='newinfo' cols='80'>" . htmlspecialchars($v[1],ENT_COMPAT | ENT_HTML5, "UTF-8") . "</textarea>\n<input type='submit' name='submit' value='save'><button onclick='hideEditor(\"field$fieldnum\"); return false;'>don't edit</button></form>";
         $html .= beginApiCallHtml('deleteVenueInfoField', array('venue'=>"$id", 'fieldnum'=>"$fieldnum")) . "<input type='submit' name='submit' value='delete field'></form>\n";
         $html .= "</td></tr>\n";
-        $html .= "<tr id='show_field$fieldnum' class='show_info'><th>$v[0] <span class='fieldEditLink' onclick='showEditor(\"field$fieldnum\");'>[edit]</span></th><td>" . multiline($v[1]) . "</td></tr>\n";
+        $html .= "<tr id='show_field$fieldnum' class='show_info'><th>" . htmlspecialchars($v[0],ENT_COMPAT | ENT_HTML5, "UTF-8") . " <span class='fieldEditLink' onclick='showEditor(\"field$fieldnum\");'>[edit]</span></th><td>" . multiline($v[1]) . "</td></tr>\n";
         }
 
     if (hasPrivilege('scheduler'))
