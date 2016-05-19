@@ -17,7 +17,7 @@ if ($_FILES)
     $f = $_FILES['spreadsheet'];
     $fp = fopen($f['tmp_name'],'r');
     $headers = fgetcsv($fp);
-    echo "<table>\n";
+    echo "<p>\n";
     while (true)
         {
         $data = fgetcsv($fp);
@@ -37,11 +37,13 @@ if ($_FILES)
         $info_json = json_encode($info);
         $stmt = dbPrepare('update venue set name=?, shortname=?, info_json=? where id=?');
         $stmt->bind_param('sssi',$name,$shortname,$info_json,$id);
-        $stmt->execute();
+        if (!$stmt->execute())
+            echo "error for <a href='venue.php?id=$id'>$name</a>: " . $stmt->error . "<br>\n";
+        else
+            echo "updated <a href='venue.php?id=$id'>$name</a><br>\n";
         $stmt->close();
-        echo "<tr><td>$id</td><td>$name</td><td>$shortname</td><td>$info_json</td></tr>\n";
         }
-    echo "</table>\n";
+    echo "</p>\n";
     fclose($fp);
     log_message('finished processing venue spreadsheet');
     }

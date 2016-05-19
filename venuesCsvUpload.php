@@ -12,7 +12,7 @@ ID is field: <input type="text" name="idfield" value="A">
 <br>
 Name is field: <input type="text" name="namefield" value="B">
 <br>
-Short name is field: <input type="text" name="shortnamefield" value="B">
+Short name is field: <input type="text" name="shortnamefield" value="C">
 <p>
 <input type="submit" value="Send">
 </form>
