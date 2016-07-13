@@ -80,7 +80,7 @@ foreach ($v->listings as $l)
     {
     if (!$l->installation)
         {
-        $s = sortingKey($l->starttime) . signlistingRow($l->id);
+        $s = sortingKey(sortableTime($l->starttime)) . signlistingRow($l->id);
         $dayshows[$l->date][] = $s;
         }
     }

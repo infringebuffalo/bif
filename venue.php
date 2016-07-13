@@ -80,7 +80,7 @@ function venueScheduleDiv($id,$venueinfo)
         if ($l->installation)
             $dayinst[$l->date][] = sortingKey($l->proposal->title) . listingRow($l->id,false,false,false,true,true,'','<td>'.stripslashes($l->venuenote).'</td>');
         else
-            $dayshows[$l->date][] = sortingKey($l->starttime) . listingRow($l->id,false,true,false,true,true,'','<td>'.stripslashes($l->venuenote).'</td>');
+            $dayshows[$l->date][] = sortingKey(sortableTime($l->starttime)) . listingRow($l->id,false,true,false,true,true,'','<td>'.stripslashes($l->venuenote).'</td>');
         }
     $html .= "<div class=\"schedulebox\">\nSchedule:\n<table>\n";
     $html .= "<thead><tr><th>day</th><th>performances</th><th>installations</th></tr></thead>\n";

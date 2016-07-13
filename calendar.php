@@ -29,7 +29,7 @@ function date_performances($date)
         {
         if ((!$l->installation) && ($l->date == $date))
             {
-            $s = sortingKey($l->starttime . $l->endtime . $l->venue->name) . listingRow($l->id,false,true,true,true,true);
+            $s = sortingKey(sortableTime($l->starttime) . sortableTime($l->endtime) . $l->venue->name) . listingRow($l->id,false,true,true,true,true);
             $list[] = $s;
             }
         }

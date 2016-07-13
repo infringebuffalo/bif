@@ -103,7 +103,7 @@ function performanceSchedule($p)
     foreach ($p->listings as $l)
         if ((!$l->installation) && ($l->proposal->id == $p->id) && (!$l->cancelled))
             {
-            $s2 = sortingKey($l->date . $l->starttime) . dateToString($l->date) . ' ' . timeToString($l->starttime) . '-' . timeToString($l->endtime) . ' ' . $l->venue->name;
+            $s2 = sortingKey($l->date . sortableTime($l->starttime)) . dateToString($l->date) . ' ' . timeToString($l->starttime) . '-' . timeToString($l->endtime) . ' ' . $l->venue->name;
             if ($l->venuenote != '')
                 $s2 .= ' (' . $l->venuenote . ')';
             $a[] = $s2;
@@ -116,9 +116,9 @@ function performanceSchedule($p)
             if ((!$l->installation) && (!$l->cancelled))
                 {
                 if ($g->groupevent->grouplistmode > 0)
-                    $s2 = sortingKey($l->date . $g->time) . dateToString($l->date) . ' ' . timeToString($g->time);
+                    $s2 = sortingKey($l->date . sortableTime($g->time)) . dateToString($l->date) . ' ' . timeToString($g->time);
                 else
-                    $s2 = sortingKey($l->date . $l->starttime) . dateToString($l->date) . ' ' . timeToString($l->starttime) . '-' . timeToString($l->endtime);
+                    $s2 = sortingKey($l->date . sortableTime($l->starttime)) . dateToString($l->date) . ' ' . timeToString($l->starttime) . '-' . timeToString($l->endtime);
                 $s2 .= ' ' . $l->venue->name . ' [' . $g->groupevent->title . ']';
                 $a[] = $s2;
                 }
@@ -199,7 +199,7 @@ for ($i = 0; $i < festivalNumberOfDays(); $i++)
         {
         if ((!$l->installation) && ($l->date == $date) && (!$l->cancelled))
             {
-            $list[] = sortingKey($l->starttime . $l->endtime . $l->venue->name) . '<b>' . $l->proposal->title . '</b><br/>' . $l->venue->name . ' / ' . timeRangeToString($l->starttime,$l->endtime) . '<br/>';
+            $list[] = sortingKey(sortableTime($l->starttime) . sortableTime($l->endtime) . $l->venue->name) . '<b>' . $l->proposal->title . '</b><br/>' . $l->venue->name . ' / ' . timeRangeToString($l->starttime,$l->endtime) . '<br/>';
             }
         }
     sort($list);

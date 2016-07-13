@@ -79,7 +79,7 @@ global $venueList;
 foreach ($venueList[$id]->listings as $l)
     {
     if (!$l->installation)
-        $dayshows[$l->date][] = sortingKey($l->starttime) . sheetlistingRow($l->id,'<td valign="top">'.stripslashes($l->venuenote).'</td>');
+        $dayshows[$l->date][] = sortingKey(sortableTime($l->starttime)) . sheetlistingRow($l->id,'<td valign="top">'.stripslashes($l->venuenote).'</td>');
     }
 
 for ($i=0; $i < festivalNumberOfDays(); $i++)

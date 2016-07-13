@@ -540,6 +540,12 @@ function sortingKey($s)
     return '<!--' . substr($s2,0,16) . '-->';
     }
 
+# turn time into a correctly sortable string - without leading zeroes, 9am (900) gets lexically sorted after 10am (1000)
+function sortableTime($t)
+    {
+    return sprintf("%04d",$t);
+    }
+
 function scheduleEventForm($returnurl,$calEntryFunc,$proposalid,$venueid)
     {
     $s = '<div class="scheduleForm" id="scheduleEventForm" style="display: none">';

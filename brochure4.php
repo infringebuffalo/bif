@@ -80,7 +80,7 @@ function generateList($genre,$type)
                     {
                     if ((!$l->installation) && ($l->proposal->id == $p->id) && (!$l->cancelled))
                         {
-                        $sublist[] = sortingKey($l->date . $l->starttime) . listData($prop,$l,NULL,$type);
+                        $sublist[] = sortingKey($l->date . sortableTime($l->starttime)) . listData($prop,$l,NULL,$type);
                         }
                     }
                 foreach ($prop->groupshows as $g)
@@ -90,7 +90,7 @@ function generateList($genre,$type)
                         foreach ($g->groupevent->listings as $l)
                             if ((!$l->installation) && (!$l->cancelled))
                                 {
-                                $sublist[] = sortingKey($l->date . $l->starttime) . listData($prop,$l,$g,$type);
+                                $sublist[] = sortingKey($l->date . sortableTime($l->starttime)) . listData($prop,$l,$g,$type);
                                 }
                         }
                     }

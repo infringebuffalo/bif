@@ -42,7 +42,7 @@ function generateList($genre,$type)
             $pinfo = $programinfoList[$l->proposal->id];
             if ((!$l->installation) && ($l->date == $date) && (!$l->cancelled) && (($genre == '') || (!strcasecmp($pinfo->type,$genre))))
                 {
-                $s = sortingKey($l->starttime . $l->endtime . $l->venue->name);
+                $s = sortingKey(sortableTime($l->starttime) . sortableTime($l->endtime) . $l->venue->name);
                 if ($type == 'title')
                     $list[] = $s . $l->proposal->title;
                 else if ($type == 'venue')
