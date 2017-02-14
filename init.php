@@ -54,7 +54,9 @@ function connectDB()
     $db = new mysqli($dbhost, $dbusername, $dbpassword, $dbdatabase);
     if ($db->connect_errno)
         die('Database error: ' . $db->connect_error);
-    $stmt = dbPrepare("set names 'utf8'");
+    $stmt = $db->prepare("set names 'utf8'");
+    if (!$stmt)
+        die('Database error: ' . $db->error);
     if (!$stmt->execute())
         die('Database error: ' . $stmt->error);
     $stmt->close();
@@ -99,7 +101,9 @@ function log_message($m,$proposalid=0,$is_sql=0)
         }
     else
         {
-        $stmt = dbPrepare("insert into log (`userid`, `ip`, `proposal`, `is_sql`, `message`) values (?,?,?,?,?)");
+        $stmt = $db->prepare("insert into log (`userid`, `ip`, `proposal`, `is_sql`, `message`) values (?,?,?,?,?)");
+        if (!$stmt)
+            die('Database error: ' . $db->error);
         if (array_key_exists('username',$_SESSION))
             $userid = $_SESSION['userid'];
         else
