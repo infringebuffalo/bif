@@ -1,6 +1,16 @@
 <?php
 require_once 'scheduler.php';
 
+function newFestival($name,$description,$startDate,$numberOfDays)
+    {
+    $festivalid = newEntityID('festival');
+    $stmt = dbPrepare('insert into `festival` (`id`, `name`, `description`, `startDate`, `numberOfDays`) values (?,?,?,?,?)');
+    $stmt->bind_param('isssi',$festivalid,$name,$description,$startDate,$numberOfDays);
+    $stmt->execute();
+    $stmt->close();
+    log_message("newFestival {ID:$festivalid} : $name");
+    }
+
 function newVenue($name,$shortname)
     {
     $defaultInfo = array(array('Owner',''),

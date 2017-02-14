@@ -28,7 +28,8 @@ class apiFunction
         }
     }
 
-$api = array(new apiFunction('newVenue',1,0),
+$api = array(new apiFunction('newFestival',0,1),
+            new apiFunction('newVenue',1,0),
             new apiFunction('copyVenue',1,0),
             new apiFunction('newCard',1,0),
             new apiFunction('newBatch',1,0),
