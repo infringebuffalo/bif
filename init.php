@@ -177,6 +177,8 @@ function hasPrivilege($priv)
         }
     if (privsArrayIncludes($userPrivs, $priv))
         return true;
+    if (privsArrayIncludes($userPrivs, 'admin'))
+        return true;
     return false;
     }
 
