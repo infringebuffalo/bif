@@ -13,6 +13,7 @@ bifPageheader('proposals database');
 
 if (hasPrivilege('scheduler'))
     {
+/*
     echo "<div style='float:right; width:40%; border-style:solid; border-width:1px'>\n<p>Scheduler changes:\n<ul>\n";
     echo "<li>16 May '16 - added first draft of 'check for issues' tool</li>\n";
     echo "<li>13 May '16 - can now revoke proposer's access to schedule</li>\n";
@@ -23,6 +24,7 @@ if (hasPrivilege('scheduler'))
     echo "<li>5 May '16 - batches can be deleted</li>\n";
     echo "<li>3 May '16 - some internal data converted to JSON; this should avoid future encoding errors</li>\n";
     echo "</p></div>\n";
+*/
     }
 
 echo "<ul>\n";
@@ -34,7 +36,8 @@ if (hasPrivilege(array('scheduler','organizer')))
     <li><a href="unbatchedCheck.php">Check for unbatched projects</a></li>
 </ul>
 <li><a href="batch.php?id=0">All projects</a></li>
-<ul><li>(<a href="batch.php?id=0&festival=4200">2015 projects</a>)</li>
+<ul><li>(<a href="batch.php?id=0&festival=14159">2016 projects</a>)</li>
+    <li>(<a href="batch.php?id=0&festival=4200">2015 projects</a>)</li>
     <li>(<a href="batch.php?id=0&festival=4102">2014 projects</a>)</li>
     <li>(<a href="batch.php?id=0&festival=960">2013 projects</a>)</li>
     <li><a href="listDeleted.php">Deleted projects</a></li>
@@ -43,7 +46,8 @@ if (hasPrivilege(array('scheduler','organizer')))
 <li><a href="listCategories.php">Categories (for public website)</a></li>
 <li><a href="listVenues.php">Venues</a>
 <ul><li><a href="newVenue.php">make new venue</a></li></ul>
-<ul><li>(<a href="listVenues.php?festival=4200">2015 venues</a>)</li>
+<ul><li>(<a href="listVenues.php?festival=14159">2016 venues</a>)</li>
+    <li>(<a href="listVenues.php?festival=4200">2015 venues</a>)</li>
     <li>(<a href="listVenues.php?festival=4102">2014 venues</a>)</li>
     <li>(<a href="listVenues.php?festival=960">2013 venues</a>)</li></ul>
 </li>
