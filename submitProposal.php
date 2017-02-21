@@ -23,9 +23,9 @@ createUniversalProposal($title,$proposerid,$festival,$batchid,$orgcontact);
 ?>
 <p>
 Congratulations!<br>
-You have successfully submitted a proposal for the 2016 Buffalo
-Infringement Festival that runs from July 28 - August 7, 2016!<br>
-Be sure to check out your proposal which should now be displayed prominently on the home page!
+You have successfully submitted a proposal for the 2017 Buffalo
+Infringement Festival that runs from July 27 - August 6, 2017!<br>
+Be sure to check out your proposal by clicking on the title. We will [very soon] have a list of proposal names and descriptions updated as they come in.
 <br>
 Remember - all proposals are accepted.  As soon as you hear back from
 your genre organizer, you're in!<br>
@@ -35,20 +35,17 @@ promptly (please check your spam folder, in case our messages end up
 there).<br>
 Expect an influx of correspondence after May 1.
 </p>
-<p>
-Be sure to <a href="http://infringebuffalo.org/forum/" target="_blank">join our Infringement Forum!</a>  It's a great place to ask questions, collaborate with other artist and get more involved with Infringement in general.
-</p>
 
 <p>
 If you have any questions, ask away:
 </p>
 <ul>
-<li>General/PR: pr@infringebuffalo.org / info@infringebuffalo.org
+<li>General/PR: pr@infringebuffalo.org / info@infringebuffalo.org
 <li>Music: Curt, steelcrazybooking@gmail.com
 <li>Theater: Jessica, jessicaknoerl@gmail.com
 <li>Poetry/Literary: Marek, marekp@roadrunner.com
 <li>Dance: Leslie, danceundertheradar@gmail.com
-<li>Film: Tom, tms@kitefishlabs.com
+<li>Film: TBA (Tom, tms@kitefishlabs.com)
 <li>Street performance: David, dga8787@aol.com
 <li>Visual Arts: Cat/Amy, visualinfringement@live.com
 </ul>
