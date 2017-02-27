@@ -17,9 +17,9 @@ if (!$stmt->fetch())
     errorAndQuit("Database error: " . $stmt->error,true);
 $stmt->close();
 
-$d = preg_split('/:"(.*?)";/s', $data, -1, PREG_SPLIT_DELIM_CAPTURE);
-for ($i=1; $i < count($d); $i+=4)
-    $_POST[$d[$i]] = $d[$i+2];
+$d = json_decode($data,true);
+foreach (array_keys($d) as $i)
+    $_POST[$i] = $d[$i];
 
 $proposaltype = POSTvalue('Proposal_Type');
 $festival = getFestivalID();
