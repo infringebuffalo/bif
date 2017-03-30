@@ -34,8 +34,8 @@ createUniversalProposal($title,$proposerid,$festival,$batchid,$orgcontact);
 ?>
 <p>
 Congratulations!<br>
-You have successfully submitted a proposal for the 2016 Buffalo
-Infringement Festival that runs from July 28 - August 7, 2016!<br>
+You have successfully submitted a proposal for the 2017 Buffalo
+Infringement Festival that runs from July 27 - August 6, 2017!<br>
 Be sure to check out your proposal which should now be displayed prominently on the home page!
 <br>
 Remember - all proposals are accepted.  As soon as you hear back from
