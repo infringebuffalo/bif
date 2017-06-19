@@ -70,7 +70,7 @@ if (hasPrivilege('scheduler'))
     
 if (hasPrivilege(array('confirmed','scheduler','organizer')))
     {
-//    if (hasPrivilege(array('scheduler','organizer')))
+    if (hasPrivilege(array('scheduler','organizer')))
         echo "<br><br><li><a href='Infringement_Proposal.php'>Submit a proposal</a></li><br>\n";
     }
 else
