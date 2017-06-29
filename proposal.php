@@ -50,7 +50,7 @@ function proposalWebText($proposal)
     $web_description = $proposal->fieldByLabel('Description for web');
     if ($web_description == '')
         $web_description = $proposal->fieldByLabel('Long_Description');
-    $website = $proposal->fieldByLabel('Website');
+    $website = $proposal->fieldByLabel('Promo_Website');
     if ($website == '')
         $website = $proposal->fieldByLabel('Primary_Website');
     $brochure_description = $proposal->fieldByLabel('Description for brochure');
@@ -113,14 +113,14 @@ function proposalMainInfo($proposal)
     $html = '';
     $html .= '<span>(<b>NOTE: when editing, you must save any changed field before going to edit another field</b>)</span>';
     $html .= '<table cellpadding="3">';
-    
+
     $html .= "<tr>\n<th class='editField' id='fieldTitle'>Title</th>\n<td>\n";
     $html .= "<div id='show_fieldTitle' class='show_info'>" . htmlspecialchars($proposal->title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "</div>\n";
     $html .= "<div id='edit_fieldTitle' class='edit_info'>" . beginApiCallHtml('changeProposalTitle',array('proposal'=>$proposal->id)) . "<input id='input_fieldTitle' type='text' name='newtitle' value=\"". htmlspecialchars($proposal->title,ENT_COMPAT | ENT_HTML5, "UTF-8") . "\" />" . endApiCallHtml('save') . "</div>\n";
     $html .= "</td>\n</tr>\n";
-    
+
     $html .= "<tr><th>Festival</th><td>" . $proposal->festivalname . "</td></tr>\n";
-    
+
     $html .= "<tr><th>Proposer</th><td><a href='user.php?id=" . $proposal->proposer_id . "'>" . $proposal->proposer_name . "</a>";
     if (hasPrivilege('scheduler'))
         $html .= "&nbsp;&nbsp;&nbsp;(<a href=\"changeOwner.php?id=" . $proposal->id . "\">change proposer</a>)";
@@ -151,9 +151,9 @@ function proposalMainInfo($proposal)
         $html .= "<tr id='show_fieldNew' class='show_info' onclick='showEditor(\"fieldNew\");'><th style='background:#ff8'>[add field]</th><td>&nbsp;</td></tr>\n";
         }
     $html .= '<tr><th>Submitted</th><td>' . $proposal->submitted . '</td></tr>';
-    
+
     $html .= '</table>';
-    
+
     return $html;
     }
 
@@ -169,7 +169,7 @@ class ProposalData
         $stmt->bind_result($proposer_id,$info_json,$orgcontact,$submitted,$proposer_name, $festivalname, $festivalid, $access_json);
         $stmt->fetch();
         $stmt->close();
-        
+
         $this->proposer_id = $proposer_id;
         $this->submitted = $submitted;
         $this->proposer_name = $proposer_name;
@@ -391,7 +391,7 @@ function limitChars(node, limit)
         return true;
         }
      }
- 
+
 function addEditButtons(index,element)
     {
     element = $(element);
@@ -479,7 +479,7 @@ function proposalGroupShowPerformers($proposal,$canEditSchedule)
             $out .= '<td' . $tdtags . '> &nbsp;<a href="" onclick="toggleEdit(\'groupschedulerow' . $count . '\'); return false;">edit</a>&nbsp; </td>';
             }
         $out .= '</tr>';
- 
+
         if ($canEditSchedule)
             {
             $out .= '<tr id="groupschedulerow' . $count . 'edit" style="display:none">';
@@ -531,14 +531,14 @@ function proposalSchedulingDiv($proposal)
         }
     else
         $out .= '<a href="" id="scheduleGroupAnchor" onclick="showScheduler(\'#scheduleGroupForm\'); return false">group show</a>&nbsp;&nbsp;';
- 
+
 /*
     $out .= '<a href="" id="scheduleMassdeleteAnchor" onclick="showScheduler(\'#scheduleMassdeleteForm\'); return false">mass-delete</a>&nbsp;&nbsp;';
 */
     $out .= scheduleEventForm('proposal.php?id=' . $proposal->id, 'calEntry', $proposal->id, 0);
- 
+
     $out .= scheduleInstallationForm('proposal.php?id=' . $proposal->id, 'calEntry2', $proposal->id, 0);
- 
+
     if ($proposal->isgroupshow)
         {
         $out .= "<div class='scheduleForm' id='schedulePerformerForm' style='display: none'>\n";
