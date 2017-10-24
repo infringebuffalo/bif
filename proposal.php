@@ -17,6 +17,7 @@ function main()
         ($proposal->proposer_id != $_SESSION['userid']))
             errorAndQuit("You don't have permission to view that proposal");
     $canSeeSchedule = hasAccess($_SESSION['userid'],'viewschedule',$proposal->access) || hasPrivilege(array('scheduler','organizer'));
+$canSeeSchedule = true;
     $canEditSchedule = hasPrivilege('scheduler');
 
     bifPageheader('proposal: ' . $proposal->title, proposalPageHeader());
